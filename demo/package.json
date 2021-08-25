@@ -1,0 +1,51 @@
+{
+  "name": "react-norm-demo",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "history": "^5.0.0",
+    "react": "0.0.0-experimental-4c8c98ab9",
+    "react-dom": "0.0.0-experimental-4c8c98ab9",
+    "react-router": "0.0.0-experimental-ffd8c7d0",
+    "react-router-dom": "0.0.0-experimental-ffd8c7d0",
+    "react-scripts": "4.0.1",
+    "redis": "^3.0.2"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run front\" \"npm run back\"",
+    "back": "node ./server",
+    "front": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "eject": "react-app-rewired eject"
+  },
+  "eslintConfig": {
+    "rules": {
+      "import/no-anonymous-default-export": "off",
+      "new-parens": "off",
+      "no-throw-literal": "off"
+    },
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.0",
+    "react-app-rewire-alias": "^1.0.1",
+    "react-app-rewired": "^2.1.8"
+  }
+}
