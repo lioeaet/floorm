@@ -11,7 +11,7 @@ export const listen = (normId, listener) => {
 
 export const notify = normIds => {
   for (let normId of listeners.keys()) {
-    if (!normIds.has(normId) && !g.refreshes.has(normId)) continue
+    if (!normIds.has(normId)) continue
     notifyOne(normId)
   }
 }

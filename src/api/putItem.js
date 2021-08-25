@@ -5,7 +5,6 @@ import {
   relationsIncrement,
   relationsDecrement,
   relationsUpdateArrayRemovedChilds,
-  deferRefreshes,
   applyLoops,
   isOrm,
   resolveDiff,
@@ -13,121 +12,168 @@ import {
   notify,
   // cloneMap
 } from '*/utils'
-import getItem from '*/api/getItem'
 
 const stack = []
-let loops = new Map()
-let updatedIds = new Map()
+let loops = new Map
+let updatedNormIds = new Map
 
 const putItem = (orm, normId, diff) => {
   g.currentUpdatedAt = Date.now()
-  diff = resolveDiff(diff, getItem(normId))
-  loops = new Map()
-  updatedIds = new Map()
+  diff = resolveDiff(diff, g.items.get(normId))
+  loops = new Map
+  updatedNormIds = new Map
 
   const result = mergeItem(orm, normId, diff, null)
-  applyLoops(updatedIds, loops)
-  deferRefreshes(updatedIds)
-  notify(updatedIds)
+  updateParents(updatedNormIds)
+  applyLoops(updatedNormIds, loops)
+  notify(updatedNormIds)
   return result
 }
 
-const mergeItem = (orm, normId, diff, parentId) => {
-  const item = getItem(normId)
+const mergeItem = (orm, normId, diff, parentNormId) => {
+  const item = g.items.get(normId)
   g.ormsById.set(normId, orm)
 
-  if (updatedIds.get(normId)) {
+  if (updatedNormIds.get(normId)) {
     const itemLoops = loops.get(normId)
     const loop = [...stack, normId]
 
     if (!itemLoops) loops.set(normId, [loop])
     else itemLoops.push(loop)
 
-    relationsIncrement(normId, parentId)
+    relationsIncrement(normId, parentNormId)
 
     return g.items.get(normId)
   }
 
   if (diff === item) return item
 
-  updatedIds.set(normId, true)
+  updatedNormIds.set(normId, true)
   g.updatedAt.set(normId, g.currentUpdatedAt)
 
   if (!diff) {
     if (item) {
       g.items.set(normId, diff)
-      relationsDecrement(normId, parentId)
+      relationsDecrement(normId, parentNormId)
     }
     return diff
   }
   stack.push(normId)
 
-  g.refreshes.delete(normId)
-  relationsIncrement(normId, parentId)
+  relationsIncrement(normId, parentNormId)
 
-  const nextItem = Array.isArray(diff) ? [] : isPlainObject(diff) ? {} : diff
+  const nextItem = generateInst(diff)
   g.items.set(normId, nextItem)
 
-  merge(g.descriptions.get(orm), item, diff, normId, nextItem)
+  merge(g.descriptions.get(orm.normId), item, diff, normId, nextItem)
 
   stack.pop()
   return nextItem
 }
 
-const merge = (desc, level, diff, parentId, inst) => {
-  diff = resolveDiff(diff, level)
+const merge = (desc, inst, diff, parentNormId, nextInst) => {
+  diff = resolveDiff(diff, inst)
   if (!diff) return diff
 
   if (isOrm(desc)) {
-    const id = extractId(diff, level)
+    const id = extractId(diff, inst)
     const normId = normalizeId(desc, id)
 
-    return mergeItem(desc, normId, diff, parentId)
+    return mergeItem(desc, normId, diff, parentNormId)
   }
 
-  if (isPlainObject(diff) && isPlainObject(inst)) {
+  if (isPlainObject(diff)) {
     for (let key in diff) {
       const keyDesc = desc && desc[key]
-      const keyValue = level && level[key]
+      const keyValue = inst && inst[key]
 
       stack.push(key)
-      inst[key] = merge(keyDesc, keyValue, diff[key], parentId, inst)
+      nextInst[key] = merge(keyDesc, keyValue, diff[key], parentNormId, generateInst(diff[key]))
       stack.pop()
     }
-    if (isPlainObject(level) && isPlainObject(inst))
-      for (let key in level)
+    if (isPlainObject(inst) && isPlainObject(nextInst))
+      for (let key in inst)
         if (!diff.hasOwnProperty(key)) {
           const keyDesc = desc && desc[key]
-          const keyValue = level && level[key]
+          const keyValue = inst && inst[key]
 
           stack.push(key)
-          inst[key] = merge(keyDesc, keyValue, keyValue, parentId)
+          nextInst[key] = merge(keyDesc, keyValue, keyValue, parentNormId, generateInst(diff[key]))
           stack.pop()
         }
 
-    return inst
+    return nextInst
   }
 
-  if (Array.isArray(diff) && Array.isArray(desc)) {
-    // oneOf !array
-    const result = Array.isArray(inst) ? inst : []
-    const childOrm = desc[0]
-    const nextChilds = new Map()
-    diff.forEach((childDiff, i) => {
-      const id = extractId(childDiff)
-      const childNormId = normalizeId(childOrm, id)
-      nextChilds.set(childNormId, true)
+  if (Array.isArray(diff)) {
+    // установить id для массивов в extractId
+    // случай массива массивов
+    if (Array.isArray(desc)) {
+      const childOrm = desc[0]
+      const nextChilds = new Map
+      diff.forEach((childDiff, i) => {
+        const id = extractId(childDiff)
+        const childNormId = normalizeId(childOrm, id)
+        nextChilds.set(childNormId, true)
 
-      stack.push(i)
-      result[i] = mergeItem(childOrm, childNormId, childDiff, parentId)
-      stack.pop()
-    })
-    relationsUpdateArrayRemovedChilds(level, result, nextChilds, parentId)
+        stack.push(i)
+        nextInst[i] = mergeItem(childOrm, childNormId, childDiff, parentNormId)
+        stack.pop()
+      })
+      relationsUpdateArrayRemovedChilds(inst, nextInst, nextChilds, parentNormId)
 
-    return result
+      return nextInst
+    }
+    else diff.forEach((item, i) => (nextInst[i] = item))
   }
 
-  return diff
+  return nextInst
+}
+
+const generateInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {} : diff
+
+export const updateParents = normIds => {
+  for (let normId of normIds.keys()) {
+    const parents = g.parents.get(normId)
+    if (!parents) continue
+
+    for (let parentNormId of parents.keys()) {
+      if (normIds.has(parentNormId)) continue
+
+      const orm = g.ormsById.get(normId)
+      const desc = g.descriptions.get(orm.normId)
+      const nextParent = Array.isArray(desc) ? [] : {}
+
+      g.items.set(parentNormId, nextParent)
+      updateParentLevel(desc, g.items.get(parentNormId), nextParent)
+    }
+  }
+}
+
+const updateParentLevel = (desc, level, nextLevel) => {
+  if (isOrm(desc)) {
+    const id = extractId(level)
+    const normId = normalizeId(desc, id)
+    const item = g.items.get(normId)
+
+    return item
+  }
+  if (isPlainObject(desc)) {
+    if (!isPlainObject(level)) return level
+    for (let key in level)
+      nextLevel[key] = updateParentLevel(desc[key], level[key])
+
+    return nextLevel
+  }
+  if (Array.isArray(desc)) {
+    if (!Array.isArray(level)) return level
+    nextLevel = nextLevel || []
+    for (let i = 0; i < level.length; i++)
+      nextLevel[i] = updateParentLevel(desc[0], level[i])
+
+    return nextLevel
+  }
+  return level
 }
 
 export default putItem

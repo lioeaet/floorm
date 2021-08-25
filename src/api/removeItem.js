@@ -4,7 +4,6 @@ import {
   normalizeId,
   extractId,
   relationsUpdateArrayRemovedChilds,
-  deferRefreshes,
   isOrm,
   isPlainObject,
 } from '*/utils'
@@ -24,7 +23,7 @@ const removeItem = normId => {
     updatedIds.set(parentNormId, true)
     const parent = getItem(parentNormId)
     const parentOrm = g.ormsById.get(parentNormId)
-    const parentDesc = g.descriptions.get(parentOrm)
+    const parentDesc = g.descriptions.get(parentOrm.normId)
 
     let nextParent
     if (isPlainObject(parentDesc)) {
@@ -62,7 +61,6 @@ const removeItem = normId => {
   g.suspensePromises.delete(normId)
   g.updatedAt.delete(normId)
   g.refreshes.delete(normId)
-  deferRefreshes(updatedIds)
   notify(updatedIds)
 
   return item

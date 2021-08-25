@@ -1,5 +1,5 @@
 import g from '*/global'
-import { notify, deferRefreshes } from '*/utils'
+import { notify } from '*/utils'
 
 const replaceItem = (normId, item) => {
   g.items.set(normId, item)
@@ -7,7 +7,6 @@ const replaceItem = (normId, item) => {
   g.updatedAt.set(normId, g.currentUpdatedAt)
 
   const updatedIds = new Map().set(normId, true)
-  deferRefreshes(updatedIds)
   notify(updatedIds)
   return item
 }

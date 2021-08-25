@@ -1,6 +1,6 @@
 const fetchData = (url, body, method = 'GET') =>
   fetch(`http://localhost:7337/${url}`, { body, method, headers: { 'Content-Type': 'application/json' } })
-    .then(a => console.log(a) || a)
+    // .then(a => console.log(a) || a)
     .then(res => delay(() => res.json()))
 
 const api = {

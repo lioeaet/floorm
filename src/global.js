@@ -7,7 +7,6 @@ export default {
   items: new Map, // { normId: item }
   childs: new Map, // { normId: [normId] }
   fetchedAt: new Map, // { normId: dateMs }
-  refreshes: new Map, // { normId: true }
   arrayChilds: new Map, // { array: { normId: true } }
   refetchingPromises: new Map, // { normId: promise }
   descriptions: withDescriptionResolver(new Map), // { orm: desc }

@@ -20,23 +20,6 @@ export const extractId = (...itemModes) => {
   if (itemWithId) return itemWithId.id
 }
 
-export const deferRefreshes = updatedIds => {
-  const currentRefreshes = new Map
-  for (let id of updatedIds.keys())
-    deferItemRefreshes(id, currentRefreshes)
-}
-
-const deferItemRefreshes = (normId, currentRefreshes) => {
-  if (currentRefreshes.has(normId)) return
-  g.refreshes.set(normId, true)
-  currentRefreshes.set(normId, true)
-
-  const itemParents = g.parents.get(normId)
-  if (!itemParents) return
-  for (let parentNormId of itemParents.keys())
-    deferItemRefreshes(parentNormId, currentRefreshes)
-}
-
 export const applyLoops = (updatedIds, loops) => {
   for (let id of loops.keys()) {
     const itemLoops = loops.get(id)
