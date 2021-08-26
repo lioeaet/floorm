@@ -1,26 +1,15 @@
-# react-norm
+при изменении вложенной орм подставляется значение по харду
 
-normalized state in hooks
+diff не может содержать изменения вложенной orm, throw
+сначала меняем вложенности, затем родителя
 
-simple way to write ux without loading awaiting
+КАК БЫТЬ С РЕКУРСИЕЙ?
+никак, нужно маппить id
+вместо company ставить companyId везде
+значения получать прямо из орм везде
+и нахуя в таком случае вообще орм?
 
-## desc
-
-1. describe data relations with `orm`
-2. create stores of related data with `stone` and `store`
-3. preload data with `preload(routes)` and `<PreloadLink to={url} />`
-4. use it state in hooks with `useStone` and `useStore`
-
-✨✨✨✨✨✨✨✨✨✨✨✨✨
-
-&nbsp; &nbsp; [demo is the best way to see](https://github.com/koevlu/react-norm/tree/master/demo)
-
-✨✨✨✨✨✨✨✨✨✨✨✨✨
-
-thanks to
-- Maksim Indykov
-- Nikolay Kondratiev
-- Vlad Bakurov
-- [Pavel Golubev + all Primavera team](https://primaverahq.com/)
-
-for great inspiritation
+установить id для массивов в extractId
+случай массива массивов говорит, что это невозможно при изменении вложенных orm
+или нужно делать способ определения массивов юзером
+или throw, вложенные orm-массивы неопределимы, они меняются только напрямую

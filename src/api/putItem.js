@@ -10,7 +10,7 @@ import {
   resolveDiff,
   isPlainObject,
   notify,
-  // cloneMap
+  cloneMap
 } from '*/utils'
 
 const stack = []
@@ -23,15 +23,17 @@ const putItem = (orm, normId, diff) => {
   loops = new Map
   updatedNormIds = new Map
 
-  const result = mergeItem(orm, normId, diff, null)
+  const nextItem = mergeItem(orm, normId, diff, null)
   updateParents(updatedNormIds)
+  console.log(updatedNormIds)
   applyLoops(updatedNormIds, loops)
   notify(updatedNormIds)
-  return result
+  return nextItem
 }
 
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items.get(normId)
+
   g.ormsById.set(normId, orm)
 
   if (updatedNormIds.get(normId)) {
@@ -47,6 +49,10 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   }
 
   if (diff === item) return item
+
+  const desc = g.descriptions.get(orm.normId)
+  if (parentNormId && Array.isArray(desc))
+    throw 'can\'t change instance of array orm inside another orm.put method'
 
   updatedNormIds.set(normId, true)
   g.updatedAt.set(normId, g.currentUpdatedAt)
@@ -65,7 +71,7 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   const nextItem = generateInst(diff)
   g.items.set(normId, nextItem)
 
-  merge(g.descriptions.get(orm.normId), item, diff, normId, nextItem)
+  merge(desc, item, diff, normId, nextItem)
 
   stack.pop()
   return nextItem
@@ -76,7 +82,7 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
   if (!diff) return diff
 
   if (isOrm(desc)) {
-    const id = extractId(diff, inst)
+    const id = extractId(diff, inst, nextInst)
     const normId = normalizeId(desc, id)
 
     return mergeItem(desc, normId, diff, parentNormId)
@@ -107,7 +113,7 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
 
   if (Array.isArray(diff)) {
     // установить id для массивов в extractId
-    // случай массива массивов
+    // случай массива массивов говорит, что это невозможно при изменении вложенных orm
     if (Array.isArray(desc)) {
       const childOrm = desc[0]
       const nextChilds = new Map
