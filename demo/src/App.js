@@ -1,59 +1,33 @@
-import { Suspense } from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { useRoutes } from 'react-router'
-import { preload } from '*'
+import { orm } from '*'
+export default () => <div />
 
-import SplashScreen from './ui/SplashScreen'
-import Page from './ui/Page'
-import FavoriteBooks from './ui/FavoriteBooks'
-import ProgressBar from './ui/ProgressBar'
-import Authors from './ui/Authors'
-import Author from './ui/Author'
-import Book from './ui/Book'
+const baseOrm = orm(() => ({
+  child: childOrm
+}), 'baseOrm')
 
-import preloadAuthors from './stores/authors'
-import preloadFavoriteBooks from './stores/favoriteBooks'
-import preloadAuthor from './stores/author'
-import preloadBook from './stores/book'
+const childOrm = orm(() => ({
+  // base: baseOrm,
+  // baseArr: [baseOrm]
+}), 'childOrm')
 
-const routes = preload([
-  {
-    path: '/',
-    element: <Page>
-      <Authors />
-      <br />
-      <FavoriteBooks />
-    </Page>,
-    preload: () => {
-      preloadAuthors()
-      preloadFavoriteBooks()
-    }
-  },
-  {
-    path: 'author/:authorId',
-    element: <Page>
-      <Author />
-    </Page>,
-    preload: preloadAuthor,
-  },
-  {
-    path: 'book/:bookId',
-    element: <Page>
-      <Book />
-    </Page>,
-    preload: preloadBook,
+const base = {
+  id: 1,
+  child: {
+    id: 1
   }
-])
-
-const AppRouter = () => useRoutes(routes)
-
-export default () => {
-  return (
-    <BrowserRouter timeoutMs={8000}>
-      <Suspense fallback={<SplashScreen />}>
-        <ProgressBar />
-        <AppRouter />
-      </Suspense>
-    </BrowserRouter>
-  )
 }
+
+const child = {
+  id: 1,
+  prop: 'prop'
+}
+
+baseOrm.put(base.id, base)
+
+// console.log(baseOrm.get(base.id))
+// console.log(childOrm.get(child.id))
+
+childOrm.put(child.id, child)
+
+// console.log(baseOrm.get(base.id))
+// console.log(childOrm.get(child.id))

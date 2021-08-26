@@ -1,24 +1,24 @@
 const FAVORITE_BOOKS = [
 {
-  id: 'book Birth of Tragedy',
+  id: 'book-Birth-of-Tragedy',
   name: 'The Birth of Tragedy from the Spirit of Music',
   favorite: true,
   description: 'its so good',
   author: {
-    id: 'author Nietzsche',
+    id: 'author-Nietzsche',
     name: 'Friedrich Nietzsche'
   }
 },
 ]
 
 const AUTHORS = {
-  'author Nietzsche': {
-    id: 'author Nietzsche',
+  'author-Nietzsche': {
+    id: 'author-Nietzsche',
     name: 'Friedrich Nietzsche',
     img: 'http://localhost:7337/img/nietzsche.jpg',
     booksPreview: [
       { 
-        id: 'book Birth of Tragedy',
+        id: 'book-Birth-of-Tragedy',
         name: 'The Birth of Tragedy from the Spirit of Music',
         description: 'its so good',
       },
@@ -28,14 +28,14 @@ const AUTHORS = {
 }
 
 const BOOKS = {
-  'book Birth of Tragedy': {
-    id: 'book Birth of Tragedy',
+  'book-Birth-of-Tragedy': {
+    id: 'book-Birth-of-Tragedy',
     name: 'The Birth of Tragedy from the Spirit of Music',
     favorite: true,
     description: 'its so good',
     img: 'http://localhost:7337/img/birth.png',
     author: {
-      id: 'author Nietzsche',
+      id: 'author-Nietzsche',
       name: 'Friedrich Nietzsche'
     }
   },

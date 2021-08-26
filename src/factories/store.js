@@ -1,5 +1,5 @@
 import g from '*/global'
-import putItem from '*/api/putItem'
+import { putItem } from '*/api/putItem'
 import putItemAsync from '*/api/putItemAsync'
 import getItem from '*/api/getItem'
 import replaceItem from '*/api/replaceItem'

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link, matchPath } from 'react-router-dom'
 import g from '*/global'
-import putItem from '*/api/putItem'
+import { putItem } from '*/api/putItem'
 import ormFactory from '*/factories/orm'
 
 const LOADING_ORM = ormFactory()

@@ -17,10 +17,7 @@ const stack = []
 let loops = new Map
 let updatedNormIds = new Map
 
-let currentNormId
-const putItem = (orm, normId, diff) => {
-  currentNormId = normId
-
+export const putItem = (orm, normId, diff) => {
   g.currentUpdatedAt = Date.now()
   diff = resolveDiff(diff, g.items[normId])
   loops = new Map
@@ -84,7 +81,7 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
 
   if (isOrm(desc)) {
     const id = extractId(diff, inst, nextInst)
-    const normId = normalizeId(desc, id)
+    const normId = normalizeId(desc.name, id)
 
     return mergeItem(desc, normId, diff, parentNormId)
   }
@@ -120,7 +117,7 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
       const nextChilds = new Map
       diff.forEach((childDiff, i) => {
         const id = extractId(childDiff)
-        const childNormId = normalizeId(childOrm, id)
+        const childNormId = normalizeId(childOrm.name, id)
         nextChilds.set(childNormId, true)
 
         stack.push(i)
@@ -140,6 +137,8 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
 const generateInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {} : diff
 
 export const updateParents = normIds => {
+  const grandParentsNormIds = new Map
+
   for (let normId of normIds.keys()) {
     const parents = g.parents[normId]
     if (!parents) continue
@@ -147,17 +146,19 @@ export const updateParents = normIds => {
     for (let parentNormId in parents) {
       if (normIds.has(parentNormId)) continue
 
+      const parent = g.items[parentNormId]
       const parentOrm = g.ormsByNormId.get(parentNormId)
       const parentDesc = g.descriptions.get(parentOrm.normId)
       const nextParent = Array.isArray(parentDesc) ? [] : {}
 
       g.items[parentNormId] = nextParent
-      updateParentLevel(parentDesc, g.items[parentNormId], nextParent)
+      updateParentLevel(parentDesc, parent, nextParent)
     }
   }
 }
 
-// a: { b: { c: { prop1, prop2 } } } - will a changed with b on c change?
+// a: { b: { c: { prop1, prop2 } } }
+// UPDATE GRANDPA
 const updateParentLevel = (desc, level, nextLevel) => {
   if (isOrm(desc)) {
     const id = extractId(level)
@@ -169,7 +170,7 @@ const updateParentLevel = (desc, level, nextLevel) => {
   if (isPlainObject(desc)) {
     if (!isPlainObject(level)) return level
     for (let key in level)
-      nextLevel[key] = updateParentLevel(desc[key], level[key])
+      nextLevel[key] = updateParentLevel(desc[key], level[key], generateInst(level[key]))
 
     return nextLevel
   }
@@ -177,11 +178,9 @@ const updateParentLevel = (desc, level, nextLevel) => {
     if (!Array.isArray(level)) return level
     nextLevel = nextLevel || []
     for (let i = 0; i < level.length; i++)
-      nextLevel[i] = updateParentLevel(desc[0], level[i])
+      nextLevel[i] = updateParentLevel(desc[0], level[i], generateInst(level[i]))
 
     return nextLevel
   }
   return level
 }
-
-export default putItem

@@ -12,7 +12,7 @@ const normIds = new Map // { category: { id: normId } }
 */
 let lastNormId = 0
 export const normalizeId = (category, id) => {
-  const normId = pathGet(normIds, category, id) || String(++lastNormId)
+  const normId = category + '-' + id
   pathSet(normIds, category, id)(normId)
 
   return normId

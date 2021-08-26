@@ -1,29 +1,35 @@
 import g from '*/global'
 import { normalizeId } from '*/utils'
 // import { listenOrm, listenItem } from '*/utils/notifier'
+import { getItem } from '*/api/getItem'
+import { putItem } from '*/api/putItem'
 
 const listenItem = ''; const listenOrm = '';
 
 const ormFactory = (desc, name) => {
   if (!desc) desc = {}
 
-  const normId = normalizeId('orm', desc)
+  const normId = normalizeId('orm', name)
   g.descriptions.set(normId, desc)
 
   const orm = {
     normId,
     name,
     get: id => {
-      const itemNormId = normalizeId(orm, id)
-      return g.items[itemNormId]
+      const normId = normalizeId(name, id)
+      return g.items[normId]
     },
     remove: id => {},
-    put: (id, item) => {},
+    put: (id, diff) => {
+      const normId = normalizeId(name, id)
+      const item = putItem(orm, normId, diff)
+      return item
+    },
     replace: (id, nextId, nextItem) => {},
     listen: listener => listenOrm(normId, listener),
     listenItem: (id, listener) => {
-      const itemNormId = normalizeId(orm, id)
-      return listenItem(itemNormId, listener)
+      const normId = normalizeId(orm, id)
+      return listenItem(normId, listener)
     }
   }
 

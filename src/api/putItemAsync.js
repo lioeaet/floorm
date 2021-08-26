@@ -1,7 +1,7 @@
 import g from '*/global'
 import { notifyOne } from '*/utils'
 import { actualizeLoading } from '*/loading'
-import putItem from '*/api/putItem'
+import { putItem } from '*/api/putItem'
 
 const putItemAsync = (orm, normId, promise) => {
   const gPromises = !g.preloading && !g.fetchedAt.has(normId)

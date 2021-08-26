@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import g from '*/global'
-import getItem from '*/api/getItem'
+import { getItem } from '*/api/getItem'
 import { normalizeId, isPromise, listen } from '*/utils'
 import { LOADING_NORM_ID } from '*/loading'
 

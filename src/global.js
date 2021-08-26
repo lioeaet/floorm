@@ -10,6 +10,9 @@ const g = {
   arrayChilds: new Map, // { array: { normId: true } }
   refetchingPromises: new Map, // { normId: promise }
   descriptions: withDescriptionResolver(new Map), // { orm: desc }
+
+
+  graph: {} // { childNormId: { parentNormId: { [path]: true } } }
 }
 
 export default g

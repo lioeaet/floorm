@@ -1,6 +1,6 @@
 import ormFactory from '*/factories/orm'
 import g from '*/global'
-import putItem from '*/api/putItem'
+import { putItem } from '*/api/putItem'
 import putItemAsync from '*/api/putItemAsync'
 import getItem from '*/api/getItem'
 import { normalizeId, isPromise } from '*/utils'
@@ -8,7 +8,6 @@ import { normalizeId, isPromise } from '*/utils'
 const stoneFactory = (desc, initState, name) => {
   const orm = ormFactory(desc)
   const normId = normalizeId(orm, void 0)
-  console.log(typeof normId)
 
   const stone = {
     put: diff => {
