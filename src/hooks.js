@@ -13,7 +13,7 @@ export const useStone = stone => {
 }
 
 export const useStore = (store, id) => {
-  const orm = g.ormsById.get(store.normId)
+  const orm = g.ormsByNormId.get(store.normId)
   const normId = normalizeId(orm, id)
   const [state, setState] = useState(getState(normId))
 
@@ -35,7 +35,10 @@ const useListener = (normId, setState) => {
   const initState = getState(normId)
   useEffect(
     () => {
-      const listener = () => setState(getState(normId))
+      const listener = () => {
+        if (normId === 9) console.log(getState(normId))
+        setState(getState(normId))
+      }
       if (initState !== getState(normId)) listener()
       return listen(normId, listener)
     },

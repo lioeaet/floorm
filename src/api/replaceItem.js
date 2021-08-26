@@ -2,7 +2,7 @@ import g from '*/global'
 import { notify } from '*/utils'
 
 const replaceItem = (normId, item) => {
-  g.items.set(normId, item)
+  g.items[normId] = item
   g.currentUpdatedAt = Date.now()
   g.updatedAt.set(normId, g.currentUpdatedAt)
 

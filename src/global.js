@@ -1,16 +1,18 @@
-export default {
+const g = {
   currentUpdatedAt: Date.now(),
   suspensePromises: new Map, // { normId: promise }
   updatedAt: new Map, // { normId: dateMs }
-  ormsById: new Map, // { normId: orm }
-  parents: new Map, // { normId: [normId] }
-  items: new Map, // { normId: item }
-  childs: new Map, // { normId: [normId] }
+  ormsByNormId: new Map, // { normId: orm }
+  parents: {}, // { normId: [normId] }
+  items: {}, // { normId: item }
+  childs: {}, // { normId: [normId] }
   fetchedAt: new Map, // { normId: dateMs }
   arrayChilds: new Map, // { array: { normId: true } }
   refetchingPromises: new Map, // { normId: promise }
   descriptions: withDescriptionResolver(new Map), // { orm: desc }
 }
+
+export default g
 
 function withDescriptionResolver(map) {
   map.get = key => {

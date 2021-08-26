@@ -6,6 +6,6 @@ import {
   isPlainObject
 } from '*/utils'
 
-const getItem = normId => g.items.get(normId)
+const getItem = normId => g.items[normId]
 
 export default getItem

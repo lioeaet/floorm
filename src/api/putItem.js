@@ -17,24 +17,27 @@ const stack = []
 let loops = new Map
 let updatedNormIds = new Map
 
+let currentNormId
 const putItem = (orm, normId, diff) => {
+  currentNormId = normId
+
   g.currentUpdatedAt = Date.now()
-  diff = resolveDiff(diff, g.items.get(normId))
+  diff = resolveDiff(diff, g.items[normId])
   loops = new Map
   updatedNormIds = new Map
 
   const nextItem = mergeItem(orm, normId, diff, null)
   updateParents(updatedNormIds)
-  console.log(updatedNormIds)
   applyLoops(updatedNormIds, loops)
   notify(updatedNormIds)
+
   return nextItem
 }
 
 const mergeItem = (orm, normId, diff, parentNormId) => {
-  const item = g.items.get(normId)
+  const item = g.items[normId]
 
-  g.ormsById.set(normId, orm)
+  g.ormsByNormId.set(normId, orm)
 
   if (updatedNormIds.get(normId)) {
     const itemLoops = loops.get(normId)
@@ -45,21 +48,19 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
 
     relationsIncrement(normId, parentNormId)
 
-    return g.items.get(normId)
+    return g.items[normId]
   }
 
   if (diff === item) return item
 
   const desc = g.descriptions.get(orm.normId)
-  if (parentNormId && Array.isArray(desc))
-    throw 'can\'t change instance of array orm inside another orm.put method'
 
   updatedNormIds.set(normId, true)
   g.updatedAt.set(normId, g.currentUpdatedAt)
 
   if (!diff) {
     if (item) {
-      g.items.set(normId, diff)
+      g.items[normId] = diff
       relationsDecrement(normId, parentNormId)
     }
     return diff
@@ -69,7 +70,7 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   relationsIncrement(normId, parentNormId)
 
   const nextItem = generateInst(diff)
-  g.items.set(normId, nextItem)
+  g.items[normId] = nextItem
 
   merge(desc, item, diff, normId, nextItem)
 
@@ -104,7 +105,7 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
           const keyValue = inst && inst[key]
 
           stack.push(key)
-          nextInst[key] = merge(keyDesc, keyValue, keyValue, parentNormId, generateInst(diff[key]))
+          nextInst[key] = merge(keyDesc, keyValue, keyValue, parentNormId, generateInst(inst[key]))
           stack.pop()
         }
 
@@ -140,27 +141,28 @@ const generateInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {}
 
 export const updateParents = normIds => {
   for (let normId of normIds.keys()) {
-    const parents = g.parents.get(normId)
+    const parents = g.parents[normId]
     if (!parents) continue
 
-    for (let parentNormId of parents.keys()) {
+    for (let parentNormId in parents) {
       if (normIds.has(parentNormId)) continue
 
-      const orm = g.ormsById.get(normId)
-      const desc = g.descriptions.get(orm.normId)
-      const nextParent = Array.isArray(desc) ? [] : {}
+      const parentOrm = g.ormsByNormId.get(parentNormId)
+      const parentDesc = g.descriptions.get(parentOrm.normId)
+      const nextParent = Array.isArray(parentDesc) ? [] : {}
 
-      g.items.set(parentNormId, nextParent)
-      updateParentLevel(desc, g.items.get(parentNormId), nextParent)
+      g.items[parentNormId] = nextParent
+      updateParentLevel(parentDesc, g.items[parentNormId], nextParent)
     }
   }
 }
 
+// a: { b: { c: { prop1, prop2 } } } - will a changed with b on c change?
 const updateParentLevel = (desc, level, nextLevel) => {
   if (isOrm(desc)) {
     const id = extractId(level)
     const normId = normalizeId(desc, id)
-    const item = g.items.get(normId)
+    const item = g.items[normId]
 
     return item
   }

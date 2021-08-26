@@ -12,6 +12,8 @@ export const isPromise = inst => inst && typeof inst.then === 'function'
 
 export const isFunction = inst => typeof inst === 'function'
 
+// добавляем сюда stack и суём его в id массивов
+// массив в определённом месте не орм, поэтому всегда считается одним
 export const extractId = (...itemModes) => {
   const itemWithId = itemModes.find(obj =>
     isPlainObject(obj) &&
@@ -25,14 +27,14 @@ export const applyLoops = (updatedIds, loops) => {
     const itemLoops = loops.get(id)
     for (let loop of itemLoops) {
       const itemIndex = loop.findIndex(key => key === id)
-      let currentLevel = g.items.get(id)
+      let currentLevel = g.items[id]
       let i = itemIndex + 1
 
       while (i < loop.length) {
         const key = loop[i++]
         const nextKey = loop[i]
         if (updatedIds.has(nextKey)) {
-          const childItem = g.items.get(nextKey)
+          const childItem = g.items[nextKey]
           currentLevel[key] = childItem
           currentLevel = childItem
           ++i
@@ -59,7 +61,7 @@ export const cloneMapIds = map => {
   if (!map) return null
   const r = []
   for (let id of map.keys())
-    r.push(g.items.get(id))
+    r.push(g.items[id])
   return r
 }
 

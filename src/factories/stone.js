@@ -5,9 +5,10 @@ import putItemAsync from '*/api/putItemAsync'
 import getItem from '*/api/getItem'
 import { normalizeId, isPromise } from '*/utils'
 
-const stoneFactory = (desc, initState) => {
+const stoneFactory = (desc, initState, name) => {
   const orm = ormFactory(desc)
   const normId = normalizeId(orm, void 0)
+  console.log(typeof normId)
 
   const stone = {
     put: diff => {
@@ -27,7 +28,7 @@ const stoneFactory = (desc, initState) => {
     normId
   }
 
-  g.ormsById.set(normId, orm)
+  g.ormsByNormId.set(normId, orm)
   stone.put(initState)
 
   return stone

@@ -15,7 +15,7 @@ const ormFactory = (desc, name) => {
     name,
     get: id => {
       const itemNormId = normalizeId(orm, id)
-      return g.items.get(itemNormId)
+      return g.items[itemNormId]
     },
     remove: id => {},
     put: (id, item) => {},

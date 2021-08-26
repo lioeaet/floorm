@@ -39,7 +39,7 @@ const storeFactory = orm => {
     normId
   }
 
-  g.ormsById.set(normId, orm)
+  g.ormsByNormId.set(normId, orm)
 
   return store
 }

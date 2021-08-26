@@ -1,6 +1,7 @@
 import { store, useStore } from '*'
 import api from '../api'
 import { authorOrm } from '../stores/orm'
+import { bookOrmStore } from './author'
 
 export default params => {
   const authorId = Number(params.authorId)

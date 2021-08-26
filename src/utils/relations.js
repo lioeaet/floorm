@@ -1,5 +1,5 @@
 import g from '*/global'
-import { pathSet, pathIncrement, pathDecrement } from '*/utils'
+import { pathSet, pathIncrement, pathDecrement } from '*/utils/pathObj'
 
 export const relationsIncrement = (childNormId, parentNormId) => {
   if (!parentNormId) return
