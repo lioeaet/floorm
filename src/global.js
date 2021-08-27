@@ -11,8 +11,7 @@ const g = {
   refetchingPromises: new Map, // { normId: promise }
   descriptions: withDescriptionResolver(new Map), // { orm: desc }
 
-
-  graph: {} // { childNormId: { parentNormId: { [path]: true } } }
+  graph: {} // { childNormId: { parentNormId: { [...path]: true } } }
 }
 
 export default g

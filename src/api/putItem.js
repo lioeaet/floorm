@@ -34,6 +34,18 @@ export const putItem = (orm, normId, diff) => {
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
 
+  if (parentNormId) {
+    if (!g.graph[normId]) g.graph[normId] = {}
+    if (!g.graph[normId][parentNormId]) current = g.graph[normId][parentNormId] = {}
+    else current = g.graph[normId][parentNormId]
+
+    for (let i = 1; i < stack.length; i++) {
+      const key = stack[i]
+      if (i === stack.length - 1) current[key] = 'end'
+      else current = current[key] = {}
+    }
+  }
+
   g.ormsByNormId.set(normId, orm)
 
   if (updatedNormIds.get(normId)) {
@@ -140,11 +152,14 @@ export const updateParents = normIds => {
   const grandParentsNormIds = new Map
 
   for (let normId of normIds.keys()) {
-    const parents = g.parents[normId]
+    const parents = g.graph[normId]
     if (!parents) continue
 
     for (let parentNormId in parents) {
       if (normIds.has(parentNormId)) continue
+
+      const graph = parentNormId[parentNormId]
+      // !!! массивы много весят и пох
 
       const parent = g.items[parentNormId]
       const parentOrm = g.ormsByNormId.get(parentNormId)

@@ -36,7 +36,6 @@ const removeItem = normId => {
           parentNormId
         )
         if (wasRemovedItem) {
-          delete g.childs[parentNormId][normId]
           wasRemovedItem = false
         }
       }
@@ -46,7 +45,6 @@ const removeItem = normId => {
         const id = extractId(item)
         const childNormId = normalizeId(parentDesc[0], id)
         if (childNormId === normId) {
-          delete g.childs[parentNormId][normId]
           return false
         }
         return true
@@ -56,7 +54,6 @@ const removeItem = normId => {
   }
   g.items[normId] = null
   g.ormsByNormId.delete(normId)
-  delete g.childs[normId]
   delete g.parents[normId]
   g.suspensePromises.delete(normId)
   g.updatedAt.delete(normId)

@@ -5,10 +5,8 @@ export const relationsIncrement = (childNormId, parentNormId) => {
   if (!parentNormId) return
   const shouldRefresh = g.updatedAt.get(childNormId) < g.currentUpdatedAt
   if (shouldRefresh) {
-    pathSet(g.childs, parentNormId, childNormId)(1)
     pathSet(g.parents, childNormId, parentNormId)(1)
   } else {
-    pathIncrement(g.childs, parentNormId, childNormId)
     pathIncrement(g.parents, childNormId, parentNormId)
   }
 }
@@ -16,7 +14,6 @@ export const relationsIncrement = (childNormId, parentNormId) => {
 export const relationsDecrement = (childNormId, parentNormId) => {
   if (!parentNormId) return
   pathDecrement(g.parents, childNormId, parentNormId)
-  pathDecrement(g.childs, parentNormId, childNormId)
 }
 
 export const relationsUpdateArrayRemovedChilds = (
