@@ -13,7 +13,6 @@ let wasRemovedItem = false
 let updatedIds = new Map()
 
 const removeItem = normId => {
-  g.currentUpdatedAt = Date.now()
   updatedIds = new Map()
   updatedIds.set(normId, true)
   const item = getItem(normId)
@@ -50,13 +49,11 @@ const removeItem = normId => {
         return true
       })
     g.items[parentNormId] = nextParent
-    g.updatedAt.set(parentNormId, g.currentUpdatedAt)
   }
   g.items[normId] = null
   g.ormsByNormId.delete(normId)
   delete g.parents[normId]
   g.suspensePromises.delete(normId)
-  g.updatedAt.delete(normId)
   g.refreshes.delete(normId)
   notify(updatedIds)
 

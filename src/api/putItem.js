@@ -11,23 +11,22 @@ import {
   isPlainObject,
   notify,
   cloneMap,
-  countSymbol
+  pathSet
 } from '*/utils'
 
 const stack = []
 let loops = new Map
-let updatedNormIds = new Map
+let updates = new Map // { normId: parentNormId: stack }
 
 export const putItem = (orm, normId, diff) => {
-  g.currentUpdatedAt = Date.now()
   diff = resolveDiff(diff, g.items[normId])
   loops = new Map
-  updatedNormIds = new Map
+  updates = new Map
 
   mergeItem(orm, normId, diff, null)
-  updateParents(updatedNormIds)
-  applyLoops(updatedNormIds, loops)
-  notify(updatedNormIds)
+  updateParents(updates)
+  applyLoops(updates, loops)
+  notify(updates)
 
   return g.items[normId]
 }
@@ -35,36 +34,15 @@ export const putItem = (orm, normId, diff) => {
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
 
-  let current
-  if (parentNormId) {
-    // can't use just stack because parent can contain several childs 
-    // ...and first path will rewrited by second
-    if (!g.graph[normId]) g.graph[normId] = {}
-    if (!g.graph[normId][parentNormId]) current = g.graph[normId][parentNormId] = { [countSymbol]: 1 }
-    else current = g.graph[normId][parentNormId]
-
-    // countSymbol++
-    for (let i = 1; i < stack.length; i++) {
-      const key = stack[i]
-      if (i === stack.length - 1) current[key] = 'end'
-      else {
-        if (current[key]) current[countSymbol]++
-        else current[key] = { [countSymbol]: 1 }
-        current = current[key] = {}
-      }
-    }
-  }
-
   g.ormsByNormId.set(normId, orm)
+  relationsIncrement(normId, parentNormId, stack)
 
-  if (updatedNormIds.get(normId)) {
+  if (updates.get(normId)) {
     const itemLoops = loops.get(normId)
     const loop = [...stack, normId]
 
     if (!itemLoops) loops.set(normId, [loop])
     else itemLoops.push(loop)
-
-    relationsIncrement(normId, parentNormId)
 
     return g.items[normId]
   }
@@ -73,23 +51,19 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
 
   const desc = g.descriptions.get(orm.normId)
 
-  updatedNormIds.set(normId, true)
-  g.updatedAt.set(normId, g.currentUpdatedAt)
+  pathSet(updates, normId, parentNormId, stack)
 
   if (!diff) {
     if (item) {
       g.items[normId] = diff
-      relationsDecrement(normId, parentNormId)
+      relationsDecrement(normId, parentNormId, stack)
     }
     return diff
   }
   stack.push(normId)
 
-  relationsIncrement(normId, parentNormId)
-
   const nextItem = generateInst(diff)
   g.items[normId] = nextItem
-
   merge(desc, item, diff, normId, nextItem)
 
   stack.pop()
@@ -155,35 +129,36 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
   return nextInst
 }
 
-export const updateParents = normIds => {
+export const updateParents = () => {
   // применения обновлений инстансов к инстансам
   // updatedBy[parentNormId][normId]
   // if (updatedBy[parentNormId][normId]) continue
   // 
-  // if (updatedIds.has(parentNormId)) parent[...path] = g.items[normId]
-  // else {
-  //   const nextParent = [...parent] || {...parent}
-  //   
-  // }
+  if (updatedIds.has(parentNormId)) {
+    parent[...path] = g.items[normId]
+  }
+  else {
+    const nextParent = [...parent] || {...parent}
+    const diff = generateDiff()
+    mergeItem(orm, parentNormId, diff)
+  }
 
-
-  const grandParentsNormIds = new Map
-
-  for (let normId of normIds.keys()) {
+  for (let normId of updates.keys()) {
     const parents = g.graph[normId]
     if (!parents) continue
 
     for (let parentNormId in parents) {
-      if (normIds.has(parentNormId)) continue
+      if (updates.has(parentNormId) && updates.get(parentNormId).has(normId))
+        continue
 
       const graph = parents[parentNormId]
       const parent = g.items[parentNormId]
       const parentOrm = g.ormsByNormId.get(parentNormId)
       const parentDesc = g.descriptions.get(parentOrm.normId)
-      const nextParent = Array.isArray(parentDesc) ? [...parent] : {...parent}
+      const nextParent = generateDiff(normId, parentNormId, )
 
       g.items[parentNormId] = nextParent
-      updateParentLevel(parentDesc, parent, nextParent, graph)
+      
     }
   }
 }
@@ -217,3 +192,9 @@ const updateParentLevel = (desc, level, nextLevel) => {
 }
 
 const generateInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {} : diff
+
+const isPathUpdated = () => {}
+
+const generateDiff = (changedNormId, parentNormId) => {
+  
+}

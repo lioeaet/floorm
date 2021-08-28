@@ -1,17 +1,13 @@
 const g = {
-  currentUpdatedAt: Date.now(),
   suspensePromises: new Map, // { normId: promise }
-  updatedAt: new Map, // { normId: dateMs }
   ormsByNormId: new Map, // { normId: orm }
-  parents: {}, // { normId: [normId] }
   items: {}, // { normId: item }
-  childs: {}, // { normId: [normId] }
   fetchedAt: new Map, // { normId: dateMs }
   arrayChilds: new Map, // { array: { normId: true } }
   refetchingPromises: new Map, // { normId: promise }
   descriptions: withDescriptionResolver(new Map), // { orm: desc }
 
-  graph: {} // { childNormId: { parentNormId: { [...path]: true } } }
+  graph: {} // { childNormId: { parentNormId: { {...pathToChild}: true } } }
 }
 
 export default g

@@ -1,15 +1,33 @@
 import g from '*/global'
-import { pathSet, pathIncrement, pathDecrement } from '*/utils/pathObj'
+import { pathDecrement } from '*/utils/pathObj'
 
-export const countSymbol = Symbol('relationsCount')
+const theCount = Symbol('relationsCount')
+const theEnd = Symbol('end')
 
-export const relationsIncrement = (childNormId, parentNormId) => {
+export const relationsIncrement = (childNormId, parentNormId, stack) => {
   if (!parentNormId) return
-  const shouldRefresh = g.updatedAt.get(childNormId) < g.currentUpdatedAt
-  if (shouldRefresh) {
-    pathSet(g.parents, childNormId, parentNormId)(1)
-  } else {
-    pathIncrement(g.parents, childNormId, parentNormId)
+  let pathToChild
+  // can't use just stack because parent can contain several childs 
+  // ...and first path will rewrited by second
+  if (!g.graph[childNormId]) {
+    g.graph[childNormId] = {}
+  }
+  if (!g.graph[childNormId][parentNormId]) {
+    pathToChild = g.graph[childNormId][parentNormId] = { [theCount]: 1 }
+  }
+  else {
+    pathToChild = g.graph[childNormId][parentNormId]
+    pathToChild[theCount]++
+  }
+
+  for (let i = 1; i < stack.length; i++) {
+    const key = stack[i]
+    if (i === stack.length - 1) pathToChild[key] = theEnd
+    else {
+      if (pathToChild[key]) pathToChild[theCount]++
+      else pathToChild[key] = { [theCount]: 1 }
+      pathToChild = pathToChild[key]
+    }
   }
 }
 
