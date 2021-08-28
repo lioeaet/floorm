@@ -1,6 +1,8 @@
 import g from '*/global'
 import { pathSet, pathIncrement, pathDecrement } from '*/utils/pathObj'
 
+export const countSymbol = Symbol('relationsCount')
+
 export const relationsIncrement = (childNormId, parentNormId) => {
   if (!parentNormId) return
   const shouldRefresh = g.updatedAt.get(childNormId) < g.currentUpdatedAt
