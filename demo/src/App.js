@@ -22,6 +22,20 @@ const child = {
   prop: 'prop'
 }
 
+if (typeof diffProp 'obj') {
+  if (typeof itemProp === 'obj') {
+    // iterate diff down and set noRef props
+  }
+  else if (typeof itemProp === 'arr') {
+    // remove relations and
+  }
+
+  for (let key in diffProp) ite
+  if (typeof itemProp 'arr' || 'obj') {
+    for (let)
+  }
+}
+
 baseOrm.put(base.id, base)
 
 // console.log(baseOrm.get(base.id))
