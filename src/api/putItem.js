@@ -148,7 +148,7 @@ const updateParents = () => {
       else {
         const orm = g.ormsByNormId.get(parentNormId)
         const diff = generateDiff(normId, g.graph[normId][parentNormId], g.items[parentNormId])
-        mergeItem(orm, parentNormId, diff)
+        mergeItem(orm, parentNormId, diff, null)
       }
     }
   }
