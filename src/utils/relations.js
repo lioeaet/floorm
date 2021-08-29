@@ -1,8 +1,8 @@
 import g from '*/global'
 import { pathDecrement } from '*/utils/pathObj'
 
-const theCount = Symbol('relationsCount')
-const theEnd = Symbol('end')
+export const theCount = Symbol('theCount')
+export const theEnd = Symbol('theEnd')
 
 export const relationsIncrement = (childNormId, parentNormId, stack) => {
   if (!parentNormId) return
