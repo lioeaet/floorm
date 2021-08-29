@@ -6,8 +6,8 @@ const baseOrm = orm(() => ({
 }), 'baseOrm')
 
 const childOrm = orm(() => ({
-  // base: baseOrm,
-  // baseArr: [baseOrm]
+  base: baseOrm,
+  baseArr: [baseOrm]
 }), 'childOrm')
 
 const base = {
@@ -19,12 +19,13 @@ const base = {
 
 const child = {
   id: 1,
-  prop: 'prop'
+  prop: 'prop',
+  baseArr: [{ id: 1, baseProp: 'x' }]
 }
 
 baseOrm.put(base.id, base)
 
-console.log(baseOrm.get(base.id))
+// console.log(baseOrm.get(base.id))
 
 childOrm.put(child.id, child)
 

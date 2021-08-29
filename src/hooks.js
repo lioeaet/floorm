@@ -13,7 +13,7 @@ export const useStone = stone => {
 }
 
 export const useStore = (store, id) => {
-  const orm = g.ormsByNormId.get(store.normId)
+  const orm = g.ormsByNormId[store.normId]
   const normId = normalizeId(orm, id)
   const [state, setState] = useState(getState(normId))
 

@@ -36,7 +36,7 @@ export const putItem = (orm, normId, diff) => {
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
 
-  g.ormsByNormId.set(normId, orm)
+  g.ormsByNormId[normId] = orm
   relationsIncrement(normId, parentNormId, stack)
 
   if (updates.get(normId)) {
@@ -67,6 +67,7 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   const nextItem = generateInst(diff)
   g.items[normId] = nextItem
   merge(desc, item, diff, normId, nextItem)
+  console.log(Object.values(g.items).map(item => ({...item})))
 
   stack.pop()
   return nextItem
@@ -140,15 +141,18 @@ const updateParents = () => {
       if (updates.has(normId) && updates.get(normId).has(parentNormId))
         continue
 
+      const parentOrm = g.ormsByNormId[parentNormId]
+
       if (updates.has(parentNormId)) {
         updates.get(normId).get(parentNormId)
+        // ***
+        console.log(g.items, normId, parentNormId)
         setChildToParent(normId, g.graph[normId][parentNormId], g.items[parentNormId])
         pathSet(updates, normId, parentNormId)(true)
       }
       else {
-        const orm = g.ormsByNormId.get(parentNormId)
         const diff = generateDiff(normId, g.graph[normId][parentNormId], g.items[parentNormId])
-        mergeItem(orm, parentNormId, diff, null)
+        mergeItem(parentOrm, parentNormId, diff, null)
       }
     }
   }

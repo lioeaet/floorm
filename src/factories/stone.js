@@ -27,7 +27,7 @@ const stoneFactory = (desc, initState, name) => {
     normId
   }
 
-  g.ormsByNormId.set(normId, orm)
+  g.ormsByNormId[normId] = orm
   stone.put(initState)
 
   return stone

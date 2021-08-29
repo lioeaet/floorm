@@ -21,7 +21,7 @@ const removeItem = normId => {
   for (let parentNormId in itemParents) {
     updatedIds.set(parentNormId, true)
     const parent = getItem(parentNormId)
-    const parentOrm = g.ormsByNormId.get(parentNormId)
+    const parentOrm = g.ormsByNormId[parentNormId]
     const parentDesc = g.descriptions.get(parentOrm.normId)
 
     let nextParent
@@ -51,7 +51,7 @@ const removeItem = normId => {
     g.items[parentNormId] = nextParent
   }
   g.items[normId] = null
-  g.ormsByNormId.delete(normId)
+  delete g.ormsByNormId[normId]
   delete g.parents[normId]
   g.suspensePromises.delete(normId)
   g.refreshes.delete(normId)

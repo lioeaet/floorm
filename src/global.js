@@ -1,6 +1,6 @@
 const g = {
   suspensePromises: new Map, // { normId: promise }
-  ormsByNormId: new Map, // { normId: orm }
+  ormsByNormId: {}, // { normId: orm }
   items: {}, // { normId: item }
   fetchedAt: new Map, // { normId: dateMs }
   arrayChilds: new Map, // { array: { normId: true } }
