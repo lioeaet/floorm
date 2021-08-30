@@ -12,6 +12,7 @@ import {
   notify,
   cloneMap,
   pathSet,
+  pathGet,
   theEnd,
   theCount
 } from '*/utils'
@@ -40,7 +41,7 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
 
   relationsIncrement(normId, parentNormId, stack)
 
-  if (updates.get(normId)) {
+  if (updates.get(normId) && !pathGet(updates, normId, parentNormId)) {
     const itemLoops = loops.get(normId)
     const loop = [...stack, normId]
 

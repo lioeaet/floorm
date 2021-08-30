@@ -20,6 +20,10 @@ const base = {
 const child = {
   id: 1,
   prop: 'prop',
+  childBase: {
+    id: 1,
+    basePropY: 'y'
+  },
   childBaseArr: [{ id: 1, baseProp: 'x' }]
 }
 
