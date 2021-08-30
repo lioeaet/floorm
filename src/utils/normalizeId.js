@@ -1,14 +1,13 @@
 import { pathGet, pathSet } from '*/utils'
 
-const normIds = new Map // { category: { id: normId } }
+const normIds = {} // { category: { id: normId } }
 
 /*
  any element of system has normId for fast access 
 */
-let lastNormId = 0
-export const normalizeId = (category, id) => {
-  const normId = category + '-' + id
-  pathSet(normIds, category, id)(normId)
 
+export const normalizeId = (category, id) => {
+  const key = category + '-' + id
+  let normId = normIds[key] || (normIds[key] = Symbol(key))
   return normId
 }

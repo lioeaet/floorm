@@ -2,17 +2,17 @@ import { orm } from '*'
 export default () => <div />
 
 const baseOrm = orm(() => ({
-  child: childOrm
+  baseChild: childOrm
 }), 'baseOrm')
 
 const childOrm = orm(() => ({
-  base: baseOrm,
-  baseArr: [baseOrm]
+  childBase: baseOrm,
+  childBaseArr: [baseOrm]
 }), 'childOrm')
 
 const base = {
   id: 1,
-  child: {
+  baseChild: {
     id: 1
   }
 }
@@ -20,7 +20,7 @@ const base = {
 const child = {
   id: 1,
   prop: 'prop',
-  baseArr: [{ id: 1, baseProp: 'x' }]
+  childBaseArr: [{ id: 1, baseProp: 'x' }]
 }
 
 baseOrm.put(base.id, base)

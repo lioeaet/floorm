@@ -3,7 +3,7 @@ import { pathDecrement } from '*/utils/pathObj'
 
 export const theCount = Symbol('theCount')
 export const theEnd = Symbol('theEnd')
-
+console.log(g.items)
 export const relationsIncrement = (childNormId, parentNormId, stack) => {
   if (!parentNormId) return
   let pathToChild
@@ -20,7 +20,8 @@ export const relationsIncrement = (childNormId, parentNormId, stack) => {
     pathToChild[theCount]++
   }
 
-  for (let i = 1; i < stack.length; i++) {
+  const start = stack.indexOf(parentNormId) + 1
+  for (let i = start; i < stack.length; i++) {
     const key = stack[i]
     if (i === stack.length - 1) pathToChild[key] = theEnd
     else {
