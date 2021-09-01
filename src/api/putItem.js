@@ -41,15 +41,8 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
 
   relationsIncrement(normId, parentNormId, stack)
 
-  if (updates.get(normId) && !pathGet(updates, normId, parentNormId)) {
-    const itemLoops = loops.get(normId)
-    const loop = [...stack, normId]
-
-    if (!itemLoops) loops.set(normId, [loop])
-    else itemLoops.push(loop)
-
+  if (updates.get(normId) && !pathGet(updates, normId, parentNormId))
     return g.items[normId]
-  }
 
   if (diff === item) return item
 

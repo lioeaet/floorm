@@ -1,4 +1,4 @@
-import g from '*/global'
+import g, { theEnd } from '*/global'
 
 export const isOrm = inst => isPlainObject(inst) && g.descriptions.has(inst.normId)
 
@@ -22,7 +22,17 @@ export const extractId = (...itemModes) => {
   if (itemWithId) return itemWithId.id
 }
 
-export const applyLoops = (updatedIds, loops) => {
+export const applyLoops = updates => {
+  // for (let normId of updates.keys()) {
+  //   for (let parentNormId of updates.get(normId).keys()) {
+  //     if (!parentNormId) continue
+  //     if (updates.has(parentNormId)) {
+  //       let graphLevel = g.graph.get(normId, )
+  //       let itemLevel = g.items.get(normId)
+  //       while(theEnd)
+  //     }
+  //   }
+  // }
   for (let id of loops.keys()) {
     const itemLoops = loops.get(id)
     for (let loop of itemLoops) {

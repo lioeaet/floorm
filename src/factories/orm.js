@@ -1,5 +1,5 @@
 import g from '*/global'
-import { normalizeId } from '*/utils'
+import { extractId, normalizeId } from '*/utils'
 // import { listenOrm, listenItem } from '*/utils/notifier'
 import { getItem } from '*/api/getItem'
 import { putItem } from '*/api/putItem'
@@ -20,7 +20,8 @@ const ormFactory = (desc, name) => {
       return g.items[normId]
     },
     remove: id => {},
-    put: (id, diff) => {
+    put: diff => {
+      const id = extractId(diff)
       const normId = normalizeId(name, id)
       const item = putItem(orm, normId, diff)
       return item
