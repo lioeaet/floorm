@@ -28,7 +28,5 @@ const child = {
 
 baseOrm.put(base)
 childOrm.put(child)
-console.log(base)
-console.log(child)
-
-
+console.log(baseOrm.get(base.id))
+console.log(childOrm.get(child.id))

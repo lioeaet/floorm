@@ -13,8 +13,7 @@ import {
   cloneMap,
   pathSet,
   pathGet,
-  theEnd,
-  theCount
+  theEnd
 } from '*/utils'
 
 const stack = []
@@ -180,8 +179,7 @@ const generateInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {}
 
 const generateDiff = (normId, graphLevel, parentLevel) => {
   for (let key in graphLevel) {
-    if (key === theCount) continue
-    else if (graphLevel[key] === theEnd) return g.items[normId]
+    if (graphLevel[key] === theEnd) return g.items[normId]
     else {
       const level = Array.isArray(parentLevel) ? [...parentLevel] : {}
       level[key] = generateDiff(normId, graphLevel[key], parentLevel[key])
@@ -192,8 +190,7 @@ const generateDiff = (normId, graphLevel, parentLevel) => {
 
 const setChildToParent = (normId, graphLevel, parentLevel) => {
   for (let key in graphLevel) {
-    if (key === theCount) continue
-    else if (key === theEnd) parentLevel[key] = g.items[normId]
+    if (key === theEnd) parentLevel[key] = g.items[normId]
     else setChildToParent(normId, graphLevel[key], parentLevel[key])
   }
 }

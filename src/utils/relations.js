@@ -1,7 +1,6 @@
 import g from '*/global'
 import { pathDecrement } from '*/utils/pathObj'
 
-export const theCount = Symbol('theCount')
 export const theEnd = Symbol('theEnd')
 
 export const relationsIncrement = (childNormId, parentNormId, stack) => {
@@ -14,7 +13,7 @@ export const relationsIncrement = (childNormId, parentNormId, stack) => {
     g.graph[childNormId] = {}
   }
   if (!g.graph[childNormId][parentNormId]) {
-    pathToChild = g.graph[childNormId][parentNormId] = { [theCount]: 1 }
+    pathToChild = g.graph[childNormId][parentNormId] = {}
   }
   else {
     pathToChild = g.graph[childNormId][parentNormId]
@@ -23,15 +22,13 @@ export const relationsIncrement = (childNormId, parentNormId, stack) => {
       if (pathToChild[key] === theEnd) return
       if (!pathToChild[key]) break
     }
-    pathToChild[theCount]++
   }
 
   for (let i = start; i < stack.length; i++) {
     const key = stack[i]
     if (i === stack.length - 1) pathToChild[key] = theEnd
     else {
-      if (pathToChild[key]) pathToChild[theCount]++
-      else pathToChild[key] = { [theCount]: 1 }
+      if (!pathToChild[key]) pathToChild[key] = {}
       pathToChild = pathToChild[key]
     }
   }
@@ -44,10 +41,6 @@ export const relationsDecrement = (childNormId, parentNormId, stack) => {
   const start = stack.indexOf(parentNormId) + 1
   let i = start
 
-  while(current[theCount] !== 1) {
-    current[theCount]--
-    current = current[stack[i++]]
-  }
   if (i === start) delete g.graph[parentNormId]
   else delete current[stack[i]]
 }

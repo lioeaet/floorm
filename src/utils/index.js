@@ -1,4 +1,5 @@
-import g, { theEnd } from '*/global'
+import g from '*/global'
+import { theEnd } from './relations'
 
 export const isOrm = inst => isPlainObject(inst) && g.descriptions.has(inst.normId)
 
@@ -23,35 +24,24 @@ export const extractId = (...itemModes) => {
 }
 
 export const applyLoops = updates => {
-  // for (let normId of updates.keys()) {
-  //   for (let parentNormId of updates.get(normId).keys()) {
-  //     if (!parentNormId) continue
-  //     if (updates.has(parentNormId)) {
-  //       let graphLevel = g.graph.get(normId, )
-  //       let itemLevel = g.items.get(normId)
-  //       while(theEnd)
-  //     }
-  //   }
-  // }
-  for (let id of loops.keys()) {
-    const itemLoops = loops.get(id)
-    for (let loop of itemLoops) {
-      const itemIndex = loop.findIndex(key => key === id)
-      let currentLevel = g.items[id]
-      let i = itemIndex + 1
+  for (let normId of updates.keys()) {
+    const item = g.items[normId]
+    const graphParents = g.graph[normId]
+    if (!graphParents) continue
 
-      while (i < loop.length) {
-        const key = loop[i++]
-        const nextKey = loop[i]
-        if (updatedIds.has(nextKey)) {
-          const childItem = g.items[nextKey]
-          currentLevel[key] = childItem
-          currentLevel = childItem
-          ++i
-        } 
-        else currentLevel = currentLevel[key]
-      }
+    for (let parentNormId of updates.get(normId).keys()) {
+      const graphLevel = graphParents[parentNormId]
+      if (!graphLevel) continue
+      for (let key in graphLevel) 
+        applyLoopToTheEnd(g.items[normId], g.items[parentNormId], graphLevel, key)
     }
+  }
+}
+
+const applyLoopToTheEnd = (item, parentLevel, graphLevel, key) => {
+  for (let key in graphLevel) {
+    if (graphLevel[key] === theEnd) parentLevel[key] = item
+    else applyLoopToTheEnd(item, parentLevel, graphLevel, key)
   }
 }
 
