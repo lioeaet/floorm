@@ -61,3 +61,26 @@ export const relationsUpdateArrayRemovedChilds = (
     relationsDecrement(normId, parentNormId, stack)
   }
 }
+
+export const applyLoops = updates => {
+  for (let normId of updates.keys()) {
+    const item = g.items[normId]
+    const graphParents = g.graph[normId]
+    if (!graphParents) continue
+
+    for (let parentNormId of updates.get(normId).keys()) {
+      const graphLevel = graphParents[parentNormId]
+      if (!graphLevel) continue
+      for (let key in graphLevel)
+        applyLoopToTheEnd(g.items[normId], g.items[parentNormId], graphLevel)
+    }
+  }
+}
+
+const applyLoopToTheEnd = (item, parentLevel, graphLevel) => {
+  // console.log(item, parentLevel, graphLevel, key)
+  for (let key in graphLevel) {
+    if (graphLevel[key] === theEnd) parentLevel[key] = item
+    else applyLoopToTheEnd(item, parentLevel[key], graphLevel[key])
+  }
+}

@@ -32,3 +32,4 @@ console.log(base)
 console.log(child)
 
 
+случай установления baseOrm через childOrm без прямого baseOrm.put вызов baseOrm.get

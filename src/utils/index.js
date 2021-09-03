@@ -1,5 +1,4 @@
 import g from '*/global'
-import { theEnd } from './relations'
 
 export const isOrm = inst => isPlainObject(inst) && g.descriptions.has(inst.normId)
 
@@ -21,28 +20,6 @@ export const extractId = (...itemModes) => {
     obj.hasOwnProperty('id')
   )
   if (itemWithId) return itemWithId.id
-}
-
-export const applyLoops = updates => {
-  for (let normId of updates.keys()) {
-    const item = g.items[normId]
-    const graphParents = g.graph[normId]
-    if (!graphParents) continue
-
-    for (let parentNormId of updates.get(normId).keys()) {
-      const graphLevel = graphParents[parentNormId]
-      if (!graphLevel) continue
-      for (let key in graphLevel) 
-        applyLoopToTheEnd(g.items[normId], g.items[parentNormId], graphLevel, key)
-    }
-  }
-}
-
-const applyLoopToTheEnd = (item, parentLevel, graphLevel, key) => {
-  for (let key in graphLevel) {
-    if (graphLevel[key] === theEnd) parentLevel[key] = item
-    else applyLoopToTheEnd(item, parentLevel, graphLevel, key)
-  }
 }
 
 // dev utils
