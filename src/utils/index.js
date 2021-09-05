@@ -42,6 +42,28 @@ export const cloneMapIds = map => {
   return r
 }
 
+export const cloneDeep = (inst, updates = new Map) => {
+  if (updates.has(inst)) return updates.get(inst)
+
+  if (isPlainObject(inst)) {
+    let clone = {}
+    updates.set(inst, clone)
+    for (let key in inst) {
+      clone[key] = cloneDeep(inst[key], updates)
+    }
+    return clone
+  }
+  if (Array.isArray(inst)) {
+    let clone = []
+    updates.set(inst, clone)
+    for (let i = 0; i < inst.length; i++) {
+      clone[i] = cloneDeep(inst[i], updates)
+    }
+    return clone
+  }
+  return inst
+}
+
 export * from './path'
 export * from './normalizeId'
 export * from './relations'

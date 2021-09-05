@@ -6,11 +6,7 @@ const baseOrm = orm(() => ({
 }), 'baseOrm')
 
 const childOrm = orm(() => ({
-  childBase: baseOrm,
-  childBaseArr: [baseOrm],
-  inner: {
-    another: baseOrm
-  }
+  childBase: baseOrm
 }), 'childOrm')
 
 const base = {
@@ -22,36 +18,12 @@ const base = {
 
 const child = {
   id: 1,
-  prop: 'prop',
-  childBase: {
-    id: 1,
-    basePropY: 'y'
-  },
-  childBaseArr: [{ id: 1, baseProp: 'x' }],
-  inner: {
-    another: {
-      id: 1,
-      baseInner: 'in'
-    }
-  }
+  childBase: { id: 1 },
 }
-// const child_2 = {
-//   childBase: []
-// }
 
 baseOrm.put(base)
-// baseOrm.put()
-
-childOrm.put(child)
+// childOrm.put(child)
 childOrm.put({
   id: 1,
-  childBase: {
-    id: 1,
-    prop: 'someZ'
-  }
+  childBase: { id: 2, baseProp: 'yz' }
 })
-
-console.log(baseOrm.get(base.id))
-
-// a: { b: { c: { prop1, prop2 } } }
-// UPDATE GRANDPA

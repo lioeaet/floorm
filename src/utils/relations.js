@@ -3,8 +3,9 @@ import { pathDecrement } from '*/utils/pathObj'
 
 export const theEnd = Symbol('theEnd')
 
-export const relationsIncrement = (childNormId, parentNormId, stack) => {
+export const addRelation = (childNormId, parentNormId, stack) => {
   if (!parentNormId) return
+
   let pathToChild
   const start = stack.indexOf(parentNormId) + 1
   // can't use just stack because parent can contain several childs 
@@ -34,15 +35,39 @@ export const relationsIncrement = (childNormId, parentNormId, stack) => {
   }
 }
 
-export const relationsDecrement = (childNormId, parentNormId, stack) => {
+export const removeRelation = (childNormId, parentNormId, stack) => {
   if (!parentNormId) return
 
-  let current = g.graph[childNormId][parentNormId]
-  const start = stack.indexOf(parentNormId) + 1
+  let current = g.graph[childNormId]
+  let removedKeyGraphLevel = current
+  let keyToRemove = parentNormId
+
+  const start = stack.indexOf(parentNormId)
   let i = start
 
-  if (i === start) delete g.graph[parentNormId]
-  else delete current[stack[i]]
+  for (let i = start; i < stack.length; i++) {
+    current = current[stack[i]]
+
+    if (current && Object.keys(current).length > 1) {
+      removedKeyGraphLevel = current
+      keyToRemove = stack[i + 1]
+    }
+  }
+
+  delete removedKeyGraphLevel[keyToRemove]
+}
+
+export const applyRelations = (addedRelations, removedRelations) => {
+  for (let normId in addedRelations) {
+    for (let parentNormId in addedRelations[normId]) {
+      addRelation(normId, parentNormId, addedRelations[normId][parentNormId])
+    }
+  }
+  for (let normId in removedRelations) {
+    for (let parentNormId in removedRelations[normId]) {
+      removeRelation(normId, parentNormId, removedRelations[normId][parentNormId])
+    }
+  }
 }
 
 export const relationsUpdateArrayRemovedChilds = (
@@ -58,7 +83,7 @@ export const relationsUpdateArrayRemovedChilds = (
 
   for (let normId of prevChilds.keys()) {
     if (nextChilds.has(normId)) continue
-    relationsDecrement(normId, parentNormId, stack)
+    removeRelation(normId, parentNormId, stack)
   }
 }
 
@@ -78,7 +103,6 @@ export const applyLoops = updates => {
 }
 
 const applyLoopToTheEnd = (item, parentLevel, graphLevel) => {
-  // console.log(item, parentLevel, graphLevel, key)
   for (let key in graphLevel) {
     if (graphLevel[key] === theEnd) parentLevel[key] = item
     else applyLoopToTheEnd(item, parentLevel[key], graphLevel[key])

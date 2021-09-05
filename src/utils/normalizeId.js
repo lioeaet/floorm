@@ -8,6 +8,6 @@ const normIds = {} // { category: { id: normId } }
 
 export const normalizeId = (category, id) => {
   const key = category + '-' + id
-  let normId = normIds[key] || (normIds[key] = Symbol(key))
+  let normId = normIds[key] || (normIds[key] = key/* Symbol(key) */)
   return normId
 }
