@@ -1,33 +1,31 @@
 import g from '*/global'
 import { pathDecrement } from '*/utils/pathObj'
 
-export const theEnd = Symbol('theEnd')
-
-export const addRelation = (childNormId, parentNormId, stack) => {
+export const addRelation = (normId, parentNormId, stack) => {
   if (!parentNormId) return
 
   let pathToChild
   const start = stack.indexOf(parentNormId) + 1
   // can't use just stack because parent can contain several childs 
   // ...and first path will rewrited by second
-  if (!g.graph[childNormId]) {
-    g.graph[childNormId] = {}
-  }
-  if (!g.graph[childNormId][parentNormId]) {
-    pathToChild = g.graph[childNormId][parentNormId] = {}
+  if (!g.graph[normId]) g.graph[normId] = {}
+
+  if (!g.graph[normId][parentNormId]) {
+    pathToChild = g.graph[normId][parentNormId] = {}
   }
   else {
-    pathToChild = g.graph[childNormId][parentNormId]
+    pathToChild = g.graph[normId][parentNormId]
+
     for (let i = start; i < stack.length; i++) {
       const key = stack[i]
-      if (pathToChild[key] === theEnd) return
+      if (pathToChild[key] === normId) return
       if (!pathToChild[key]) break
     }
   }
 
   for (let i = start; i < stack.length; i++) {
     const key = stack[i]
-    if (i === stack.length - 1) pathToChild[key] = theEnd
+    if (i === stack.length - 1) pathToChild[key] = normId
     else {
       if (!pathToChild[key]) pathToChild[key] = {}
       pathToChild = pathToChild[key]
@@ -35,17 +33,14 @@ export const addRelation = (childNormId, parentNormId, stack) => {
   }
 }
 
-export const removeRelation = (childNormId, parentNormId, stack) => {
+export const removeRelation = (normId, parentNormId, stack) => {
   if (!parentNormId) return
 
-  let current = g.graph[childNormId]
+  let current = g.graph[normId]
   let removedKeyGraphLevel = current
   let keyToRemove = parentNormId
 
-  const start = stack.indexOf(parentNormId)
-  let i = start
-
-  for (let i = start; i < stack.length; i++) {
+  for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     current = current[stack[i]]
 
     if (current && Object.keys(current).length > 1) {
@@ -57,17 +52,14 @@ export const removeRelation = (childNormId, parentNormId, stack) => {
   delete removedKeyGraphLevel[keyToRemove]
 }
 
-export const applyRelations = (addedRelations, removedRelations) => {
-  for (let normId in addedRelations) {
-    for (let parentNormId in addedRelations[normId]) {
-      addRelation(normId, parentNormId, addedRelations[normId][parentNormId])
-    }
-  }
-  for (let normId in removedRelations) {
-    for (let parentNormId in removedRelations[normId]) {
+export const applyRelations = (removedRelations, addedRelations) => {
+  for (let normId in removedRelations) 
+    for (let parentNormId in removedRelations[normId])
       removeRelation(normId, parentNormId, removedRelations[normId][parentNormId])
-    }
-  }
+
+  for (let normId in addedRelations)
+    for (let parentNormId in addedRelations[normId])
+      addRelation(normId, parentNormId, addedRelations[normId][parentNormId])
 }
 
 export const relationsUpdateArrayRemovedChilds = (
@@ -89,7 +81,6 @@ export const relationsUpdateArrayRemovedChilds = (
 
 export const applyLoops = updates => {
   for (let normId of updates.keys()) {
-    const item = g.items[normId]
     const graphParents = g.graph[normId]
     if (!graphParents) continue
 
@@ -97,14 +88,14 @@ export const applyLoops = updates => {
       const graphLevel = graphParents[parentNormId]
       if (!graphLevel) continue
       for (let key in graphLevel)
-        applyLoopToTheEnd(g.items[normId], g.items[parentNormId], graphLevel)
+        applyLoopToTheEnd(normId, g.items[parentNormId], graphLevel)
     }
   }
 }
 
-const applyLoopToTheEnd = (item, parentLevel, graphLevel) => {
+const applyLoopToTheEnd = (normId, parentLevel, graphLevel) => {
   for (let key in graphLevel) {
-    if (graphLevel[key] === theEnd) parentLevel[key] = item
-    else applyLoopToTheEnd(item, parentLevel[key], graphLevel[key])
+    if (graphLevel[key] === normId) parentLevel[key] = g.items[normId]
+    else applyLoopToTheEnd(normId, parentLevel[key], graphLevel[key])
   }
 }
