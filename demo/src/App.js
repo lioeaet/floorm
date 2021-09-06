@@ -22,8 +22,8 @@ const child = {
 }
 
 baseOrm.put(base)
-// childOrm.put(child)
+childOrm.put(child)
 childOrm.put({
   id: 1,
-  childBase: { id: 2, baseProp: 'yz' }
+  childBase: { id: 5, baseProp: 'yz' }
 })
