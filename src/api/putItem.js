@@ -111,23 +111,45 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
   }
 
   if (Array.isArray(diff)) {
-    // установить id для массивов в extractId
-    // случай массива массивов говорит, что это невозможно при изменении вложенных orm
+    // todo: someth
     if (Array.isArray(desc)) {
       const childOrm = desc[0]
+      const prevChilds = g.arrayChilds.get(inst) || new Map
       const nextChilds = new Map
 
       diff.forEach((childDiff, i) => {
-        const id = extractId(childDiff)
-        const childNormId = normalizeId(childOrm.name, id)
-        nextChilds.set(childNormId, true)
+        const childId = extractId(childDiff)
+        const childNormId = normalizeId(childOrm.name, childId)
+        const prevI = prevChilds.get(childNormId)
 
+        nextChilds.set(childNormId, i)
         stack.push(i)
+
+        if (parentNormId && inst && prevI !== i) {
+          const prevINormId = normalizeId(childOrm.name, extractId(inst[i]))
+          const stackClone = [...stack]
+
+          pathSet(removedRelations, prevINormId, parentNormId)(stackClone)
+          pathSet(addedRelations, childNormId, parentNormId)(stackClone)
+        }
+
         nextInst[i] = mergeItem(childOrm, childNormId, childDiff, parentNormId)
         stack.pop()
       })
-      // pathSet here
-      // relationsUpdateArrayRemovedChilds(inst, nextInst, nextChilds, parentNormId, stack)
+
+      if (parentNormId) {
+        if (inst && inst.length > diff.length) {
+          for (let i = diff.length; i < inst.length; i++) {
+            const childNormId = normalizeId(childOrm.name, extractId(inst[i]))
+
+            pathSet(removedRelations, childNormId, parentNormId)([...stack, i])
+          }
+        }
+      }
+
+      g.arrayChilds.delete(inst)
+      g.arrayChilds.set(nextInst, nextChilds)
+
       return nextInst
     }
     else diff.forEach((item, i) => (nextInst[i] = item))

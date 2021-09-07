@@ -6,8 +6,8 @@ export const addRelation = (normId, parentNormId, stack) => {
 
   let pathToChild
   const start = stack.indexOf(parentNormId) + 1
-  // can't use just stack because parent can contain several childs 
-  // ...and first path will rewrited by second
+  // Can't use just stack because parent can contain child several times
+  // and first path will rewrited by second
   if (!g.graph[normId]) g.graph[normId] = {}
 
   if (!g.graph[normId][parentNormId]) {
@@ -44,7 +44,7 @@ export const removeRelation = (normId, parentNormId, stack) => {
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     current = current[stack[i]]
 
-    if (current && Object.keys(current).length > 1) {
+    if (current && typeof current !== 'string' && Object.keys(current).length > 1) {
       removedKeyGraphLevel = current
       keyToRemove = stack[i + 1]
     }
