@@ -1,6 +1,37 @@
 import g from '*/global'
 import { pathDecrement } from '*/utils/pathObj'
 
+export const applyRelations = (removedRelations, addedRelations) => {
+  for (let normId in removedRelations)
+    for (let parentNormId in removedRelations[normId])
+      for (let i = 0; i < removedRelations[normId][parentNormId].length; i++)
+        removeRelation(normId, parentNormId, removedRelations[normId][parentNormId][i])
+
+  for (let normId in addedRelations)
+    for (let parentNormId in addedRelations[normId])
+      for (let i = 0; i < addedRelations[normId][parentNormId].length; i++)
+        addRelation(normId, parentNormId, addedRelations[normId][parentNormId][i])
+}
+
+export const removeRelation = (normId, parentNormId, stack) => {
+  if (!parentNormId) return
+
+  let current = g.graph[normId]
+  let removedKeyGraphLevel = current
+  let keyToRemove = parentNormId
+
+  for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
+    current = current[stack[i]]
+
+    if (current && typeof current !== 'string' && Object.keys(current).length > 1) {
+      removedKeyGraphLevel = current
+      keyToRemove = stack[i + 1]
+    }
+  }
+
+  delete removedKeyGraphLevel[keyToRemove]
+}
+
 export const addRelation = (normId, parentNormId, stack) => {
   if (!parentNormId) return
 
@@ -34,69 +65,8 @@ export const addRelation = (normId, parentNormId, stack) => {
   }
 }
 
-export const removeRelation = (normId, parentNormId, stack) => {
-  if (!parentNormId) return
-
-  let current = g.graph[normId]
-  let removedKeyGraphLevel = current
-  let keyToRemove = parentNormId
-
-  for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
-    current = current[stack[i]]
-
-    if (current && typeof current !== 'string' && Object.keys(current).length > 1) {
-      removedKeyGraphLevel = current
-      keyToRemove = stack[i + 1]
-    }
-  }
-
-  delete removedKeyGraphLevel[keyToRemove]
-}
-
-export const applyRelations = (removedRelations, addedRelations) => {
-  for (let normId in removedRelations) 
-    for (let parentNormId in removedRelations[normId])
-      removeRelation(normId, parentNormId, removedRelations[normId][parentNormId])
-
-  for (let normId in addedRelations)
-    for (let parentNormId in addedRelations[normId])
-      addRelation(normId, parentNormId, addedRelations[normId][parentNormId])
-}
-
-export const relationsUpdateArrayRemovedChilds = (
-  prevArray,
-  nextArray,
-  nextChilds,
-  parentNormId,
-  stack
-) => {
-  const prevChilds = g.arrayChilds.get(prevArray)
-  g.arrayChilds.set(nextArray, nextChilds)
-  if (!prevChilds) return
-
-  for (let normId of prevChilds.keys()) {
-    if (nextChilds.has(normId)) continue
-    removeRelation(normId, parentNormId, stack)
-  }
-}
-
-export const applyLoops = updates => {
-  for (let normId of updates.keys()) {
-    const graphParents = g.graph[normId]
-    if (!graphParents) continue
-
-    for (let parentNormId of updates.get(normId).keys()) {
-      const graphLevel = graphParents[parentNormId]
-      if (!graphLevel) continue
-      for (let key in graphLevel)
-        applyLoopToTheEnd(normId, g.items[parentNormId], graphLevel)
-    }
-  }
-}
-
-const applyLoopToTheEnd = (normId, parentLevel, graphLevel) => {
-  for (let key in graphLevel) {
-    if (graphLevel[key] === normId) parentLevel[key] = g.items[normId]
-    else applyLoopToTheEnd(normId, parentLevel[key], graphLevel[key])
-  }
+export const prepareRelation = (relations, normId, parentNormId, stack) => {
+  const itemRelations = relations[normId] || (relations[normId] = {})
+  const itemParentRelations = itemRelations[parentNormId] || (itemRelations[parentNormId] = [])
+  itemParentRelations.push(stack)
 }

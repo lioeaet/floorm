@@ -3,7 +3,7 @@ import {
   notify,
   normalizeId,
   extractId,
-  relationsUpdateArrayRemovedChilds,
+  // relationsUpdateArrayRemovedChilds,
   isOrm,
   isPlainObject,
 } from '*/utils'
@@ -89,12 +89,12 @@ const mergeRemoving = (desc, level, normId, parentNormId) => {
       return false
     })
     if (wasRemovedItem) {
-      relationsUpdateArrayRemovedChilds(
-        level,
-        filteredItem,
-        nextChilds,
-        parentNormId
-      )
+      // relationsUpdateArrayRemovedChilds(
+      //   level,
+      //   filteredItem,
+      //   nextChilds,
+      //   parentNormId
+      // )
       return filteredItem
     }
   }

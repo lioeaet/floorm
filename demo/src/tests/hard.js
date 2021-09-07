@@ -39,7 +39,7 @@ const child = {
 //   childBase: []
 // }
 
-// baseOrm.put(base)
+baseOrm.put(base)
 // baseOrm.put()
 
 childOrm.put(child)
@@ -52,8 +52,6 @@ childOrm.put({
   childBaseArr: [{ id: 2, baseProp: 'yz' }, { id: 1, baseProp: 'x' }]
 })
 // childOrm.put(child_2)
-
-console.log(baseOrm.get(base.id), childOrm.get(1))
 
 // a: { b: { c: { prop1, prop2 } } }
 // UPDATE GRANDPA

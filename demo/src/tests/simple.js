@@ -22,14 +22,9 @@ const child = {
   childProp: 'childProp',
   childBase: {
     id: 1,
-    basePropReceivedFromChildStart: 'basePropReceivedFromChildStart'
+    x: 'y'
   }
 }
 
 baseOrm.put(base)
 childOrm.put(child)
-console.log(base)
-console.log(child)
-
-
-случай установления baseOrm через childOrm без прямого baseOrm.put вызов baseOrm.get

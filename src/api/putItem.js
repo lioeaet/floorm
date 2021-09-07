@@ -2,9 +2,8 @@ import g from '*/global'
 import {
   normalizeId,
   extractId,
-  relationsUpdateArrayRemovedChilds,
+  prepareRelation,
   applyRelations,
-  applyLoops,
   isOrm,
   resolveDiff,
   isPlainObject,
@@ -15,14 +14,11 @@ import {
   cloneDeep
 } from '*/utils'
 import {
-  pathSet
+  pathSet,
+  pathGet
 } from '*/utils/pathObj'
 
 const stack = []
-
-// if (Object.keys(graphRoadEnd[key]) > 1) graphRoadStart = graphRoadEnd, graphRoadKey = key
-let graphRoadKey = null
-let graphRoadStart = null
 
 let updates = new Map // { normId: parentNormId: true }
 let addedRelations = {} // { normId: parentNormId: stack }
@@ -37,7 +33,6 @@ export const putItem = (orm, normId, diff) => {
   mergeItem(orm, normId, diff)
   updateParents(updates)
   applyRelations(removedRelations, addedRelations)
-  applyLoops(updates)
   notify(updates)
 
   return g.items[normId]
@@ -49,7 +44,7 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   g.ormsByNormId[normId] = orm
 
   if (normId && parentNormId)
-    pathSet(addedRelations, normId, parentNormId)([...stack])
+    prepareRelation(addedRelations, normId, parentNormId, [...stack])
 
   if (updates.get(normId) && !pathGetMap(updates, normId, parentNormId))
     return g.items[normId]
@@ -81,7 +76,7 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
     if (prevId && id !== prevId) {
       const prevNormId = normalizeId(desc.name, prevId)
       if (prevNormId && parentNormId)
-        pathSet(removedRelations, prevNormId, parentNormId)(stack)
+        prepareRelation(removedRelations, prevNormId, parentNormId, [...stack])
     }
 
     return mergeItem(desc, normId, diff, parentNormId)
@@ -117,7 +112,8 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
       const prevChilds = g.arrayChilds.get(inst) || new Map
       const nextChilds = new Map
 
-      diff.forEach((childDiff, i) => {
+      for (let i = 0; i < diff.length; i++) {
+        const childDiff = diff[i]
         const childId = extractId(childDiff)
         const childNormId = normalizeId(childOrm.name, childId)
         const prevI = prevChilds.get(childNormId)
@@ -129,20 +125,19 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
           const prevINormId = normalizeId(childOrm.name, extractId(inst[i]))
           const stackClone = [...stack]
 
-          pathSet(removedRelations, prevINormId, parentNormId)(stackClone)
-          pathSet(addedRelations, childNormId, parentNormId)(stackClone)
+          prepareRelation(removedRelations, prevINormId, parentNormId, stackClone)
         }
 
         nextInst[i] = mergeItem(childOrm, childNormId, childDiff, parentNormId)
         stack.pop()
-      })
+      }
 
       if (parentNormId) {
         if (inst && inst.length > diff.length) {
           for (let i = diff.length; i < inst.length; i++) {
             const childNormId = normalizeId(childOrm.name, extractId(inst[i]))
 
-            pathSet(removedRelations, childNormId, parentNormId)([...stack, i])
+            prepareRelation(removedRelations, childNormId, parentNormId, [...stack, i])
           }
         }
       }

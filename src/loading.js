@@ -4,7 +4,7 @@ import g from '*/global'
 import { putItem } from '*/api/putItem'
 import ormFactory from '*/factories/orm'
 
-const LOADING_ORM = ormFactory()
+const LOADING_ORM = 'bla' //ormFactory()
 export const LOADING_NORM_ID = LOADING_ORM.normId
 
 export const actualizeLoading = () => {
