@@ -3,11 +3,11 @@ export default () => <div />
 
 const baseOrm = orm(() => ({
   baseChild: childOrm
-}), 'baseOrm')
+}), 'base')
 
 const childOrm = orm(() => ({
   childBase: baseOrm,
-}), 'childOrm')
+}), 'child')
 
 const base = {
   id: 1,

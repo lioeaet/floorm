@@ -1,13 +1,9 @@
 const g = {
-  suspensePromises: new Map, // { normId: promise }
-  ormsByNormId: {}, // { normId: orm }
   items: {}, // { normId: item }
-  fetchedAt: new Map, // { normId: dateMs }
-  arrayChilds: new Map, // { array: { normId: true } }
-  refetchingPromises: new Map, // { normId: promise }
-  descriptions: withDescriptionResolver(new Map), // { orm: desc }
-
   graph: {}, // { childNormId: { parentNormId: { {...pathToChild}: true } } }
+  ormsByNormId: {}, // { normId: orm }
+  descriptions: withDescriptionResolver(new Map), // { orm: desc }
+  arrChilds: new Map, // { array: { normId: true } }
 }
 
 export default g

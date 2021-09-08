@@ -9,8 +9,6 @@ import {
   isPlainObject,
   notify,
   cloneMap,
-  pathSet as pathSetMap,
-  pathGet as pathGetMap,
   cloneDeep
 } from '*/utils'
 import {
@@ -20,13 +18,13 @@ import {
 
 const stack = []
 
-let updates = new Map // { normId: parentNormId: true }
+let updates = {} // { normId: parentNormId: true }
 let addedRelations = {} // { normId: parentNormId: stack }
 let removedRelations = {} // { normId: parentNormId: stack }
 
 export const putItem = (orm, normId, diff) => {
   diff = resolveDiff(diff, g.items[normId])
-  updates = new Map
+  updates = {}
   addedRelations = {}
   removedRelations = {}
 
@@ -46,16 +44,16 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   if (normId && parentNormId)
     prepareRelation(addedRelations, normId, parentNormId, [...stack])
 
-  if (updates.get(normId) && !pathGetMap(updates, normId, parentNormId))
+  if (updates[normId] && !pathGet(updates, normId, parentNormId))
     return g.items[normId]
 
   if (diff === item) return item
 
-  const nextItem = updates.has(normId) ? g.items[normId] : generateInst(diff)
+  const nextItem = updates[normId] ? g.items[normId] : generateInst(diff)
   const desc = g.descriptions.get(orm.normId)
 
   g.items[normId] = nextItem
-  pathSetMap(updates, normId, parentNormId)(true)
+  pathSet(updates, normId, parentNormId)(true)
 
   stack.push(normId)
   merge(desc, item, diff, normId, nextItem)
@@ -106,44 +104,42 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
   }
 
   if (Array.isArray(diff)) {
-    // todo: someth
     if (Array.isArray(desc)) {
       const childOrm = desc[0]
-      const prevChilds = g.arrayChilds.get(inst) || new Map
-      const nextChilds = new Map
+      const prevChilds = g.arrChilds.get(inst) || {}
+      const nextChilds = {}
 
       for (let i = 0; i < diff.length; i++) {
         const childDiff = diff[i]
-        const childId = extractId(childDiff)
-        const childNormId = normalizeId(childOrm.name, childId)
-        const prevI = prevChilds.get(childNormId)
+        const childNormId = normalizeId(childOrm.name, extractId(childDiff))
+        const prevChildPlaces = prevChilds[childNormId] || {}
+        const childPlaces = nextChilds[childNormId] || {}
 
-        nextChilds.set(childNormId, i)
+        childPlaces[i] = true
+        nextChilds[childNormId] = childPlaces
         stack.push(i)
 
-        if (parentNormId && inst && prevI !== i) {
-          const prevINormId = normalizeId(childOrm.name, extractId(inst[i]))
+        if (inst && !prevChildPlaces[i]) {
+          const placePrevNormId = normalizeId(childOrm.name, extractId(inst[i]))
           const stackClone = [...stack]
 
-          prepareRelation(removedRelations, prevINormId, parentNormId, stackClone)
+          prepareRelation(removedRelations, placePrevNormId, parentNormId, stackClone)
         }
 
         nextInst[i] = mergeItem(childOrm, childNormId, childDiff, parentNormId)
         stack.pop()
       }
 
-      if (parentNormId) {
-        if (inst && inst.length > diff.length) {
-          for (let i = diff.length; i < inst.length; i++) {
-            const childNormId = normalizeId(childOrm.name, extractId(inst[i]))
+      if (inst && inst.length > diff.length) {
+        for (let i = diff.length; i < inst.length; i++) {
+          const childNormId = normalizeId(childOrm.name, extractId(inst[i]))
 
-            prepareRelation(removedRelations, childNormId, parentNormId, [...stack, i])
-          }
+          prepareRelation(removedRelations, childNormId, parentNormId, [...stack, i])
         }
       }
 
-      g.arrayChilds.delete(inst)
-      g.arrayChilds.set(nextInst, nextChilds)
+      g.arrChilds.delete(inst)
+      g.arrChilds.set(nextInst, nextChilds)
 
       return nextInst
     }
@@ -154,23 +150,23 @@ const merge = (desc, inst, diff, parentNormId, nextInst) => {
 }
 
 const updateParents = () => {
-  for (let normId of updates.keys()) {
+  for (let normId in updates) {
     const parents = g.graph[normId]
     if (!parents) continue
 
     for (let parentNormId in parents) {
-      if (updates.has(normId) && updates.get(normId).has(parentNormId))
+      if (updates[normId] && updates[normId][parentNormId])
         continue
 
       const parentOrm = g.ormsByNormId[parentNormId]
 
-      if (updates.has(parentNormId)) {
-        updates.get(normId).get(parentNormId)
+      if (updates[parentNormId]) {
+        updates[normId][parentNormId]
         setChildToParent(normId, g.graph[normId][parentNormId], g.items[parentNormId])
-        pathSetMap(updates, normId, parentNormId)(true)
+        pathSet(updates, normId, parentNormId)(true)
       }
       else {
-        const diff = generateDiff(normId, g.graph[normId][parentNormId], g.items[parentNormId])
+        const diff = generateParentDiff(normId, g.graph[normId][parentNormId], g.items[parentNormId])
         mergeItem(parentOrm, parentNormId, diff)
       }
     }
@@ -179,13 +175,14 @@ const updateParents = () => {
 
 const generateInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {} : diff
 
-const generateDiff = (normId, parentGraphLevel, parentLevel) => {
+const generateParentDiff = (normId, parentGraphLevel, parentLevel) => {
   const diff = Array.isArray(parentLevel) ? [...parentLevel] : {}
 
   for (let key in parentGraphLevel) {
+
     diff[key] = parentGraphLevel[key] === normId
       ? g.items[normId]
-      : generateDiff(normId, parentGraphLevel[key], diff[key])
+      : generateParentDiff(normId, parentGraphLevel[key], parentLevel[key])
 
     return diff
   }

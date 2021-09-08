@@ -28,7 +28,6 @@ export const removeRelation = (normId, parentNormId, stack) => {
       keyToRemove = stack[i + 1]
     }
   }
-
   delete removedKeyGraphLevel[keyToRemove]
 }
 
@@ -49,7 +48,6 @@ export const addRelation = (normId, parentNormId, stack) => {
 
     for (let i = start; i < stack.length; i++) {
       const key = stack[i]
-
       if (pathToChild[key] === normId) return
       if (!pathToChild[key]) break
     }
