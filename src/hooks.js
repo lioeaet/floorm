@@ -36,7 +36,6 @@ const useListener = (normId, setState) => {
   useEffect(
     () => {
       const listener = () => {
-        if (normId === 9) console.log(getState(normId))
         setState(getState(normId))
       }
       if (initState !== getState(normId)) listener()

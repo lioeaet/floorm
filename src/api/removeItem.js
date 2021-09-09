@@ -22,7 +22,7 @@ const removeItem = normId => {
     updatedIds.set(parentNormId, true)
     const parent = getItem(parentNormId)
     const parentOrm = g.ormsByNormId[parentNormId]
-    const parentDesc = g.descriptions.get(parentOrm.normId)
+    const parentDesc = g.descriptions[parentOrm.normId]()
 
     let nextParent
     if (isPlainObject(parentDesc)) {

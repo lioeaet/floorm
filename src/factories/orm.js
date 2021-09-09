@@ -7,10 +7,10 @@ import { putItem } from '*/api/putItem'
 const listenItem = ''; const listenOrm = '';
 
 const ormFactory = (desc, name) => {
-  if (!desc) desc = {}
+  if (!desc) desc = () => ({})
 
   const normId = normalizeId('orm', name)
-  g.descriptions.set(normId, desc)
+  g.descriptions[normId] = desc
 
   const orm = {
     normId,

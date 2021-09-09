@@ -35,8 +35,6 @@ export const putItem = (orm, normId, diff) => {
   return g.items[normId]
 }
 
-console.log(g.items)
-
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
 
@@ -51,7 +49,7 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   if (diff === item) return item
 
   const nextItem = updates[normId] ? g.items[normId] : generateInst(diff)
-  const desc = g.descriptions.get(orm.normId)
+  const desc = g.descriptions[orm.normId]()
 
   g.items[normId] = nextItem
   pathSet(updates, normId, parentNormId)(true)
@@ -185,6 +183,7 @@ const generateParentDiff = (normId, parentGraphLevel, parentLevel) => {
       ? g.items[normId]
       : generateParentDiff(normId, parentGraphLevel[key], parentLevel[key])
 
+  console.log(normId, parentGraphLevel, parentLevel, diff)
   return diff
 }
 

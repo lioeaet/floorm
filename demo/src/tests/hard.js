@@ -13,14 +13,14 @@ const childOrm = orm(() => ({
   }
 }), 'child')
 
-const base = {
+baseOrm.put({
   id: 1,
   baseChild: {
     id: 1
   }
-}
+})
 
-const child = {
+childOrm.put({
   id: 1,
   prop: 'prop',
   childBase: {
@@ -31,14 +31,10 @@ const child = {
   childInner: {
     childBaseInner: {
       id: 1,
-      baseInner: 'iner'
+      baseInner: 'inner'
     }
   }
-}
-
-baseOrm.put(base)
-
-childOrm.put(child)
+})
 
 childOrm.put({
   id: 1,
@@ -50,4 +46,5 @@ childOrm.put({
 })
 
 baseOrm.put({ id: 3, awdino: 'las' })
+
 baseOrm.put({ id: 2, awdino: 'als' })

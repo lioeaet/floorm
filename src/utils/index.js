@@ -1,6 +1,6 @@
 import g from '*/global'
 
-export const isOrm = inst => isPlainObject(inst) && g.descriptions.has(inst.normId)
+export const isOrm = inst => inst && g.descriptions[inst.normId]
 
 export const isPlainObject = inst =>
   inst && Object.getPrototypeOf(inst) === Object.getPrototypeOf({})
