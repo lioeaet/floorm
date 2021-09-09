@@ -29,8 +29,8 @@ export const putItem = (orm, normId, diff) => {
   removedRelations = {}
 
   mergeItem(orm, normId, diff)
-  updateParents(updates)
   applyRelations(removedRelations, addedRelations)
+  updateParents(updates)
   notify(updates)
 
   return g.items[normId]
@@ -179,11 +179,9 @@ const generateParentDiff = (normId, parentGraphLevel, parentLevel) => {
   const diff = Array.isArray(parentLevel) ? [...parentLevel] : {}
 
   for (let key in parentGraphLevel) {
-
     diff[key] = parentGraphLevel[key] === normId
       ? g.items[normId]
       : generateParentDiff(normId, parentGraphLevel[key], parentLevel[key])
-
     return diff
   }
 }
