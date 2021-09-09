@@ -8,8 +8,7 @@ import {
   resolveDiff,
   isPlainObject,
   notify,
-  cloneMap,
-  cloneDeep
+  clone,
 } from '*/utils'
 import {
   pathSet,
@@ -29,12 +28,14 @@ export const putItem = (orm, normId, diff) => {
   removedRelations = {}
 
   mergeItem(orm, normId, diff)
-  applyRelations(removedRelations, addedRelations)
   updateParents(updates)
+  applyRelations(removedRelations, addedRelations)
   notify(updates)
 
   return g.items[normId]
 }
+
+console.log(g.items)
 
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
@@ -176,19 +177,22 @@ const updateParents = () => {
 const generateInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {} : diff
 
 const generateParentDiff = (normId, parentGraphLevel, parentLevel) => {
-  const diff = Array.isArray(parentLevel) ? [...parentLevel] : {}
+  const isArray = Array.isArray(parentLevel)
+  const diff = isArray ? [...parentLevel] : {}
 
-  for (let key in parentGraphLevel) {
+  for (let key in parentGraphLevel)
     diff[key] = parentGraphLevel[key] === normId
       ? g.items[normId]
       : generateParentDiff(normId, parentGraphLevel[key], parentLevel[key])
-    return diff
-  }
+
+  return diff
 }
 
 const setChildToParent = (normId, graphLevel, parentLevel) => {
   for (let key in graphLevel) {
     if (graphLevel[key] === normId) parentLevel[key] = g.items[normId]
-    else setChildToParent(normId, graphLevel[key], parentLevel[key])
+    else {
+      setChildToParent(normId, graphLevel[key], parentLevel[key])
+    }
   }
 }

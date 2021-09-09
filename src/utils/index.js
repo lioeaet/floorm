@@ -42,24 +42,24 @@ export const cloneMapIds = map => {
   return r
 }
 
-export const cloneDeep = (inst, clones = {}) => {
-  if (clones.has(inst)) return clones[inst]
+export const clone = (inst, clones = new Map) => {
+  if (clones.has(inst)) return clones.get(inst)
 
   if (isPlainObject(inst)) {
-    let clone = {}
-    clones.set(inst, clone)
+    let x = {}
+    clones.set(inst, x)
     for (let key in inst) {
-      clone[key] = cloneDeep(inst[key], clones)
+      x[key] = clone(inst[key], clones)
     }
-    return clone
+    return x
   }
   if (Array.isArray(inst)) {
-    let clone = []
-    clones.set(inst, clone)
+    let x = []
+    clones.set(inst, x)
     for (let i = 0; i < inst.length; i++) {
-      clone[i] = cloneDeep(inst[i], clones)
+      x[i] = clone(inst[i], clones)
     }
-    return clone
+    return x
   }
   return inst
 }

@@ -16,4 +16,3 @@ function withDescriptionResolver(map) {
   }
   return map
 }
-console.log(g)
