@@ -10,7 +10,7 @@ const ormFactory = (desc, name) => {
   if (!desc) desc = () => ({})
 
   const normId = normalizeId('orm', name)
-  g.descriptions[normId] = desc
+  g.descFuncs[normId] = desc
 
   const orm = {
     normId,

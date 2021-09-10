@@ -2,8 +2,8 @@ const g = {
   items: {}, // { normId: item }
   graph: {}, // { childNormId: { parentNormId: { {...pathToChild}: true } } }
   ormsByNormId: {}, // { normId: orm }
-  descriptions: {}, // { ormNormId: desc }
+  descFuncs: {}, // { ormNormId: descFunc }
   arrChilds: new Map, // { array: { normId: true } }
 }
-console.log(g.items)
+console.log(g)
 export default g
