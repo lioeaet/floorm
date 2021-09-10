@@ -164,8 +164,8 @@ const updateParents = () => {
         mergeItem(parentOrm, parentNormId, diff)
         updateParents()
       }
-      const wayFromChild = g.graph[parentNormId] && g.graph[parentNormId][normId]
-      if (wayFromChild) setChildToParent(parentNormId, normId, wayFromChild, g.items[normId])
+      const graph = g.graph[parentNormId] && g.graph[parentNormId][normId]
+      if (graph) setChildToParent(parentNormId, normId, graph, g.items[normId])
     }
   }
 }
