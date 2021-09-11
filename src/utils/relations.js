@@ -1,70 +1,44 @@
 import g from '*/global'
-import { pathDecrement } from '*/utils/pathObj'
 
-export const applyRelations = (removedRelations, addedRelations) => {
-  for (let normId in removedRelations)
-    for (let parentNormId in removedRelations[normId])
-      for (let i = 0; i < removedRelations[normId][parentNormId].length; i++)
-        removeRelation(normId, parentNormId, removedRelations[normId][parentNormId][i])
+// Can't use just stack because parent can contain child several times
+// and first way will rewrited by second
+export const addRelation = (graph, normId, parentNormId, stack) => {
+  if (!graph[normId]) graph[normId] = {}
+  if (!parentNormId) return
+  let way = graph[normId]
 
-  for (let normId in addedRelations)
-    for (let parentNormId in addedRelations[normId])
-      for (let i = 0; i < addedRelations[normId][parentNormId].length; i++)
-        addRelation(normId, parentNormId, addedRelations[normId][parentNormId][i])
+  for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
+    const key = stack[i]
+    if (i === stack.length - 1) way[key] = normId
+    else way = way[key] || (way[key] = {})
+  }
 }
 
-export const removeRelation = (normId, parentNormId, stack) => {
+export const removeRelation = (graph, normId, parentNormId, stack) => {
   if (!parentNormId) return
 
   let current = g.graph[normId]
-  let removedKeyGraphLevel = current
-  let keyToRemove = parentNormId
+  let graphLevel = current
+  let key = parentNormId
 
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     current = current[stack[i]]
-
-    if (current && typeof current !== 'string' && Object.keys(current).length > 1) {
-      removedKeyGraphLevel = current
-      keyToRemove = stack[i + 1]
+    if (current && Object.keys(current).length > 1 && current !== normId) {
+      graphLevel = current
+      key = stack[i + 1]
     }
   }
-  delete removedKeyGraphLevel[keyToRemove]
+  delete graphLevel[key]
 }
 
-export const addRelation = (normId, parentNormId, stack) => {
-  if (!parentNormId) return
+export const hasRelation = (graph, normId, parentNormId, stack) => {
+  if (!parentNormId || !graph[normId]) return false
+  let way = graph[normId]
 
-  let pathToChild
-  const start = stack.indexOf(parentNormId) + 1
-  // Can't use just stack because parent can contain child several times
-  // and first path will rewrited by second
-  if (!g.graph[normId]) g.graph[normId] = {}
-
-  if (!g.graph[normId][parentNormId]) {
-    pathToChild = g.graph[normId][parentNormId] = {}
-  }
-  else {
-    pathToChild = g.graph[normId][parentNormId]
-
-    for (let i = start; i < stack.length; i++) {
-      const key = stack[i]
-      if (pathToChild[key] === normId) return
-      if (!pathToChild[key]) break
-    }
-  }
-
-  for (let i = start; i < stack.length; i++) {
+  for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     const key = stack[i]
-    if (i === stack.length - 1) pathToChild[key] = normId
-    else {
-      if (!pathToChild[key]) pathToChild[key] = {}
-      pathToChild = pathToChild[key]
-    }
+    if (way[key]) way = way[key]
+    else break
   }
-}
-
-export const prepareRelation = (relations, normId, parentNormId, stack) => {
-  const itemRelations = relations[normId] || (relations[normId] = {})
-  const itemParentRelations = itemRelations[parentNormId] || (itemRelations[parentNormId] = [])
-  itemParentRelations.push(stack)
+  return way === normId
 }

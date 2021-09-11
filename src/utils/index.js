@@ -5,9 +5,6 @@ export const isOrm = inst => inst && g.descFuncs[inst.normId]
 export const isPlainObject = inst =>
   inst && Object.getPrototypeOf(inst) === Object.getPrototypeOf({})
 
-export const resolveDiff = (diff, level) =>
-  typeof diff === 'function' ? diff(level) : diff
-
 export const isPromise = inst => inst && typeof inst.then === 'function'
 
 export const isFunction = inst => typeof inst === 'function'

@@ -8,7 +8,7 @@ const baseOrm = orm(() => ({
 const childOrm = orm(() => ({
   childBase: baseOrm,
   childBaseArr: [baseOrm],
-  inner: {
+  childInner: {
     childBaseInner: baseOrm
   }
 }), 'child')
