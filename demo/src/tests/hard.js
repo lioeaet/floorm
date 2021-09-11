@@ -2,14 +2,17 @@ import { orm } from '*'
 export default () => <div />
 
 const baseOrm = orm(() => ({
-  baseChild: childOrm
+  baseChild: childOrm,
+  baseBaseArr: [baseOrm]
 }), 'base')
 
 const childOrm = orm(() => ({
   childBase: baseOrm,
   childBaseArr: [baseOrm],
   childInner: {
-    childBaseInner: baseOrm
+    k: {
+      childBaseInner: baseOrm
+    }
   }
 }), 'child')
 
@@ -17,21 +20,19 @@ baseOrm.put({
   id: 1,
   baseChild: {
     id: 1
-  }
+  },
+  baseBaseArr: [{ id: 2, bla: 'bla', a: 'a' }, { id: 1 }]
 })
 
 childOrm.put({
   id: 1,
-  prop: 'prop',
-  childBase: {
-    id: 1,
-    basePropY: 'y'
-  },
-  childBaseArr: [{ id: 1, basePropArr: 'x' }, { id: 2, basePropArr: 'y' }, { id: 3, basePropArr: 'z' }],
+  childBaseArr: [{ id: 2, bla: 'ok' }, { id: 1, ok: 'bla' }, {id: 3, oesifj: 'pseo'}],
   childInner: {
-    childBaseInner: {
-      id: 1,
-      baseInner: 'inner'
+    k: {
+      childBaseInner: {
+        id: 1,
+        basePropInner: 'z'
+      }
     }
   }
 })
@@ -40,11 +41,33 @@ childOrm.put({
   id: 1,
   childBase: {
     id: 1,
-    prop: 'someZ'
+    basePropY: 'y'
   },
-  childBaseArr: [{ id: 2, basePropArr: 'yz' }, { id: 1, basePropArr: 'x' }]
+  childBaseArr: [{ id: 1, basePropArr: 'x' }, { id: 1, ea: 'ok' }],
+  childInner: {
+    k: {
+      childBaseInner: {
+        id: 1,
+        basePropInner: 'changed z'
+      }
+    }
+  }
 })
 
-baseOrm.put({ id: 3, awdino: 'las' })
+baseOrm.put({
+  id: 1,
+  ok: 'changed ok',
+  awfui: 'oisa',
+  baseBaseArr: [{ id: 2, oesifj: 'esfuib' }, { bla: 'bla', id: 1 }]
+})
 
-baseOrm.put({ id: 2, awdino: 'als' })
+console.log(
+  // baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1]
+  // baseOrm.get(1) === childOrm.get(1).childBase,
+  // baseOrm.get(1) === childOrm.get(1).childBaseArr[0],
+  // baseOrm.get(1) === childOrm.get(1).childInner.k.childBaseInner,
+  // baseOrm.get(1).baseChild === childOrm.get(1),
+  // baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
+  // childOrm.get(1).childBaseArr[0] === childOrm.get(1).childBaseArr[1],
+  // baseOrm.get(2) === baseOrm.get(1).baseBaseArr[0]
+)

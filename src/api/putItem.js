@@ -10,6 +10,7 @@ import {
   hasRelation,
   removeRelation,
   clone,
+  theEnd
 } from '*/utils'
 import {
   pathSet,
@@ -18,32 +19,32 @@ import {
 
 const stack = []
 
-let putUpdates = {} // { normId: true }
-let updatedItems = {} // { normId: item }
+let upGraph = {} // { normId: { parentNormId: [...way]: theEnd } }
+let nextItems = {} // { normId: item }
 let currentUpdates = {} // { normId: true }
 
 export const putItem = (orm, normId, diff) => {
   console.log('putItem', normId, orm, diff)
-  putUpdates = {}
-  updatedItems = {}
+  upGraph = {}
+  nextItems = {}
   currentUpdates = {}
 
   mergeItem(orm, normId, diff)
   updateParents()
-  notify(putUpdates)
+  notify(upGraph)
 
   return g.items[normId]
 }
 
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
-  console.log('mergeItem', normId, parentNormId, clone(item), clone(diff), clone(stack), hasRelation(putUpdates, normId, parentNormId, stack))
+  const nextItem = nextItems[normId] || (nextItems[normId] = {})
+  console.log('mergeItem', normId, parentNormId, clone(item), clone(diff), clone(stack))
   g.ormsByNormId[normId] = orm
-  const nextItem = updatedItems[normId] || (updatedItems[normId] = {})
 
-  if (hasRelation(putUpdates, normId, parentNormId, stack)) return nextItem
+  if (hasRelation(upGraph, normId, parentNormId, stack)) return nextItem
   addRelation(g.graph, normId, parentNormId, stack)
-  addRelation(putUpdates, normId, parentNormId, stack)
+  addRelation(upGraph, normId, parentNormId, stack)
   if (normId === stack[0]) return nextItem
 
   currentUpdates[normId] = true
@@ -76,19 +77,13 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
       const keyValue = inst && inst[key]
 
       stack.push(key)
-      nextInst[key] = merge(keyDesc, keyValue, diff[key], generateInst(diff[key]), parentNormId)
+      nextInst[key] = merge(keyDesc, keyValue, diff[key], genInst(diff[key]), parentNormId)
       stack.pop()
     }
     if (isPlainObject(inst))
       for (let key in inst)
-        if (!nextInst.hasOwnProperty(key)) {
-          const keyDesc = desc && desc[key]
-          const keyValue = inst && inst[key]
-
-          stack.push(key)
-          nextInst[key] = merge(keyDesc, keyValue, keyValue, generateInst(keyValue), parentNormId)
-          stack.pop()
-        }
+        if (!nextInst.hasOwnProperty(key))
+          nextInst[key] = inst[key]
 
     return nextInst
   }
@@ -128,7 +123,7 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
       }
 
       g.arrChilds.delete(inst)
-      g.arrChilds.set(diff, nextChilds)
+      g.arrChilds.set(nextInst, nextChilds)
 
       return nextInst
     }
@@ -145,36 +140,35 @@ const updateParents = () => {
     for (let parentNormId in parents) {
       const parentOrm = g.ormsByNormId[parentNormId]
 
-      if (!putUpdates[parentNormId]) {
+      if (!upGraph[parentNormId]) {
         const parent = g.items[parentNormId]
-        const diff = generateParentDiff(parent.id, g.graph[normId][parentNormId], parent, normId)
+        const parentDiff = genParentDiff(parent.id, g.graph[normId][parentNormId], parent, normId)
         currentUpdates = {}
-        mergeItem(parentOrm, parentNormId, diff)
+        mergeItem(parentOrm, parentNormId, parentDiff)
         updateParents()
       }
-
-      const graph = g.graph[parentNormId] && g.graph[parentNormId][normId]
-      if (graph) setChildToParent(parentNormId, normId, graph, g.items[normId])
+      else setChildToParent(normId, parentNormId, parents[parentNormId], g.items[parentNormId])
     }
   }
 }
 
-const generateInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {} : diff
-
-const generateParentDiff = (id, graphLevel, level, childNormId) => {
+const genParentDiff = (id, graphLevel, level, childNormId) => {
   const diff = Array.isArray(level) ? [...level] : { id }
 
   for (let key in graphLevel)
-    diff[key] = graphLevel[key] === childNormId
+    diff[key] = graphLevel[key] === theEnd
       ? g.items[childNormId]
-      : generateParentDiff(id, graphLevel[key], level[key], childNormId)
+      : genParentDiff(id, graphLevel[key], level[key], childNormId)
 
   return diff
 }
 
 const setChildToParent = (normId, parentNormId, graphLevel, parentLevel) => {
   for (let key in graphLevel) {
-    if (isPlainObject(graphLevel)) setChildToParent(normId, parentNormId, graphLevel[key], parentLevel[key])
-    else if (key === normId) parentLevel[key] === g.items[normId]
+    if (graphLevel[key] === theEnd)
+      parentLevel[key] = g.items[normId]
+    else setChildToParent(normId, parentNormId, graphLevel[key], parentLevel[key])
   }
 }
+
+const genInst = diff => Array.isArray(diff) ? [] : isPlainObject(diff) ? {} : diff

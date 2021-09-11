@@ -1,5 +1,7 @@
 import g from '*/global'
 
+export const theEnd = Symbol('theEnd')
+
 // Can't use just stack because parent can contain child several times
 // and first way will rewrited by second
 export const addRelation = (graph, normId, parentNormId, stack) => {
@@ -9,7 +11,7 @@ export const addRelation = (graph, normId, parentNormId, stack) => {
 
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     const key = stack[i]
-    if (i === stack.length - 1) way[key] = normId
+    if (i === stack.length - 1) way[key] = theEnd
     else way = way[key] || (way[key] = {})
   }
 }
@@ -23,7 +25,8 @@ export const removeRelation = (graph, normId, parentNormId, stack) => {
 
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     current = current[stack[i]]
-    if (current && Object.keys(current).length > 1 && current !== normId) {
+    if (!current) break
+    else if (Object.keys(current).length > 1) {
       graphLevel = current
       key = stack[i + 1]
     }
@@ -40,5 +43,5 @@ export const hasRelation = (graph, normId, parentNormId, stack) => {
     if (way[key]) way = way[key]
     else break
   }
-  return way === normId
+  return way === theEnd
 }
