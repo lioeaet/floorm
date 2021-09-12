@@ -24,6 +24,18 @@ baseOrm.put({
   baseBaseArr: [{ id: 2, bla: 'bla', a: 'a' }, { id: 1 }]
 })
 
+console.log(
+  baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
+  baseOrm.get(1).baseChild === childOrm.get(1),
+  Object.keys(baseOrm.get(1)) === 3,
+  Object.keys(baseOrm.get(1).baseChild) === 1,
+
+  baseOrm.get(1).baseBaseArr.length === 2,
+  baseOrm.get(2).bla === 'bla',
+  baseOrm.get(2).a === 'a',
+  Object.keys(baseOrm.get(2)) === 3
+)
+
 childOrm.put({
   id: 1,
   childBaseArr: [{ id: 2, bla: 'ok' }, { id: 1, ok: 'bla' }, {id: 3, oesifj: 'pseo'}],
@@ -36,6 +48,14 @@ childOrm.put({
     }
   }
 })
+
+console.log(
+  baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
+  baseOrm.get(1) === childOrm.get(1).childInner.k.childBaseInner,
+  baseOrm.get(1).baseChild === childOrm.get(1),
+  baseOrm.get(2).bla === 'ok',
+  baseOrm.get(3).oesifj === 'pseo'
+)
 
 childOrm.put({
   id: 1,
@@ -62,12 +82,11 @@ baseOrm.put({
 })
 
 console.log(
-  // baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1]
-  // baseOrm.get(1) === childOrm.get(1).childBase,
-  // baseOrm.get(1) === childOrm.get(1).childBaseArr[0],
-  // baseOrm.get(1) === childOrm.get(1).childInner.k.childBaseInner,
-  // baseOrm.get(1).baseChild === childOrm.get(1),
-  // baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
-  // childOrm.get(1).childBaseArr[0] === childOrm.get(1).childBaseArr[1],
-  // baseOrm.get(2) === baseOrm.get(1).baseBaseArr[0]
+  baseOrm.get(1) === childOrm.get(1).childBase,
+  baseOrm.get(1) === childOrm.get(1).childBaseArr[0],
+  baseOrm.get(1) === childOrm.get(1).childInner.k.childBaseInner,
+  baseOrm.get(1).baseChild === childOrm.get(1),
+  baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
+  childOrm.get(1).childBaseArr[0] === childOrm.get(1).childBaseArr[1],
+  baseOrm.get(2) === baseOrm.get(1).baseBaseArr[0]
 )

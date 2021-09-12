@@ -147,18 +147,18 @@ const updateParents = () => {
         mergeItem(parentOrm, parentNormId, parentDiff)
         updateParents()
       }
-      else setChildToParent(normId, parentNormId, parents[parentNormId], g.items[parentNormId])
+      setChildToParent(normId, parentNormId, parents[parentNormId], g.items[parentNormId])
     }
   }
 }
 
-const genParentDiff = (id, graphLevel, level, childNormId) => {
-  const diff = Array.isArray(level) ? [...level] : { id }
+const genParentDiff = (graphLevel, level, childNormId, id) => {
+  const diff = Array.isArray(level) ? [...level] : id ? { id } : {}
 
   for (let key in graphLevel)
     diff[key] = graphLevel[key] === theEnd
       ? g.items[childNormId]
-      : genParentDiff(id, graphLevel[key], level[key], childNormId)
+      : genParentDiff(graphLevel[key], level[key], childNormId)
 
   return diff
 }
