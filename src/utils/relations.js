@@ -39,9 +39,8 @@ export const hasRelation = (graph, normId, parentNormId, stack) => {
   let way = graph[normId]
 
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
-    const key = stack[i]
-    if (way[key]) way = way[key]
-    else break
+    way = way[stack[i]]
+    if (!way) break
   }
   return way === theEnd
 }
@@ -50,10 +49,8 @@ export const hasAllRelations = (upGraph, gGraph) => {
   if (gGraph === theEnd) return upGraph === theEnd
   if (!upGraph) return false
 
-  let has = true
-  for (let key in gGraph) {
-    has = hasAllRelations(upGraph[key], gGraph[key])
-    if (!has) break
-  }
-  return has
+  for (let key in gGraph)
+    if (!hasAllRelations(upGraph[key], gGraph[key]))
+      return false
+  return true
 }
