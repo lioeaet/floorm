@@ -1,7 +1,7 @@
 const g = {
   items: {}, // { normId: item }
   graph: {}, // { childNormId: { parentNormId: { {...pathToChild}: true } } }
-  ormsByNormId: {}, // { normId: orm }
+  ormsByNormId: {}, // { itemNormId: orm }
   descFuncs: {}, // { ormNormId: descFunc }
   arrChilds: new Map, // { array: { normId: true } }
 }

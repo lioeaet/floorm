@@ -45,3 +45,15 @@ export const hasRelation = (graph, normId, parentNormId, stack) => {
   }
   return way === theEnd
 }
+
+export const hasAllRelations = (upGraph, gGraph) => {
+  if (gGraph === theEnd) return upGraph === theEnd
+  if (!upGraph) return false
+
+  let has = true
+  for (let key in gGraph) {
+    has = hasAllRelations(upGraph[key], gGraph[key])
+    if (!has) break
+  }
+  return has
+}

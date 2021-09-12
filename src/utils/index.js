@@ -2,15 +2,11 @@ import g from '*/global'
 
 export const isOrm = inst => inst && g.descFuncs[inst.normId]
 
-export const isPlainObject = inst =>
-  inst && Object.getPrototypeOf(inst) === Object.getPrototypeOf({})
+const plainObjProto = Object.getPrototypeOf({})
+export const isPlainObject = inst => inst && Object.getPrototypeOf(inst) === plainObjProto
 
 export const isPromise = inst => inst && typeof inst.then === 'function'
 
-export const isFunction = inst => typeof inst === 'function'
-
-// добавляем сюда stack и суём его в id массивов
-// массив в определённом месте не орм, поэтому всегда считается одним
 export const extractId = (...itemModes) => {
   const itemWithId = itemModes.find(obj =>
     isPlainObject(obj) &&
@@ -20,42 +16,25 @@ export const extractId = (...itemModes) => {
 }
 
 // dev utils
-export const cloneMap = map => {
-  if (!map) return null
-  const r = {}
-  let i = 0
-  for (let [key, val] of map.entries()) {
-    if (isPlainObject(key) || Array.isArray(key)) key = `obj ${i++}`
-    r[key] = val
-  }
-  return r
-}
-
-export const cloneMapIds = map => {
-  if (!map) return null
-  const r = []
-  for (let id of map.keys())
-    r.push(g.items[id])
-  return r
-}
-
 export const clone = (inst, clones = new Map) => {
   if (clones.has(inst)) return clones.get(inst)
 
   if (isPlainObject(inst)) {
     let x = {}
     clones.set(inst, x)
-    for (let key in inst) {
-      x[key] = clone(inst[key], clones)
-    }
+    for (let key in inst) x[key] = clone(inst[key], clones)
     return x
   }
   if (Array.isArray(inst)) {
     let x = []
     clones.set(inst, x)
-    for (let i = 0; i < inst.length; i++) {
-      x[i] = clone(inst[i], clones)
-    }
+    for (let i = 0; i < inst.length; i++) x[i] = clone(inst[i], clones)
+    return x
+  }
+  if (inst && Object.getPrototypeOf(inst) === Map.prototype) {
+    let x = new Map
+    clones.set(inst, x)
+    for (let [key, val] of inst) x.set(key, clone(val, clones))
     return x
   }
   return inst

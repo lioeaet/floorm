@@ -27,13 +27,13 @@ baseOrm.put({
 console.log(
   baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
   baseOrm.get(1).baseChild === childOrm.get(1),
-  baseOrm.get(1).baseBaseArr.length === 2,
   Object.keys(baseOrm.get(1)).length === 3,
   Object.keys(baseOrm.get(1).baseChild).length === 1,
 
+  baseOrm.get(1).baseBaseArr.length === 2,
   baseOrm.get(2).bla === 'bla',
   baseOrm.get(2).a === 'a',
-  Object.keys(baseOrm.get(2)).length === 3
+  Object.keys(baseOrm.get(2)).length === 3,
 )
 
 childOrm.put({
@@ -53,6 +53,7 @@ console.log(
   baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
   baseOrm.get(1) === childOrm.get(1).childInner.k.childBaseInner,
   baseOrm.get(1).baseChild === childOrm.get(1),
+
   baseOrm.get(2).bla === 'ok',
   baseOrm.get(3).oesifj === 'pseo'
 )
