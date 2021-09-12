@@ -21,14 +21,14 @@ import {
 const stack = []
 
 let isUpdateParents = false
+let updates = {} // { normId: true }
 let upGraph = {} // { normId: { parentNormId: [...way]: theEnd } }
 let nextItems = {} // { normId: item }
-let updates = {} // { normId: true }
 
 export const putItem = (orm, normId, diff) => {
+  updates = {}
   upGraph = {}
   nextItems = {}
-  updates = {}
   isUpdateParents = false
 
   mergeItem(orm, normId, diff)
@@ -42,16 +42,20 @@ export const putItem = (orm, normId, diff) => {
 
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
+
   const nextItem = nextItems[normId] || (nextItems[normId] = {})
   g.ormsByNormId[normId] = orm
+
   if (hasRelation(upGraph, normId, parentNormId, stack)) return nextItem
   addRelation(upGraph, normId, parentNormId, stack)
 
-  if (isUpdateParents && parentNormId && item === nextItem) return nextItem
-
+  if (isUpdateParents && parentNormId) {
+    if (item === nextItem) return nextItem
+    if (item === diff) return diff
+  }
   addRelation(g.graph, normId, parentNormId, stack)
-  if (normId === stack[0]) return nextItem
 
+  if (normId === stack[0]) return nextItem
   updates[normId] = true
 
   stack.push(normId)

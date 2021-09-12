@@ -16,29 +16,33 @@ const childOrm = orm(() => ({
   }
 }), 'child')
 
-baseOrm.put({
+const base1_1 = baseOrm.put({
   id: 1,
   baseChild: {
     id: 1
   },
-  baseBaseArr: [{ id: 2, bla: 'bla', a: 'a' }, { id: 1 }]
+  baseBaseArr: [{ id: 2, la: 'la', a: 'a' }, { id: 1 }]
 })
-
+const child1_1 = childOrm.get(1)
+const base2_1 = baseOrm.get(2)
 console.log(
-  baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
-  baseOrm.get(1).baseChild === childOrm.get(1),
-  Object.keys(baseOrm.get(1)).length === 3,
-  Object.keys(baseOrm.get(1).baseChild).length === 1,
+  base1_1 === baseOrm.get(1),
+  base1_1.baseBaseArr[0] === base2_1,
+  base1_1.baseBaseArr[1] === base1_1,
+  base1_1.baseBaseArr.length === 2,
+  base1_1.baseChild === child1_1,
+  Object.keys(base1_1).length === 3,
 
-  baseOrm.get(1).baseBaseArr.length === 2,
-  baseOrm.get(2).bla === 'bla',
-  baseOrm.get(2).a === 'a',
-  Object.keys(baseOrm.get(2)).length === 3,
+  base2_1.a === 'a',
+  base2_1.la === 'la',
+  Object.keys(base2_1).length === 3,
+
+  Object.keys(child1_1).length === 1
 )
 
-childOrm.put({
+const child1_2 = childOrm.put({
   id: 1,
-  childBaseArr: [{ id: 2, bla: 'ok' }, { id: 1, ok: 'bla' }, {id: 3, oesifj: 'pseo'}],
+  childBaseArr: [{ id: 2, la: 'ok' }, { id: 1, la: 'ok' }, {id: 3, la: 'eo'}],
   childInner: {
     k: {
       childBaseInner: {
@@ -48,23 +52,42 @@ childOrm.put({
     }
   }
 })
-
+const base1_2 = baseOrm.get(1)
+const base2_2 = baseOrm.get(2)
+const base3_2 = baseOrm.get(3)
 console.log(
-  baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
-  baseOrm.get(1) === childOrm.get(1).childInner.k.childBaseInner,
-  baseOrm.get(1).baseChild === childOrm.get(1),
+  base1_2 !== base1_1,
+  base1_2.la === 'ok',
+  base1_2.basePropInner === 'z',
+  base1_2.baseBaseArr[0] === base2_2,
+  base1_2.baseBaseArr[1] === base1_2,
+  base1_2.baseBaseArr.length === 2,
+  base1_2.baseChild === child1_2,
+  Object.keys(base1_2).length === 5,
 
-  baseOrm.get(2).bla === 'ok',
-  baseOrm.get(3).oesifj === 'pseo'
+  base2_2 !== base2_1,
+  base2_2.a === 'a',
+  base2_2.la === 'ok',
+  Object.keys(base2_2).length === 3,
+
+  base3_2.la === 'eo',
+  Object.keys(base3_2).length === 2,
+
+  child1_2 !== child1_1,
+  child1_2.childBaseArr[0] === base2_2,
+  child1_2.childBaseArr[1] === base1_2,
+  child1_2.childBaseArr[2] === base3_2,
+  child1_2.childBaseArr.length === 3,
+  child1_2.childInner.k.childBaseInner === base1_2,
+  Object.keys(child1_2.childInner).length === 1,
+  Object.keys(child1_2.childInner.k).length === 1,
+  Object.keys(child1_2).length === 3
 )
 
-childOrm.put({
+const child1_3 = childOrm.put({
   id: 1,
-  childBase: {
-    id: 1,
-    basePropY: 'y'
-  },
-  childBaseArr: [{ id: 1, basePropArr: 'x' }, { id: 1, ea: 'ok' }],
+  childBase: { id: 1 },
+  childBaseArr: [{ id: 1 }, { id: 1 }],
   childInner: {
     k: {
       childBaseInner: {
@@ -74,20 +97,30 @@ childOrm.put({
     }
   }
 })
-
-baseOrm.put({
-  id: 1,
-  ok: 'changed ok',
-  awfui: 'oisa',
-  baseBaseArr: [{ id: 2, oesifj: 'esfuib' }, { bla: 'bla', id: 1 }]
-})
-
+const base1_3 = baseOrm.get(1)
+const base2_3 = baseOrm.get(2)
+const base3_3 = baseOrm.get(3)
 console.log(
-  baseOrm.get(1) === childOrm.get(1).childBase,
-  baseOrm.get(1) === childOrm.get(1).childBaseArr[0],
-  baseOrm.get(1) === childOrm.get(1).childInner.k.childBaseInner,
-  baseOrm.get(1).baseChild === childOrm.get(1),
-  baseOrm.get(1) === baseOrm.get(1).baseBaseArr[1],
-  childOrm.get(1).childBaseArr[0] === childOrm.get(1).childBaseArr[1],
-  baseOrm.get(2) === baseOrm.get(1).baseBaseArr[0]
+  base1_3 !== base1_1,
+  base1_3.la === 'ok',
+  base1_3.basePropInner === 'changed z',
+  base1_3.baseBaseArr[0] === base2_3,
+  base1_3.baseBaseArr[1] === base1_3,
+  base1_3.baseBaseArr.length === 2,
+  base1_3.baseChild === child1_3,
+  Object.keys(base1_2).length === 5,
+
+  base2_3 === base2_2,
+  base3_3 === base3_2,
+
+  child1_3 !== child1_1,
+  child1_3.childBaseArr[0] === base1_3,
+  child1_3.childBaseArr[1] === base1_3,
+  child1_3.childBaseArr.length === 2,
+  child1_3.childInner !== child1_2.childInner,
+  child1_3.childInner.k !== child1_2.childInner.k,
+  child1_3.childInner.k.childBaseInner === base1_3,
+  Object.keys(child1_3.childInner).length === 1,
+  Object.keys(child1_3.childInner.k).length === 1,
+  Object.keys(child1_3).length === 4
 )
