@@ -1,8 +1,9 @@
 const g = {
   items: {}, // { normId: item }
-  graph: {}, // { childNormId: { parentNormId: { {...pathToChild}: true } } }
-  ormsByNormId: {}, // { itemNormId: orm }
-  descFuncs: {}, // { ormNormId: descFunc }
+  graph: {}, // { normId: { parentNormId: { {...pathToChild}: true } } }
+  childs: {}, // { normId: { childNormId: true } }
+  ormsByNormId: {}, // { normId: orm }
+  descFuncs: {}, // { ormName: descFunc }
   arrChilds: new Map, // { array: { normId: true } }
 }
 console.log(g)

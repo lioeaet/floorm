@@ -1,104 +1,44 @@
 import g from '*/global'
-import {
-  notify,
-  normalizeId,
-  extractId,
-  // relationsUpdateArrayRemovedChilds,
-  isOrm,
-  isPlainObject,
-} from '*/utils'
-import getItem from '*/api/getItem'
+import { theEnd, notify, extractId } from '*/utils'
+import { putItem } from '*/api/putItem' 
 
-let wasRemovedItem = false
-let updatedIds = new Map()
+export const removeItem = normId => {
+  const item = g.items[normId]
+  const parents = g.graph[normId]
+  const childs = g.childs[normId]
+  delete parents[normId]
 
-const removeItem = normId => {
-  updatedIds = new Map()
-  updatedIds.set(normId, true)
-  const item = getItem(normId)
-  const itemParents = g.parents[normId]
-
-  for (let parentNormId in itemParents) {
-    updatedIds.set(parentNormId, true)
-    const parent = getItem(parentNormId)
+  for (let parentNormId in parents) {
+    const parent = g.items[parentNormId]
     const parentOrm = g.ormsByNormId[parentNormId]
-    const parentDesc = g.descFuncs[parentOrm.normId]()
 
-    let nextParent
-    if (isPlainObject(parentDesc)) {
-      nextParent = {}
-      for (let key in parent) {
-        nextParent[key] = mergeRemoving(
-          parentDesc[key],
-          parent[key],
-          normId,
-          parentNormId
-        )
-        if (wasRemovedItem) {
-          wasRemovedItem = false
-        }
-      }
-    }
-    if (Array.isArray(parentDesc))
-      nextParent = parent.filter(item => {
-        const id = extractId(item)
-        const childNormId = normalizeId(parentDesc[0], id)
-        if (childNormId === normId) {
-          return false
-        }
-        return true
-      })
-    g.items[parentNormId] = nextParent
+    // console.log(parentNormId, genParentDiff(parents[parentNormId], parent, normId, parent.id))
+    putItem(parentOrm, parentNormId, genParentDiff(parents[parentNormId], parent, normId, parent.id))
   }
-  g.items[normId] = null
+  delete g.items[normId]
+  delete g.childs[normId]
   delete g.ormsByNormId[normId]
-  delete g.parents[normId]
-  g.suspensePromises.delete(normId)
-  g.refreshes.delete(normId)
-  notify(updatedIds)
+  for (let childNormId in childs)
+    if (g.graph[childNormId]) delete g.graph[childNormId][normId]
+  delete g.graph[normId]
+
+  // notify(updatedIds)
 
   return item
 }
 
-const mergeRemoving = (desc, level, normId, parentNormId) => {
-  if (!desc) return level
-  if (isOrm(desc)) {
-    if (level === getItem(normId)) {
-      wasRemovedItem = true
-      return null
-    }
-    return level
+const genParentDiff = (graphLevel, level, childNormId, id) => {
+  let diff
+  if (Array.isArray(level)) {
+    const child = g.items[childNormId]
+    return level.filter(x => x !== child)
   }
-  if (isPlainObject(desc)) {
-    const mergedLevel = {}
-    for (let key in level)
-      mergedLevel[key] = mergeRemoving(desc[key], level[key], normId)
+  else diff = id ? { id } : {}
 
-    return wasRemovedItem ? mergedLevel : level
-  }
-  if (Array.isArray(desc) && Array.isArray(level)) {
-    if (!isOrm(desc[0])) return level
-    const nextChilds = new Map()
-    const filteredItem = level.filter(child => {
-      const id = extractId(child) 
-      const childNormId = normalizeId(desc[0], id)
+  for (let key in graphLevel)
+    diff[key] = graphLevel[key] === theEnd
+      ? void ''
+      : genParentDiff(graphLevel[key], level[key], childNormId)
 
-      nextChilds.set(childNormId, true)
-      if (child !== getItem(normId)) return true
-      wasRemovedItem = true
-      return false
-    })
-    if (wasRemovedItem) {
-      // relationsUpdateArrayRemovedChilds(
-      //   level,
-      //   filteredItem,
-      //   nextChilds,
-      //   parentNormId
-      // )
-      return filteredItem
-    }
-  }
-  return level
+  return diff
 }
-
-export default removeItem

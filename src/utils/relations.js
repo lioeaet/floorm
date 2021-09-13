@@ -2,8 +2,6 @@ import g from '*/global'
 
 export const theEnd = Symbol('theEnd')
 
-// Can't use just stack because parent can contain child several times
-// and first way will rewrited by second
 export const addRelation = (graph, normId, parentNormId, stack) => {
   if (!graph[normId]) graph[normId] = {}
   if (!parentNormId) return
@@ -19,14 +17,14 @@ export const addRelation = (graph, normId, parentNormId, stack) => {
 export const removeRelation = (graph, normId, parentNormId, stack) => {
   if (!parentNormId) return
 
-  let current = g.graph[normId]
+  let current = graph[normId]
   let graphLevel = current
   let key = parentNormId
 
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     current = current[stack[i]]
     if (!current) break
-    else if (Object.keys(current).length > 1) {
+    if (Object.keys(current).length > 1) {
       graphLevel = current
       key = stack[i + 1]
     }

@@ -1,6 +1,7 @@
 import g from '*/global'
 
-export const isOrm = inst => inst && g.descFuncs[inst.normId]
+// todo new Map
+export const isOrm = inst => inst && g.descFuncs[inst.name]
 
 const plainObjProto = Object.getPrototypeOf({})
 export const isPlainObject = inst => inst && Object.getPrototypeOf(inst) === plainObjProto

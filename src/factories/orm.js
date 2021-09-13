@@ -3,23 +3,24 @@ import { extractId, normalizeId } from '*/utils'
 // import { listenOrm, listenItem } from '*/utils/notifier'
 import { getItem } from '*/api/getItem'
 import { putItem } from '*/api/putItem'
+import { removeItem } from '*/api/removeItem'
 
 const listenItem = ''; const listenOrm = '';
 
 const ormFactory = (desc, name) => {
   if (!desc) desc = () => ({})
-
-  const normId = normalizeId('orm', name)
-  g.descFuncs[normId] = desc
+  g.descFuncs[name] = desc
 
   const orm = {
-    normId,
     name,
     get: id => {
       const normId = normalizeId(name, id)
       return g.items[normId]
     },
-    remove: id => {},
+    remove: id => {
+      const normId = normalizeId(name, id)
+      removeItem(normId)
+    },
     put: diff => {
       const id = extractId(diff)
       const normId = normalizeId(name, id)
@@ -36,7 +37,5 @@ const ormFactory = (desc, name) => {
 
   return orm
 }
-
-// abstracy notifyItems for work for all platforms
 
 export default ormFactory

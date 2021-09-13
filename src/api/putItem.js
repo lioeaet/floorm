@@ -19,18 +19,16 @@ import {
 } from '*/utils/pathObj'
 
 const stack = []
-
 let isUpdateParents = false
-let updates = {} // { normId: true }
-let upGraph = {} // { normId: { parentNormId: [...way]: theEnd } }
 let nextItems = {} // { normId: item }
+let upGraph = {} // { normId: { parentNormId: [...way]: theEnd } }
+let updates = {} // { normId: true }
 
 export const putItem = (orm, normId, diff) => {
-  updates = {}
-  upGraph = {}
-  nextItems = {}
   isUpdateParents = false
-
+  nextItems = {}
+  upGraph = {}
+  updates = {}
   mergeItem(orm, normId, diff)
 
   isUpdateParents = true
@@ -49,9 +47,12 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   if (hasRelation(upGraph, normId, parentNormId, stack)) return nextItem
   addRelation(upGraph, normId, parentNormId, stack)
 
-  if (isUpdateParents && parentNormId) {
-    if (item === nextItem) return nextItem
-    if (item === diff) return diff
+  if (parentNormId) {
+    pathSet(g.childs, parentNormId, normId)(true)
+    if (isUpdateParents) {
+      if (item === nextItem) return nextItem
+      if (item === diff) return diff
+    }
   }
   addRelation(g.graph, normId, parentNormId, stack)
 
@@ -59,7 +60,7 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   updates[normId] = true
 
   stack.push(normId)
-  g.items[normId] = merge(g.descFuncs[orm.normId](), item, diff, nextItem, normId)
+  g.items[normId] = merge(g.descFuncs[orm.name](), item, diff, nextItem, normId)
   stack.pop()
 
   return nextItem
@@ -76,7 +77,6 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
       if (prevNormId && parentNormId)
         removeRelation(g.graph, prevNormId, parentNormId, stack)
     }
-
     return mergeItem(desc, normId, diff, parentNormId)
   }
 
@@ -130,14 +130,12 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
           stack.pop(i)
         }
       }
-
       g.arrChilds.delete(inst)
       g.arrChilds.set(nextInst, nextChilds)
 
       return nextInst
     }
   }
-
   return nextInst
 }
 
