@@ -4,27 +4,32 @@ import { putItem } from '*/api/putItem'
 
 export const removeItem = normId => {
   const item = g.items[normId]
+  g.items[normId] = null
   const parents = g.graph[normId]
   const childs = g.childs[normId]
   delete parents[normId]
 
   for (let parentNormId in parents) {
+    if (normId === parentNormId) continue
     const parent = g.items[parentNormId]
     const parentOrm = g.ormsByNormId[parentNormId]
+    const parentDiff = genParentDiff(parents[parentNormId], parent, normId, parent.id)
 
-    // console.log(parentNormId, genParentDiff(parents[parentNormId], parent, normId, parent.id))
-    putItem(parentOrm, parentNormId, genParentDiff(parents[parentNormId], parent, normId, parent.id))
+    putItem(parentOrm, parentNormId, parentDiff)
   }
-  delete g.items[normId]
-  delete g.childs[normId]
-  delete g.ormsByNormId[normId]
   for (let childNormId in childs)
     if (g.graph[childNormId]) delete g.graph[childNormId][normId]
+  for (let parentNormId in parents)
+    if (g.childs[parentNormId]) delete g.childs[parentNormId][normId]
+  delete g.items[normId]
+  delete g.ormsByNormId[normId]
+  delete g.childs[normId]
   delete g.graph[normId]
+  // g.arrChilds
 
   // notify(updatedIds)
 
-  return item
+  return item.id
 }
 
 const genParentDiff = (graphLevel, level, childNormId, id) => {
@@ -37,8 +42,10 @@ const genParentDiff = (graphLevel, level, childNormId, id) => {
 
   for (let key in graphLevel)
     diff[key] = graphLevel[key] === theEnd
-      ? void ''
+      ? null
       : genParentDiff(graphLevel[key], level[key], childNormId)
 
   return diff
 }
+
+const removeArrChilds = () => {}

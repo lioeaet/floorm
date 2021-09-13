@@ -19,7 +19,8 @@ const childOrm = orm(() => ({
 const base1_1 = baseOrm.put({
   id: 1,
   baseChild: {
-    id: 1
+    id: 1,
+    childBase: { id: 1 }
   },
   baseBaseArr: [{ id: 2, la: 'la', a: 'a' }, { id: 1 }]
 })
@@ -37,7 +38,8 @@ console.log(
   base2_1.la === 'la',
   Object.keys(base2_1).length === 3,
 
-  Object.keys(child1_1).length === 1
+  child1_1.childBase === base1_1,
+  Object.keys(child1_1).length === 2
 )
 
 const child1_2 = childOrm.put({
@@ -74,6 +76,7 @@ console.log(
   Object.keys(base3_2).length === 2,
 
   child1_2 !== child1_1,
+  child1_2.childBase === base1_2,
   child1_2.childBaseArr[0] === base2_2,
   child1_2.childBaseArr[1] === base1_2,
   child1_2.childBaseArr[2] === base3_2,
@@ -81,12 +84,12 @@ console.log(
   child1_2.childInner.k.childBaseInner === base1_2,
   Object.keys(child1_2.childInner).length === 1,
   Object.keys(child1_2.childInner.k).length === 1,
-  Object.keys(child1_2).length === 3
+  Object.keys(child1_2).length === 4
 )
 
 const child1_3 = childOrm.put({
   id: 1,
-  childBase: { id: 1 },
+  childBase: null,
   childBaseArr: [{ id: 1 }, { id: 1 }],
   childInner: {
     k: {
@@ -102,6 +105,7 @@ const base2_3 = baseOrm.get(2)
 const base3_3 = baseOrm.get(3)
 console.log(
   base1_3 !== base1_1,
+  base1_2 !== base1_1,
   base1_3.la === 'ok',
   base1_3.basePropInner === 'changed z',
   base1_3.baseBaseArr[0] === base2_3,
@@ -114,6 +118,8 @@ console.log(
   base3_3 === base3_2,
 
   child1_3 !== child1_1,
+  child1_3 !== child1_2,
+  child1_3.childBase === null,
   child1_3.childBaseArr[0] === base1_3,
   child1_3.childBaseArr[1] === base1_3,
   child1_3.childBaseArr.length === 2,
