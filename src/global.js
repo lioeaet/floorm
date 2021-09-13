@@ -5,6 +5,7 @@ const g = {
   ormsByNormId: {}, // { normId: orm }
   descFuncs: {}, // { ormName: descFunc }
   arrChilds: new Map, // { array: { normId: true } }
+  itemsMap: new Map // { item: true }
 }
 console.log(g)
 export default g

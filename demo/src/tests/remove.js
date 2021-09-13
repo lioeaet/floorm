@@ -38,3 +38,5 @@ const child1_3 = childOrm.put({
 })
 
 baseOrm.remove(1)
+
+console.log('oki')

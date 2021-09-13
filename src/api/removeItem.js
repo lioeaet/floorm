@@ -1,10 +1,8 @@
 import g from '*/global'
-import { theEnd, notify, extractId } from '*/utils'
+import { theEnd, notify, extractId, clone } from '*/utils'
 import { putItem } from '*/api/putItem' 
 
 export const removeItem = normId => {
-  const item = g.items[normId]
-  g.items[normId] = null
   const parents = g.graph[normId]
   const childs = g.childs[normId]
   delete parents[normId]
@@ -17,15 +15,19 @@ export const removeItem = normId => {
 
     putItem(parentOrm, parentNormId, parentDiff)
   }
+
   for (let childNormId in childs)
     if (g.graph[childNormId]) delete g.graph[childNormId][normId]
   for (let parentNormId in parents)
     if (g.childs[parentNormId]) delete g.childs[parentNormId][normId]
-  delete g.items[normId]
   delete g.ormsByNormId[normId]
   delete g.childs[normId]
   delete g.graph[normId]
-  // g.arrChilds
+
+  const item = g.items[normId]
+  removeItemArrChilds(item)
+  g.itemsMap.delete(item)
+  delete g.items[normId]
 
   // notify(updatedIds)
 
@@ -48,4 +50,10 @@ const genParentDiff = (graphLevel, level, childNormId, id) => {
   return diff
 }
 
-const removeArrChilds = () => {}
+const removeItemArrChilds = level => {
+  for (let key in level) {
+    if (Array.isArray(level[key])) g.arrChilds.delete(level[key])
+    else if (g.itemsMap.has(level[key])) continue
+    else removeItemArrChilds(level[key])
+  }
+}

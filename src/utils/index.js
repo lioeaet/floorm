@@ -1,5 +1,12 @@
 import g from '*/global'
 
+const z = console.log
+window.z = true
+console.log = (...args) => {
+  z(...args)
+  window.z = window.z && args.every(t=>t)
+}
+
 // todo new Map
 export const isOrm = inst => inst && g.descFuncs[inst.name]
 

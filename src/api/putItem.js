@@ -40,14 +40,14 @@ export const putItem = (orm, normId, diff) => {
 
 const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
-
   const nextItem = nextItems[normId] || (nextItems[normId] = {})
-  g.ormsByNormId[normId] = orm
 
   if (hasRelation(upGraph, normId, parentNormId, stack)) return nextItem
   addRelation(upGraph, normId, parentNormId, stack)
 
   if (parentNormId) {
+    if (normId === parentNormId && normId !== stack[0]) return nextItem
+
     pathSet(g.childs, parentNormId, normId)(true)
     if (isUpdateParents) {
       if (item === nextItem) return nextItem
@@ -55,9 +55,12 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
     }
   }
   addRelation(g.graph, normId, parentNormId, stack)
+  g.itemsMap.delete(item)
+  g.itemsMap.set(nextItem, true)
 
   if (normId === stack[0]) return nextItem
   updates[normId] = true
+  g.ormsByNormId[normId] = orm
 
   stack.push(normId)
   g.items[normId] = merge(g.descFuncs[orm.name](), item, diff, nextItem, normId)

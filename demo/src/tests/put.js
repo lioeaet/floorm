@@ -130,3 +130,5 @@ console.log(
   Object.keys(child1_3.childInner.k).length === 1,
   Object.keys(child1_3).length === 4
 )
+
+console.log(window.z)
