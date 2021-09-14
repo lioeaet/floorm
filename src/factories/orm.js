@@ -4,6 +4,7 @@ import { extractId, normalizeId } from '*/utils'
 import { getItem } from '*/api/getItem'
 import { putItem } from '*/api/putItem'
 import { removeItem } from '*/api/removeItem'
+import { replaceId } from '*/api/replaceId'
 
 const listenItem = ''; const listenOrm = '';
 
@@ -19,15 +20,18 @@ const ormFactory = (desc, name) => {
     },
     remove: id => {
       const normId = normalizeId(name, id)
-      removeItem(normId)
+      return removeItem(normId)
+    },
+    replace: (id, nextId) => {
+      const normId = normalizeId(name, id)
+      const nextNormId = normalizeId(name, nextId)
+      return replaceId(normId, nextNormId, nextId)
     },
     put: diff => {
       const id = extractId(diff)
       const normId = normalizeId(name, id)
-      const item = putItem(orm, normId, diff)
-      return item
+      return putItem(orm, normId, diff)
     },
-    replace: (id, nextId, nextItem) => {},
     listen: listener => listenOrm(normId, listener),
     listenItem: (id, listener) => {
       const normId = normalizeId(orm, id)
