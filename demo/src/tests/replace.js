@@ -32,9 +32,20 @@ baseOrm.put({
   baseChildArr: [{ id: 1 }],
   baseBase: { id: 1 },
   baseBaseInner: { 
-    b: { id: 1 } 
+    b: { id: 2 } 
   },
   baseBaseArr: [{ id: 1 }]
+})
+
+baseOrm.put({
+  id: 2,
+  baseChild: { id: 2 },
+  baseChildInner: {
+    c: { id: 1 }
+  },
+  baseBaseInner: {
+    b: { id: 1 }
+  }
 })
 
 childOrm.put({
@@ -45,11 +56,13 @@ childOrm.put({
 const prevBase = baseOrm.replace(1, 7)
 const child = childOrm.replace(1, 7)
 const base = baseOrm.get(7)
+const base2 = baseOrm.get(2)
 
 console.log(
   prevBase !== base,
   base === base.baseBase,
-  base === base.baseBaseInner.b,
+  base2 === base.baseBaseInner.b,
+  base === base2.baseBaseInner.b,
   base === base.baseBaseArr[0],
   base === child.childBase,
   child === childOrm.get(7),

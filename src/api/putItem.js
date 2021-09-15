@@ -58,7 +58,7 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   g.itemsMap.delete(item)
   g.itemsMap.set(nextItem, true)
 
-  if (normId === stack[0]) return nextItem
+  if (stack.includes(normId)) return nextItem
   updates[normId] = true
   g.ormsByNormId[normId] = orm
 
