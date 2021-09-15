@@ -54,7 +54,7 @@ console.log(
   base === child.childBase,
   child === childOrm.get(7),
   child === child.childChild,
-  child === child.baseChild,
+  child === base.baseChild,
   child === base.baseChildInner.c,
   child === base.baseChildArr[0]
 )

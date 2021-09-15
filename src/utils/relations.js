@@ -29,6 +29,8 @@ export const removeRelation = (graph, normId, parentNormId, stack) => {
       key = stack[i + 1]
     }
   }
+  if (graph[normId] === graphLevel && Object.keys(graphLevel[parentNormId]).length === 1)
+    delete g.childs[parentNormId][normId]
   delete graphLevel[key]
 }
 

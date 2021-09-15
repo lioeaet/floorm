@@ -43,18 +43,18 @@ const mergeItem = (orm, normId, diff, parentNormId) => {
   const nextItem = nextItems[normId] || (nextItems[normId] = {})
 
   if (hasRelation(upGraph, normId, parentNormId, stack)) return nextItem
-  addRelation(upGraph, normId, parentNormId, stack)
 
   if (parentNormId) {
+    addRelation(upGraph, normId, parentNormId, stack)
+    addRelation(g.graph, normId, parentNormId, stack)
+    pathSet(g.childs, parentNormId, normId)(true)
     if (normId === parentNormId && normId !== stack[0]) return nextItem
 
-    pathSet(g.childs, parentNormId, normId)(true)
     if (isUpdateParents) {
       if (item === nextItem) return nextItem
       if (item === diff) return diff
     }
   }
-  addRelation(g.graph, normId, parentNormId, stack)
   g.itemsMap.delete(item)
   g.itemsMap.set(nextItem, true)
 
@@ -148,7 +148,7 @@ const updateParents = () => {
     if (!parents) continue
 
     for (let parentNormId in parents) {
-      if (!hasAllRelations(upGraph[normId][parentNormId], g.graph[normId][parentNormId])) {
+      if (!upGraph[normId] || !hasAllRelations(upGraph[normId][parentNormId], g.graph[normId][parentNormId])) {
         const parent = g.items[parentNormId]
         const parentOrm = g.ormsByNormId[parentNormId]
         const parentDiff = genParentDiff(g.graph[normId][parentNormId], parent, normId, parent.id)

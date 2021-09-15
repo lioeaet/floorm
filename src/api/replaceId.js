@@ -1,25 +1,29 @@
 import g from '*/global'
-import { theEnd, notify, extractId, clone } from '*/utils'
+import { theEnd, notify, extractId, isPlainObject, clone } from '*/utils'
 import { putItem } from '*/api/putItem' 
 
 export const replaceId = (normId, nextNormId, nextId) => {
-  const parentsClone = { ...g.graph[normId] }
+  const parents = g.graph[normId]
   const childs = g.childs[normId]
-  const nextItem = clone(g.items[normId])
-  nextItem.id = nextId
+  const diff = clone(g.items[normId])
+  diff.id = nextId
 
-  for (let parentNormId in parentsClone) {
+  for (let parentNormId in parents) {
     if (normId === parentNormId) continue
     const parent = g.items[parentNormId]
     const parentOrm = g.ormsByNormId[parentNormId]
-    const parentDiff = genParentDiff(parentsClone[parentNormId], parent, normId, nextItem, parent.id)
-    console.log(parentDiff)
+    const parentDiff = genParentDiff(parents[parentNormId], parent, normId, diff, parent.id)
 
     putItem(parentOrm, parentNormId, parentDiff)
   }
 
+  if (g.childs[normId][normId]) {
+    g.graph[nextNormId][nextNormId] = g.graph[normId][normId]
+    g.childs[nextNormId][nextNormId] = true
+  }
+
   for (let childNormId in childs) delete g.graph[childNormId][normId]
-  for (let parentNormId in parentsClone) delete g.childs[parentNormId][normId]
+  for (let parentNormId in parents) delete g.childs[parentNormId][normId]
   delete g.ormsByNormId[normId]
   delete g.childs[normId]
   delete g.graph[normId]
@@ -29,9 +33,7 @@ export const replaceId = (normId, nextNormId, nextId) => {
   g.itemsMap.delete(item)
   delete g.items[normId]
 
-  // notify(updatedIds)
-
-  return item.id
+  return g.items[nextNormId]
 }
 
 const genParentDiff = (graphLevel, level, childNormId, childNextItem, id) => {
@@ -53,6 +55,6 @@ const removeItemArrChilds = level => {
   for (let key in level) {
     if (Array.isArray(level[key])) g.arrChilds.delete(level[key])
     else if (g.itemsMap.has(level[key])) continue
-    else removeItemArrChilds(level[key])
+    else if (isPlainObject(level[key])) removeItemArrChilds(level[key])
   }
 }
