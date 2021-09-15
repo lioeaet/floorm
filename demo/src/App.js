@@ -16,7 +16,7 @@ const childOrm = orm(() => ({
   }
 }), 'child')
 
-baseOrm.put({
+const base1_1 = baseOrm.put({
   id: 1,
   baseChild: {
     id: 1
@@ -24,7 +24,7 @@ baseOrm.put({
   baseBaseArr: [{ id: 1 }]
 })
 
-childOrm.put({
+const child1_3 = childOrm.put({
   id: 1,
   childBase: { id: 1 },
   childBaseArr: [{ id: 1 }, { id: 1 }],
@@ -37,6 +37,6 @@ childOrm.put({
   }
 })
 
-baseOrm.replace(1, 7)
+baseOrm.remove(1)
 
-childOrm.replace(1, 7)
+console.log('oki')
