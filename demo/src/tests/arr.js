@@ -1,7 +1,7 @@
 import { orm } from '*'
 export default () => <div />
 
-const arrOrm = orm(() => ([base]), 'arrOrm')
+const arrOrm = orm(() => ([baseOrm]), 'arrOrm')
 
 const baseOrm = orm(() => ({}), 'child')
 

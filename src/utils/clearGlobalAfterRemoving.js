@@ -9,15 +9,19 @@ export const clearGlobalAfterRemoving = normId => {
   delete g.graph[normId]
 
   const item = g.items[normId]
-  removeItemArrChilds(item)
+  clearArrChilds(item)
   g.itemsMap.delete(item)
   delete g.items[normId]
 }
 
-const removeItemArrChilds = level => {
+const clearArrChilds = level => {
   for (let key in level) {
-    if (Array.isArray(level[key])) g.arrChilds.delete(level[key])
-    else if (isPlainObject(level[key]) && !g.itemsMap.has(level[key]))
-      removeItemArrChilds(level[key])
+    const nextLevel = level[key]
+
+    if (Array.isArray(nextLevel)) {
+      g.arrChilds.delete(nextLevel)
+    }
+    else if (isPlainObject(nextLevel) && !g.itemsMap.has(nextLevel))
+      clearArrChilds(nextLevel)
   }
 }

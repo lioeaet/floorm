@@ -1,6 +1,5 @@
 import g from '*/global'
-import { theEnd, clearGlobalAfterRemoving } from '*/utils'
-import { put } from '*/api/put' 
+import { mergeItem, updateParents, clearGlobalAfterRemoving, theEnd } from '*/utils'
 
 export const remove = normId => {
   const parents = g.graph[normId]
@@ -11,10 +10,15 @@ export const remove = normId => {
     const parentOrm = g.ormsByNormId[parentNormId]
     const parentDiff = genParentDiff(parents[parentNormId], parent, normId, parent.id)
 
-    put(parentOrm, parentNormId, parentDiff)
+    mergeItem(parentOrm, parentNormId, parentDiff)
   }
-
+  updateParents()
   clearGlobalAfterRemoving(normId)
+
+  g.isUpdateParents = false
+  g.nextItems = {}
+  g.currentGraph = {}
+  g.iterationUpdates = {}
 
   return g.items[normId]
 }

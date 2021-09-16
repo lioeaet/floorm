@@ -1,23 +1,19 @@
 import g from '*/global'
-
-const z = console.log
-window.z = true
-console.log = (...args) => {
-  z(...args)
-  window.z = window.z && args.every(t=>t)
-}
+export * from './relations'
+export * from './parents'
+export * from './path'
+export * from './way'
+export * from './merge'
+export * from './notifier'
+export * from './clearGlobalAfterRemoving'
 
 export const normalizeId = (orm, id) => `${orm.name}-${id}-floormNormId`
-
-export const isOrm = inst => inst && g.descFuncs[inst.name]
-
-export const isPlainObject = inst => inst && Object.getPrototypeOf(inst) === Object.prototype
-
 export const extractId = inst => isPlainObject(inst) && inst.id
+export const isOrm = inst => inst && g.descFuncs[inst.name]
+export const isPlainObject = inst => inst && Object.getPrototypeOf(inst) === Object.prototype
 
 export const clone = (inst, clones = new Map) => {
   if (clones.has(inst)) return clones.get(inst)
-
   if (isPlainObject(inst)) {
     let x = {}
     clones.set(inst, x)
@@ -39,8 +35,9 @@ export const clone = (inst, clones = new Map) => {
   return inst
 }
 
-export * from './path'
-export * from './way'
-export * from './relations'
-export * from './notifier'
-export * from './clearGlobalAfterRemoving'
+const z = console.log
+window.z = true
+console.log = (...args) => {
+  z(...args)
+  window.z = window.z && !args.some(t=>!t)
+}

@@ -3,6 +3,8 @@ import { mergeItem } from '*/utils/merge'
 import { hasAllRelations, theEnd } from '*/utils'
 
 export const updateParents = () => {
+  g.isUpdateParents = true
+
   for (let normId in g.iterationUpdates) {
     const parents = g.graph[normId]
     if (!parents) continue
@@ -30,4 +32,3 @@ const genParentDiff = (graphLevel, level, childNormId, id) => {
 
   return diff
 }
-

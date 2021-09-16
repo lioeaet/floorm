@@ -15,13 +15,16 @@ export const replace = (normId, nextNormId, nextId) => {
 
     put(parentOrm, parentNormId, parentDiff)
   }
-
   if (g.childs[normId][normId]) {
     g.graph[nextNormId][nextNormId] = g.graph[normId][normId]
     g.childs[nextNormId][nextNormId] = true
   }
-
   clearGlobalAfterRemoving(normId)
+
+  g.isUpdateParents = false
+  g.nextItems = {}
+  g.currentGraph = {}
+  g.iterationUpdates = {}
 
   return g.items[nextNormId]
 }

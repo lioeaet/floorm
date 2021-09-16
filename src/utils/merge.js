@@ -1,13 +1,13 @@
 import g from '*/global'
 import {
-  normalizeId,
-  extractId,
-  isOrm,
-  isPlainObject,
-  addRelation,
-  hasRelation,
   removeRelation,
+  hasRelation,
+  addRelation,
   waySet,
+  isOrm,
+  extractId,
+  normalizeId,
+  isPlainObject,
 } from '*/utils'
 
 export const mergeItem = (orm, normId, diff, parentNormId) => {

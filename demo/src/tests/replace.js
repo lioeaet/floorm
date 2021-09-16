@@ -71,3 +71,4 @@ console.log(
   child === base.baseChildInner.c,
   child === base.baseChildArr[0]
 )
+console.log(window.z)

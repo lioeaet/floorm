@@ -16,7 +16,7 @@ const childOrm = orm(() => ({
   }
 }), 'child')
 
-const base1_1 = baseOrm.put({
+baseOrm.put({
   id: 1,
   baseChild: {
     id: 1
@@ -24,7 +24,7 @@ const base1_1 = baseOrm.put({
   baseBaseArr: [{ id: 1 }]
 })
 
-const child1_3 = childOrm.put({
+childOrm.put({
   id: 1,
   childBase: { id: 1 },
   childBaseArr: [{ id: 1 }, { id: 1 }],
