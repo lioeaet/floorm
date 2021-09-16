@@ -18,9 +18,8 @@ const clearArrChilds = level => {
   for (let key in level) {
     const nextLevel = level[key]
 
-    if (Array.isArray(nextLevel)) {
-      g.arrChilds.delete(nextLevel)
-    }
+    if (Array.isArray(nextLevel)) g.arrChilds.delete(nextLevel)
+
     else if (isPlainObject(nextLevel) && !g.itemsMap.has(nextLevel))
       clearArrChilds(nextLevel)
   }

@@ -1,11 +1,10 @@
 import g from '*/global'
+export * from './clearGlobalAfterRemoving'
 export * from './relations'
 export * from './parents'
-export * from './path'
 export * from './way'
 export * from './merge'
 export * from './notifier'
-export * from './clearGlobalAfterRemoving'
 
 export const normalizeId = (orm, id) => `${orm.name}-${id}-floormNormId`
 export const extractId = inst => isPlainObject(inst) && inst.id

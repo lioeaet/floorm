@@ -1,6 +1,5 @@
 import g from '*/global'
-import { theEnd, clone, clearGlobalAfterRemoving } from '*/utils'
-import { put } from '*/api/put'
+import { mergeItem, updateParents, clearGlobalAfterRemoving, clone, theEnd } from '*/utils'
 
 export const replace = (normId, nextNormId, nextId) => {
   const parents = g.graph[normId]
@@ -13,12 +12,13 @@ export const replace = (normId, nextNormId, nextId) => {
     const parentOrm = g.ormsByNormId[parentNormId]
     const parentDiff = genParentDiff(parents[parentNormId], parent, normId, diff, parent.id)
 
-    put(parentOrm, parentNormId, parentDiff)
+    mergeItem(parentOrm, parentNormId, parentDiff)
   }
   if (g.childs[normId][normId]) {
     g.graph[nextNormId][nextNormId] = g.graph[normId][normId]
     g.childs[nextNormId][nextNormId] = true
   }
+  updateParents()
   clearGlobalAfterRemoving(normId)
 
   g.isUpdateParents = false
