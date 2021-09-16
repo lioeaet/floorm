@@ -1,10 +1,7 @@
 # floorm
 
-* remove
-* replace
-* single array orm
-* orm for several instances kinds
-* sync with data storages
+* oneOf
+* ormArray
 * optimize
 
 love my girl

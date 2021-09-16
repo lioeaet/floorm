@@ -1,38 +1,39 @@
 import g from '*/global'
 import { extractId, normalizeId } from '*/utils'
-// import { listenOrm, listenItem } from '*/utils/notifier'
-import { getItem } from '*/api/getItem'
-import { putItem } from '*/api/putItem'
-import { removeItem } from '*/api/removeItem'
-import { replaceId } from '*/api/replaceId'
-
-const listenItem = ''; const listenOrm = '';
+import { listenOrm, listenItem } from '*/utils/notifier'
+import { put } from '*/api/put'
+import { remove } from '*/api/remove'
+import { replace } from '*/api/replace'
 
 const ormFactory = (desc, name) => {
-  if (!desc) desc = () => ({})
+  if (!name) throw 'orm name is required'
+  if (g.descFuncs[name]) throw `duplicate orm name ${name}`
+
   g.descFuncs[name] = desc
 
   const orm = {
     name,
     get: id => {
-      const normId = normalizeId(name, id)
+      const normId = normalizeId(orm, id)
       return g.items[normId]
-    },
-    remove: id => {
-      const normId = normalizeId(name, id)
-      return removeItem(normId)
-    },
-    replace: (id, nextId) => {
-      const normId = normalizeId(name, id)
-      const nextNormId = normalizeId(name, nextId)
-      return replaceId(normId, nextNormId, nextId)
     },
     put: diff => {
       const id = extractId(diff)
-      const normId = normalizeId(name, id)
-      return putItem(orm, normId, diff)
+      const normId = normalizeId(orm, id)
+      return put(orm, normId, diff)
     },
-    listen: listener => listenOrm(normId, listener),
+    remove: id => {
+      const normId = normalizeId(orm, id)
+      return remove(normId)
+    },
+    replace: (id, nextId) => {
+      const normId = normalizeId(orm, id)
+      const nextNormId = normalizeId(orm, nextId)
+      return replace(normId, nextNormId, nextId)
+    },
+    listen: listener => {
+      return listenOrm(orm, listener)
+    },
     listenItem: (id, listener) => {
       const normId = normalizeId(orm, id)
       return listenItem(normId, listener)

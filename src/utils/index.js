@@ -7,23 +7,14 @@ console.log = (...args) => {
   window.z = window.z && args.every(t=>t)
 }
 
-// todo new Map
+export const normalizeId = (orm, id) => `floormNormId-${orm.name}-${id}`
+
 export const isOrm = inst => inst && g.descFuncs[inst.name]
 
-const plainObjProto = Object.getPrototypeOf({})
-export const isPlainObject = inst => inst && Object.getPrototypeOf(inst) === plainObjProto
+export const isPlainObject = inst => inst && Object.getPrototypeOf(inst) === Object.prototype
 
-export const isPromise = inst => inst && typeof inst.then === 'function'
+export const extractId = inst => isPlainObject(inst) && inst.id
 
-export const extractId = (...itemModes) => {
-  const itemWithId = itemModes.find(obj =>
-    isPlainObject(obj) &&
-    obj.hasOwnProperty('id')
-  )
-  if (itemWithId) return itemWithId.id
-}
-
-// dev utils
 export const clone = (inst, clones = new Map) => {
   if (clones.has(inst)) return clones.get(inst)
 
@@ -49,6 +40,6 @@ export const clone = (inst, clones = new Map) => {
 }
 
 export * from './path'
-export * from './normalizeId'
+export * from './way'
 export * from './relations'
 export * from './notifier'

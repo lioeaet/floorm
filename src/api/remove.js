@@ -1,22 +1,22 @@
 import g from '*/global'
-import { theEnd, notify, extractId, clone } from '*/utils'
-import { putItem } from '*/api/putItem' 
+import { theEnd, notify, clone } from '*/utils'
+import { put } from '*/api/put' 
 
-export const removeItem = normId => {
-  const parentsClone = { ...g.graph[normId] }
+export const remove = normId => {
+  const parents = g.graph[normId]
   const childs = g.childs[normId]
 
-  for (let parentNormId in parentsClone) {
+  for (let parentNormId in parents) {
     if (normId === parentNormId) continue
     const parent = g.items[parentNormId]
     const parentOrm = g.ormsByNormId[parentNormId]
-    const parentDiff = genParentDiff(parentsClone[parentNormId], parent, normId, parent.id)
+    const parentDiff = genParentDiff(parents[parentNormId], parent, normId, parent.id)
 
-    putItem(parentOrm, parentNormId, parentDiff)
+    put(parentOrm, parentNormId, parentDiff)
   }
 
   for (let childNormId in childs) delete g.graph[childNormId][normId]
-  for (let parentNormId in parentsClone) delete g.childs[parentNormId][normId]
+  for (let parentNormId in parents) delete g.childs[parentNormId][normId]
   delete g.ormsByNormId[normId]
   delete g.childs[normId]
   delete g.graph[normId]

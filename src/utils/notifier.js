@@ -1,23 +1,31 @@
 import g from '*/global'
-import { pathSet, pathDelete } from '*/utils'
+import { extractId } from '*/utils'
 
-const listeners = new Map
-
-export const listen = (normId, listener) => {
-  pathSet(listeners, normId, listener)(true)
-  const unlisten = () => pathDelete(listeners, normId, listener)
-  return unlisten
+export const listenOrm = (orm, listener) => {
+  const listeners = g.ormListeners[orm.name] || (g.ormListeners[orm.name] = [])
+  listeners.push(listener)
+  return () => listeners.splice(listeners.indexOf(listener), 1)
 }
 
-export const notify = normIds => {
-  for (let normId of listeners.keys()) {
-    if (!normIds.has(normId)) continue
+export const listenItem = (normId, listener) => {
+  const listeners = g.itemListeners[normId] || (g.itemListeners[normId] = [])
+  listeners.push(listener)
+  return () => listeners.splice(listeners.indexOf(listener), 1)
+}
+
+export const notify = nextItems => {
+  for (let normId in nextItems)
     notifyOne(normId)
-  }
+  console.log('=======')
 }
 
 export const notifyOne = normId => {
-  const itemListeners = listeners.get(normId)
-  if (!itemListeners) return
-  for (let listener of itemListeners.keys()) listener()
+  const item = g.items[normId]
+  const id = extractId(item)
+  const orm = g.ormsByNormId[normId]
+  const itemListeners = g.itemListeners[normId] || []
+  const ormListeners = g.ormListeners[orm.name] || []
+
+  for (let listener of itemListeners) listener(item)
+  for (let listener of ormListeners) listener(id, item)
 }

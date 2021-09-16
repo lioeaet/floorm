@@ -1,8 +1,8 @@
 import g from '*/global'
-import { theEnd, notify, extractId, isPlainObject, clone } from '*/utils'
-import { putItem } from '*/api/putItem' 
+import { theEnd, notify, isPlainObject, clone } from '*/utils'
+import { put } from '*/api/put' 
 
-export const replaceId = (normId, nextNormId, nextId) => {
+export const replace = (normId, nextNormId, nextId) => {
   const parents = g.graph[normId]
   const childs = g.childs[normId]
   const diff = clone(g.items[normId])
@@ -14,7 +14,7 @@ export const replaceId = (normId, nextNormId, nextId) => {
     const parentOrm = g.ormsByNormId[parentNormId]
     const parentDiff = genParentDiff(parents[parentNormId], parent, normId, diff, parent.id)
 
-    putItem(parentOrm, parentNormId, parentDiff)
+    put(parentOrm, parentNormId, parentDiff)
   }
 
   if (g.childs[normId][normId]) {
@@ -54,7 +54,7 @@ const genParentDiff = (graphLevel, level, childNormId, childNextItem, id) => {
 const removeItemArrChilds = level => {
   for (let key in level) {
     if (Array.isArray(level[key])) g.arrChilds.delete(level[key])
-    else if (g.itemsMap.has(level[key])) continue
-    else if (isPlainObject(level[key])) removeItemArrChilds(level[key])
+    else if (isPlainObject(level[key]) && !g.itemsMap.has(level[key]))
+      removeItemArrChilds(level[key])
   }
 }

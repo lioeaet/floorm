@@ -26,18 +26,3 @@ export const pathDelete = (map, ...keys) => {
   parent.delete(key)
   return item
 }
-
-export const pathIncrement = (map, ...keys) => {
-  const key = keys.pop()
-  const parent = path(map, ...keys)
-  const val = parent.get(key) ? parent.get(key) : 1
-  parent.set(key, val)
-}
-
-export const pathDecrement = (map, ...keys) => {
-  const key = keys.pop()
-  const parent = path(map, ...keys)
-  const val = map.get(key) - 1
-  if (!val) parent.delete(key)
-  else parent.set(key, val)
-}
