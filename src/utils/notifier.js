@@ -16,7 +16,6 @@ export const listenItem = (normId, listener) => {
 export const notify = nextItems => {
   for (let normId in nextItems)
     notifyOne(normId)
-  console.log('=======')
 }
 
 export const notifyOne = normId => {

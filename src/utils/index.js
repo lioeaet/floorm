@@ -7,7 +7,7 @@ console.log = (...args) => {
   window.z = window.z && args.every(t=>t)
 }
 
-export const normalizeId = (orm, id) => `floormNormId-${orm.name}-${id}`
+export const normalizeId = (orm, id) => `${orm.name}-${id}-floormNormId`
 
 export const isOrm = inst => inst && g.descFuncs[inst.name]
 
@@ -43,3 +43,4 @@ export * from './path'
 export * from './way'
 export * from './relations'
 export * from './notifier'
+export * from './clearGlobalAfterRemoving'
