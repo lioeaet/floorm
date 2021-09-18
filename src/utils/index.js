@@ -10,6 +10,7 @@ export const normalizeId = (orm, id) => `${orm.name}-${id}-floormNormId`
 export const extractId = inst => isPlainObject(inst) && inst.id
 export const isOrm = inst => inst && g.descFuncs[inst.name]
 export const isPlainObject = inst => inst && Object.getPrototypeOf(inst) === Object.prototype
+export const isPromise = inst => inst && typeof inst.then === 'function'
 
 export const clone = (inst, clones = new Map) => {
   if (clones.has(inst)) return clones.get(inst)

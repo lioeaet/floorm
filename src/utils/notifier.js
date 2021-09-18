@@ -1,30 +1,31 @@
 import g from '*/global'
-import { extractId } from '*/utils'
+
+const itemListeners = {}
+const ormListeners = {}
 
 export const listenOrm = (orm, listener) => {
-  const listeners = g.ormListeners[orm.name] || (g.ormListeners[orm.name] = [])
+  const listeners = ormListeners[orm.name] || (ormListeners[orm.name] = [])
   listeners.push(listener)
   return () => listeners.splice(listeners.indexOf(listener), 1)
 }
 
 export const listenItem = (normId, listener) => {
-  const listeners = g.itemListeners[normId] || (g.itemListeners[normId] = [])
+  const listeners = itemListeners[normId] || (itemListeners[normId] = [])
   listeners.push(listener)
   return () => listeners.splice(listeners.indexOf(listener), 1)
 }
 
 export const notify = nextItems => {
   for (let normId in nextItems)
-    notifyOne(normId)
+    notifyItem(normId)
 }
 
-export const notifyOne = normId => {
+export const notifyItem = normId => {
   const item = g.items[normId]
-  const id = extractId(item)
   const orm = g.ormsByNormId[normId]
-  const itemListeners = g.itemListeners[normId] || []
-  const ormListeners = g.ormListeners[orm.name] || []
+  const itemListenersArr = itemListeners[normId] || []
+  const ormListenersArr = ormListeners[orm.name] || []
 
-  for (let listener of itemListeners) listener(item)
-  for (let listener of ormListeners) listener(id, item)
+  for (let listener of itemListenersArr) listener(item)
+  for (let listener of ormListenersArr) listener(item)
 }

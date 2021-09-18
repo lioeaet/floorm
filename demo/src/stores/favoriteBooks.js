@@ -3,19 +3,18 @@ import api from '../api'
 import { bookOrm } from '../stores/orm'
 import { bookOrmStore } from '../stores/book'
 
-export default () => {
-  if (favoriteBooksStone.isLoading() || favoriteBooksStone.wasLoaded()) return
-  loadFavoriteBooks()
-}
+export default () => loadFavoriteBooks()
 
 const favoriteBooksStone = stone(
   [bookOrm],
-  []
+  'favoriteBooksStone'
 )
 
-export const useFavoriteBooks = () => ({
-  favoriteBooks: useStone(favoriteBooksStone)
-})
+export const useFavoriteBooks = () => {
+  return {
+    favoriteBooks: useStone(favoriteBooksStone)
+  }
+}
 
 const loadFavoriteBooks = () =>
   favoriteBooksStone.put(
@@ -26,7 +25,7 @@ const loadFavoriteBooks = () =>
 export const toggleFavoriteBook = bookId => {
   const nextBook = bookOrmStore.put(
     bookId,
-    book => ({ favorite: !book.favorite })
+    { favorite: !bookOrm.get(bookId).favorite }
   )
   if (nextBook.favorite) addToFavorite(nextBook)
   else removeFromFavorite(nextBook)
@@ -40,13 +39,13 @@ export const toggleFavoriteBook = bookId => {
 }
 
 const addToFavorite = book =>
-  favoriteBooksStone.put(favoriteBooks =>
-    [book, ...favoriteBooks]
+  favoriteBooksStone.put(
+    [book, ...(favoriteBooksStone.get() || [])]
   )
 
 const removeFromFavorite = book =>
-  favoriteBooksStone.put(favoriteBooks =>
-    favoriteBooks.filter(fb =>
-      book.id !== fb.id
+  favoriteBooksStone.put(
+    (favoriteBooksStone.get() || []).filter(fb =>
+      book !== fb
     )
   )

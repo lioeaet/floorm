@@ -2,20 +2,18 @@ import { stone, useStone } from '*'
 import api from '../api'
 import { authorOrm } from '../stores/orm'
 
-export default () => {
-  if (authorsStone.isLoading() || authorsStone.wasLoaded()) return 
-  loadAuthors()
-}
+export default () => loadAuthors()
 
 const authorsStone = stone(
   [authorOrm],
-  [],
-  'authors'
+  'authorsStone'
 )
 
-export const useAuthors = () => ({
-  authors: useStone(authorsStone)
-})
+export const useAuthors = () => {
+  return {
+    authors: useStone(authorsStone)
+  }
+}
 
 const loadAuthors = () =>
   authorsStone.put(

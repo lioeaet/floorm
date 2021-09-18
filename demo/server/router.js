@@ -1,5 +1,5 @@
 const express = require('express')
-const { AUTHORS, BOOKS, FAVORITE_BOOKS } = require('./data_2')
+const { AUTHORS, BOOKS, FAVORITE_BOOKS } = require('./data')
 
 const router = express.Router()
 

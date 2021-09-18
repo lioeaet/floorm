@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { PreloadLink } from '*'
+import { Link } from 'react-router-dom'
 import { useAuthor } from '../stores/author'
 import { randomColor } from '../utils'
 import Flag from './Flag'
@@ -12,7 +12,7 @@ const Author = () => {
     () => randomColor()
   ))
   const rColor = i => setColors(
-    colors.map((c, j) => j === i ? randomColor() : c)
+    colors && colors.map((c, j) => j === i ? randomColor() : c)
   )
 
   return (
@@ -38,7 +38,7 @@ const Author = () => {
         </h3>
         {author.booksPreview.map((book, i) => (
           <Fragment key={book.id}>
-            <PreloadLink
+            <Link
               to={`/book/${book.id}`}
               style={{
                 display: 'block',
@@ -54,7 +54,7 @@ const Author = () => {
               onMouseOut={() => rColor(i)}
             >
               {book.name}
-            </PreloadLink>
+            </Link>
             <br/>
           </Fragment>
         ))}

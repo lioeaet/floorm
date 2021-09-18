@@ -15,7 +15,7 @@
     "redis": "^3.0.2"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "concurrently \"npm run front\" \"npm run back\"",
     "back": "node ./server",
     "front": "react-app-rewired start",
     "build": "react-app-rewired build",

@@ -1,42 +1,57 @@
-import { orm } from '*'
-export default () => <div />
+import { Suspense } from 'react'
+import { BrowserRouter } from 'react-router-dom'
+import { useRoutes } from 'react-router'
 
-const baseOrm = orm(() => ({
-  baseChild: childOrm,
-  baseBaseArr: [baseOrm]
-}), 'base')
+import SplashScreen from './ui/SplashScreen'
+import Page from './ui/Page'
+import FavoriteBooks from './ui/FavoriteBooks'
+import Authors from './ui/Authors'
+import Author from './ui/Author'
+import Book from './ui/Book'
 
-const childOrm = orm(() => ({
-  childBase: baseOrm,
-  childBaseArr: [baseOrm],
-  childInner: {
-    k: {
-      childBaseInner: baseOrm
+import preloadAuthors from './stores/authors'
+import preloadFavoriteBooks from './stores/favoriteBooks'
+import preloadAuthor from './stores/author'
+import preloadBook from './stores/book'
+
+const routes = [
+  {
+    path: '/',
+    element: <Page>
+      <Authors />
+      <br />
+      <FavoriteBooks />
+    </Page>,
+    preload: () => {
+      preloadAuthors()
+      preloadFavoriteBooks()
     }
-  }
-}), 'child')
-
-baseOrm.put({
-  id: 1,
-  baseChild: {
-    id: 1
   },
-  baseBaseArr: [{ id: 1 }]
-})
-
-childOrm.put({
-  id: 1,
-  childBase: { id: 1 },
-  childBaseArr: [{ id: 1 }, { id: 1 }],
-  childInner: {
-    k: {
-      childBaseInner: {
-        id: 1
-      }
-    }
+  {
+    path: 'author/:authorId',
+    element: <Page>
+      <Author />
+    </Page>,
+    preload: preloadAuthor,
+  },
+  {
+    path: 'book/:bookId',
+    element: <Page>
+      <Book />
+    </Page>,
+    preload: preloadBook,
   }
-})
+]
 
-baseOrm.remove(1)
+const App = () => 
+  <Suspense fallback={<SplashScreen />}>
+    {useRoutes(routes)}
+  </Suspense>
 
-console.log('oki')
+export default () => {
+  return (
+    <BrowserRouter timeoutMs={8000}>
+      <App />
+    </BrowserRouter>
+  )
+}

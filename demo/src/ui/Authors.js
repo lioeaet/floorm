@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { PreloadLink } from '*'
+import { Link } from 'react-router-dom'
 import { useAuthors } from '../stores/authors'
 import Flag from './Flag'
 import { randomColor } from '../utils'
@@ -17,7 +17,7 @@ const Authors = () => {
     <>
       <h1>authors:</h1>
       {authors.map((author, i) =>
-        <PreloadLink
+        <Link
           to={`/author/${author.id}`}
           key={author.id}
           style={{
@@ -34,7 +34,7 @@ const Authors = () => {
             </span>
             {author.name}
           </h2>
-        </PreloadLink>
+        </Link>
       )}
     </>
   )

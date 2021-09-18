@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { PreloadLink } from '*'
+import { Link } from 'react-router-dom'
 import { useBook } from '../stores/book'
 import { randomColor } from '../utils'
 
@@ -17,7 +17,7 @@ const Book = () => {
       <h1>
         {book.name}
       </h1>
-      <PreloadLink
+      <Link
         to={`/author/${book.author.id}`}
         style={{
           display: 'block',
@@ -29,7 +29,7 @@ const Book = () => {
         onMouseOut={rColor}
       >
         <h2>{book.author.name}</h2>
-      </PreloadLink>
+      </Link>
       <img
         src={book.img}
         style={{

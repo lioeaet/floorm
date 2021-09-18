@@ -1,7 +1,7 @@
 # floorm
 
-* oneOf
-* ormArray
+* function as put param
+* ormSwitch
 * optimize
 
 love my girl
