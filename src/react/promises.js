@@ -1,4 +1,4 @@
-import { normalizeId, listenItem } from '*/utils'
+import { listenItem } from '*/utils'
 import { genStoneInst } from './stone'
 
 export const promises = {}

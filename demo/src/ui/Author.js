@@ -7,7 +7,7 @@ import Flag from './Flag'
 
 const Author = () => {
   const { authorId } = useParams()
-  const { author } = useAuthor(Number(authorId))
+  const { author } = useAuthor(authorId)
   const [colors, setColors] = useState(author.booksPreview.map(
     () => randomColor()
   ))

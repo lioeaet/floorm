@@ -2,7 +2,11 @@ import { store, useStore } from '*'
 import api from '../api'
 import { authorOrm } from '../stores/orm'
 
-export default params => loadAuthor(params.authorId)
+export default params => {
+  const authorId = Number(params.authorId)
+  if (authorStore.isLoading(authorId)) return
+  loadAuthor(authorId)
+}
 
 const authorStore = store(
   authorOrm

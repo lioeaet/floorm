@@ -2,7 +2,10 @@ import { stone, useStone } from '*'
 import api from '../api'
 import { authorOrm } from '../stores/orm'
 
-export default () => loadAuthors()
+export default () => {
+  if (authorsStone.isLoading()) return
+  loadAuthors()
+}
 
 const authorsStone = stone(
   [authorOrm],

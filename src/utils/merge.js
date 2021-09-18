@@ -7,30 +7,42 @@ import {
   isOrm,
   extractId,
   normalizeId,
-  isPlainObject,
+  isPlainObject
 } from '*/utils'
 
 export const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
   const nextItem = g.nextItems[normId] || (g.nextItems[normId] = {})
 
-  if (hasRelation(g.currentGraph, normId, parentNormId, g.stack)) return nextItem
+  if (hasRelation(g.currentGraph, normId, parentNormId, g.stack)) {
+    return nextItem
+  }
 
   if (parentNormId) {
     addRelation(g.currentGraph, normId, parentNormId, g.stack)
     addRelation(g.graph, normId, parentNormId, g.stack)
     waySet(g.childs, parentNormId, normId)(true)
-    if (normId === parentNormId && normId !== g.stack[0]) return nextItem
+
+    if (normId === parentNormId && normId !== g.stack[0])
+      return nextItem
 
     if (g.isUpdateParents) {
-      if (item === nextItem) return nextItem
-      if (item === diff) return diff
+      if (item === nextItem) return nextItem 
+      if (item === diff) {
+        // 1. parent update
+        // 2. update child wich contains him, place don't changed
+        // 3. diff same and we still should update parent
+        if (!(g.childs[normId] || {}).hasOwnProperty(parentNormId))
+          return item
+      }
     }
   }
   g.itemsMap.delete(item)
   g.itemsMap.set(nextItem, true)
 
-  if (g.stack.includes(normId)) return nextItem
+  if (g.stack.includes(normId)) {
+    return nextItem
+  }
   g.iterationUpdates[normId] = true
   g.ormsByNormId[normId] = orm
 

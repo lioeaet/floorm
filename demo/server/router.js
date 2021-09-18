@@ -31,33 +31,32 @@ for (let name in api) {
 }
 
 const putBook = (bookId, diff) => {
+  bookId = Number(bookId)
   const book = { ...BOOKS[bookId] }
   BOOKS[bookId] = book
-  putAuthorPreviewBook(bookId, book)
   if (diff.hasOwnProperty('favorite')) {
     if (book.favorite !== diff.favorite)
       toggleFavoriteBook(bookId, book)
   }
-  if (book.favorite) {
-    const index = FAVORITE_BOOKS
-      .findIndex(fb => fb.id === bookId)
-    if (index !== -1) FAVORITE_BOOKS[index] = book
-  }
-  for (let key in diff) {
-    book[key] = diff[key]
-  }
+  const favIdx = FAVORITE_BOOKS
+    .findIndex(fb => fb.id === bookId)
+  if (favIdx !== -1) FAVORITE_BOOKS[favIdx] = book
+  putAuthorPreviewBook(bookId, book)
+  for (let key in diff) book[key] = diff[key]
   return book
 }
 
 const toggleFavoriteBook = (bookId, book) => {
+  bookId = Number(bookId)
   const index = FAVORITE_BOOKS
     .findIndex(fb => fb.id === bookId)
   if (index === -1) FAVORITE_BOOKS.unshift(book)
   else FAVORITE_BOOKS.splice(index, 1)
-  return [...FAVORITE_BOOKS]
+  return FAVORITE_BOOKS
 }
 
 const putAuthorPreviewBook = (bookId, book) => {
+  bookId = Number(bookId)
   const authorId = book.author.id
   AUTHORS[authorId] = {
     ...AUTHORS[authorId],

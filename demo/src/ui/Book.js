@@ -59,7 +59,7 @@ const Book = () => {
         <input
           type="checkbox"
           checked={book.favorite}
-          onChange={() => toggleFavorite()}
+          onChange={toggleFavorite}
         />
         favorite: {String(book.favorite)}
       </label>

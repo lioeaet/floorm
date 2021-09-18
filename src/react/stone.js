@@ -15,8 +15,6 @@ export const stone = (desc, name) => {
   const orm = ormFactory(() => desc, name)
   const normId = normalizeId(orm, STONE_ID)
 
-  g.ormsByNormId[normId] = orm
-
   const stone = {
     put: diff => {
       return isPromise(diff)

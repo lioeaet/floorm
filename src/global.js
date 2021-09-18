@@ -13,4 +13,5 @@ const g = {
   iterationUpdates: {} // { normId: true }
 }
 console.log(g)
+window.g = g
 export default g
