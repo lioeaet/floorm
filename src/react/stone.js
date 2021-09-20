@@ -17,6 +17,7 @@ export const stone = (desc, name) => {
 
   const stone = {
     put: diff => {
+      diff = typeof diff === 'function' ? diff(g.items[normId].state) : diff
       return isPromise(diff)
         ? putPromise(orm, normId, diff, true)
         : put(orm, normId, genStoneInst(diff))

@@ -3,11 +3,14 @@ import { normalizeId, isPromise } from '*/utils'
 
 export const store = orm => {
   const store = {
-    put: (id, diff) =>
-      isPromise(diff)
+    put: (id, diff) => {
+      console.log(diff)
+      diff = typeof diff === 'function' ? diff(orm.get(id)) : diff
+      console.log(diff)
+      return isPromise(diff)
         ? putPromise(orm, normalizeId(orm, id), diff)
-        : orm.put({ id, ...diff }),
-
+        : orm.put({ id, ...diff })
+    },
     get: id => orm.get(id),
 
     replace: (id, nextId) => orm.replace(id, nextId),
