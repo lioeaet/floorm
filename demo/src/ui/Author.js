@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react'
+import { css } from 'astroturf'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useAuthor } from '../stores/author'
@@ -37,17 +38,12 @@ const Author = () => {
           books:
         </h3>
         {author.booksPreview.map((book, i) => (
-          <Fragment key={book.id}>
+          <div className={s.link} key={book.id}>
             <Link
               to={`/book/${book.id}`}
               style={{
-                display: 'block',
-                width: 'fit-content',
-                textDecoration: 'none',
                 color: colors[i],
-                border: `${colors[i]} solid 1px`,
-                padding: 10,
-                borderRadius: 3,
+                border: `${colors[i]} solid 1px`
               }}
               onMouseOver={() => rColor(i)}
               onMouseMove={() => rColor(i)}
@@ -56,11 +52,21 @@ const Author = () => {
               {book.name}
             </Link>
             <br/>
-          </Fragment>
+          </div>
         ))}
       </div>
     </>
   )
 }
+
+const s = css`
+  .link {
+    display: 'block';
+    width: 'fit-content';
+    text-decoration: 'none';
+    padding: 10;
+    borderRadius: 3;
+  }
+`
 
 export default Author

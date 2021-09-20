@@ -7,12 +7,12 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "history": "^5.0.0",
+    "node-sass": "^4.14.1",
     "react": "0.0.0-experimental-4c8c98ab9",
     "react-dom": "0.0.0-experimental-4c8c98ab9",
     "react-router": "0.0.0-experimental-ffd8c7d0",
     "react-router-dom": "0.0.0-experimental-ffd8c7d0",
-    "react-scripts": "4.0.1",
-    "redis": "^3.0.2"
+    "react-scripts": "4.0.1"
   },
   "scripts": {
     "start": "concurrently \"npm run front\" \"npm run back\"",
@@ -44,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "astroturf": "^0.10.2",
     "concurrently": "^6.0.0",
     "react-app-rewire-alias": "^1.0.1",
     "react-app-rewired": "^2.1.8"
