@@ -38,21 +38,19 @@ const Author = () => {
           books:
         </h3>
         {author.booksPreview.map((book, i) => (
-          <div className={s.link} key={book.id}>
-            <Link
-              to={`/book/${book.id}`}
-              style={{
-                color: colors[i],
-                border: `${colors[i]} solid 1px`
-              }}
-              onMouseOver={() => rColor(i)}
-              onMouseMove={() => rColor(i)}
-              onMouseOut={() => rColor(i)}
-            >
-              {book.name}
-            </Link>
-            <br/>
-          </div>
+          <Link
+            to={`/book/${book.id}`}
+            style={{
+              color: colors[i],
+              border: `${colors[i]} solid 1px`
+            }}
+            className={s.link}
+            onMouseOver={() => rColor(i)}
+            onMouseMove={() => rColor(i)}
+            onMouseOut={() => rColor(i)}
+          >
+            {book.name}
+          </Link>
         ))}
       </div>
     </>
@@ -61,11 +59,12 @@ const Author = () => {
 
 const s = css`
   .link {
-    display: 'block';
-    width: 'fit-content';
-    text-decoration: 'none';
-    padding: 10;
-    borderRadius: 3;
+    display: block;
+    width: fit-content;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 3px;
+    margin-bottom: 10px;
   }
 `
 
