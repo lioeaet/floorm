@@ -39,13 +39,11 @@ export const toggleFavoriteBook = bookId => {
 }
 
 const addToFavorite = book =>
-  favoriteBooksStone.put(
-    [book, ...(favoriteBooksStone.get() || [])]
+  favoriteBooksStone.put((fb = []) =>
+    [book, ...fb]
   )
 
 const removeFromFavorite = book =>
-  favoriteBooksStone.put(
-    (favoriteBooksStone.get() || []).filter(fb =>
-      book !== fb
-    )
+  favoriteBooksStone.put((fb = []) =>
+    fb.filter(fb => book !== fb)
   )
