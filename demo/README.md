@@ -8,7 +8,7 @@
 
 - immutable declarative orm with parent instances autoupdate
 - SPA UX with no loading states after initializing
-- transparent app architecture with 3 elements: stores, ui, router
+- transparent app architecture with 3 elements: doors, ui, router
 
 ## blowin' in the wind
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { useBook } from '../stores/book'
+import { useBook } from '../hotel/book'
 import { randomColor } from '../utils'
 
 const Book = () => {

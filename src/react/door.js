@@ -1,12 +1,11 @@
 import { putPromise, hasPromise } from '*/react/promises'
 import { normalizeId, isPromise } from '*/utils'
 
-export const store = orm => {
-  const store = {
+export const door = orm => {
+  const door = {
     put: (id, diff) => {
-      console.log(diff)
       diff = typeof diff === 'function' ? diff(orm.get(id)) : diff
-      console.log(diff)
+
       return isPromise(diff)
         ? putPromise(orm, normalizeId(orm, id), diff)
         : orm.put({ id, ...diff })
@@ -21,5 +20,5 @@ export const store = orm => {
 
     orm
   }
-  return store
+  return door
 }

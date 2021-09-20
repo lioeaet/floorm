@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuthors } from '../stores/authors'
+import { useAuthors } from '../hotel/authors'
 import Flag from './Flag'
 import { randomColor } from '../utils'
 

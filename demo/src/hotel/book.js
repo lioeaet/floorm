@@ -1,15 +1,15 @@
-import { store, useStore } from '*'
+import { door, useDoor } from '*'
 import api from '../api'
-import { bookOrm } from '../stores/orm'
-import { toggleFavoriteBook } from '../stores/favoriteBooks'
+import { bookOrm } from '../hotel/orm'
+import { toggleFavoriteBook } from '../hotel/favoriteBooks'
 
 export default params => {
   const bookId = Number(params.bookId)
-  if (bookStore.isLoading(bookId)) return
+  if (bookDoor.isLoading(bookId)) return
   loadBook(bookId)
 }
 
-export const bookStore = store(
+export const bookDoor = door(
   bookOrm
 )
 
@@ -17,7 +17,7 @@ export const useBook = bookId => {
   bookId = Number(bookId)
 
   return {
-    book: useStore(bookStore, bookId),
+    book: useDoor(bookDoor, bookId),
 
     changeBook: diff =>
       changeBook(bookId, diff)
@@ -31,7 +31,7 @@ export const useBook = bookId => {
 
 const loadBook = bookId => {
   bookId = Number(bookId)
-  bookStore.put(
+  bookDoor.put(
     bookId,
     api.book.get(bookId)
   )
@@ -40,12 +40,12 @@ const loadBook = bookId => {
 
 const changeBook = (bookId, diff) => {
   bookId = Number(bookId)
-  bookStore.put(bookId, diff)
+  bookDoor.put(bookId, diff)
 
-  const book = bookStore.get(bookId)
+  const book = bookDoor.get(bookId)
   return api.book.put(bookId, diff)
     .catch(e => {
-      bookStore.put(bookId, book)
+      bookDoor.put(bookId, book)
       throw e
     })
 }

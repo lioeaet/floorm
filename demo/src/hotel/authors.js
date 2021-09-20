@@ -1,6 +1,6 @@
 import { stone, useStone } from '*'
 import api from '../api'
-import { authorOrm } from '../stores/orm'
+import { authorOrm } from '../hotel/orm'
 
 export default () => {
   if (authorsStone.isLoading()) return

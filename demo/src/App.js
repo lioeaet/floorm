@@ -9,10 +9,10 @@ import Authors from './ui/Authors'
 import Author from './ui/Author'
 import Book from './ui/Book'
 
-import preloadAuthors from './stores/authors'
-import preloadFavoriteBooks from './stores/favoriteBooks'
-import preloadAuthor from './stores/author'
-import preloadBook from './stores/book'
+import preloadAuthors from './hotel/authors'
+import preloadFavoriteBooks from './hotel/favoriteBooks'
+import preloadAuthor from './hotel/author'
+import preloadBook from './hotel/book'
 
 const routes = [
   {

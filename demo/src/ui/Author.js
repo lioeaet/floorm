@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { css } from 'astroturf'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { useAuthor } from '../stores/author'
+import { useAuthor } from '../hotel/author'
 import { randomColor } from '../utils'
 import Flag from './Flag'
 

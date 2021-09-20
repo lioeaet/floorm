@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useFavoriteBooks } from '../stores/favoriteBooks'
+import { useFavoriteBooks } from '../hotel/favoriteBooks'
 import { randomColor } from '../utils'
 
 const FavoriteBooks = () => {

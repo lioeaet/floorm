@@ -11,8 +11,8 @@ export const useStone = stone => {
   return state && state.state
 }
 
-export const useStore = (store, id) => {
-  const normId = normalizeId(store.orm, id)
+export const useDoor = (door, id) => {
+  const normId = normalizeId(door.orm, id)
   const [state, setState] = useState(getState(normId))
 
   useListener(normId, setState)

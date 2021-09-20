@@ -1,7 +1,7 @@
 import { stone, useStone } from '*'
 import api from '../api'
-import { bookOrm } from '../stores/orm'
-import { bookStore } from '../stores/book'
+import { bookOrm } from '../hotel/orm'
+import { bookDoor } from '../hotel/book'
 
 export default () => loadFavoriteBooks()
 
@@ -23,7 +23,7 @@ const loadFavoriteBooks = () =>
   .catch(() => {})
 
 export const toggleFavoriteBook = bookId => {
-  const nextBook = bookStore.put(
+  const nextBook = bookDoor.put(
     bookId,
     { favorite: !bookOrm.get(bookId).favorite }
   )
