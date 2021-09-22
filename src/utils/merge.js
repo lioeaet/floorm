@@ -45,7 +45,7 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
   g.ormsByNormId[normId] = orm
 
   g.stack.push(normId)
-  g.items[normId] = merge(g.descFuncs[orm.name](), item, diff, nextItem, normId)
+  g.items[normId] = merge(g.descFuncs[orm.name](item, diff), item, diff, nextItem, normId)
   g.stack.pop()
 
   return nextItem

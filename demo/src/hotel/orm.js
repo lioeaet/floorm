@@ -10,5 +10,9 @@ export const bookOrm = orm(() => ({
 }), 'book')
 
 export const authorOrm = orm(() => ({
-  booksPreview: [bookOrm]
+  booksPreview: [bookOrm],
+  pattiMix: orm.oneOf(item =>
+    item.hasOwnProperty('author') ?
+      bookOrm : authorOrm
+  )
 }), 'author')
