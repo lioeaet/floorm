@@ -11,6 +11,6 @@ baseOrm.put({ id: 1, ok: { id: 1, stork: true, fromOk: true } })
 
 arrOrm.put({ id: 1, arr: [{ id: 1, bla: 'bla' }, { id: 1, bla: 'bla' }] })
 
-baseOrm.put({ id: 1, bla: 'bla bla bla' })
+baseOrm.put({ id: 1, ok: { id: 1 } })
 
 console.log(baseOrm.get(1), arrOrm.get(1))

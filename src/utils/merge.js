@@ -78,7 +78,7 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
 
     if (prevNormId && normId !== prevNormId) {
       if (prevNormId && prevNormId && parentNormId)
-        removeRelation(g.graph, prevNormId, g.stack, diff)
+        removeRelation(g.graph, prevNormId, parentNormId, g.stack)
       if (!diff) return diff
     }
     return mergeItem(orm, normId, diff, parentNormId)
