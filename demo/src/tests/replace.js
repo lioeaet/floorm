@@ -1,4 +1,4 @@
-  import { orm } from '*'
+import { orm } from '*'
 export default () => <div />
 
 const baseOrm = orm(() => ({

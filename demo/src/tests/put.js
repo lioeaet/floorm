@@ -20,7 +20,7 @@ const base1_1 = baseOrm.put({
   id: 1,
   baseChild: {
     id: 1,
-    childBase: { id: 1 }
+    childBase: { id: 1, fromBaseChild: 'x' }
   },
   baseBaseArr: [{ id: 2, la: 'la', a: 'a' }, { id: 1 }]
 })
@@ -28,11 +28,12 @@ const child1_1 = childOrm.get(1)
 const base2_1 = baseOrm.get(2)
 console.log(
   base1_1 === baseOrm.get(1),
+  base1_1.fromBaseChild === 'x',
   base1_1.baseBaseArr[0] === base2_1,
   base1_1.baseBaseArr[1] === base1_1,
   base1_1.baseBaseArr.length === 2,
   base1_1.baseChild === child1_1,
-  Object.keys(base1_1).length === 3,
+  Object.keys(base1_1).length === 4,
 
   base2_1.a === 'a',
   base2_1.la === 'la',
@@ -65,7 +66,7 @@ console.log(
   base1_2.baseBaseArr[1] === base1_2,
   base1_2.baseBaseArr.length === 2,
   base1_2.baseChild === child1_2,
-  Object.keys(base1_2).length === 5,
+  Object.keys(base1_2).length === 6,
 
   base2_2 !== base2_1,
   base2_2.a === 'a',
@@ -112,7 +113,7 @@ console.log(
   base1_3.baseBaseArr[1] === base1_3,
   base1_3.baseBaseArr.length === 2,
   base1_3.baseChild === child1_3,
-  Object.keys(base1_2).length === 5,
+  Object.keys(base1_2).length === 6,
 
   base2_3 === base2_2,
   base3_3 === base3_2,

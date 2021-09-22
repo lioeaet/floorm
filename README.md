@@ -1,7 +1,7 @@
 # floorm
 
-* function as put param
-* ormSwitch
+* jest
+* article
 * optimize
 
 love my girl

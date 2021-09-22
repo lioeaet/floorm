@@ -1,57 +1,16 @@
-import { Suspense } from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { useRoutes } from 'react-router'
+import { orm } from '*'
+export default () => <div />
 
-import SplashScreen from './ui/SplashScreen'
-import Page from './ui/Page'
-import FavoriteBooks from './ui/FavoriteBooks'
-import Authors from './ui/Authors'
-import Author from './ui/Author'
-import Book from './ui/Book'
+const baseOrm = orm(() => ({
+  ok: diff => diff.hasOwnProperty('stork') ? baseOrm : arrOrm
+}), 'base')
 
-import preloadAuthors from './hotel/authors'
-import preloadFavoriteBooks from './hotel/favoriteBooks'
-import preloadAuthor from './hotel/author'
-import preloadBook from './hotel/book'
+const arrOrm = orm(() => ({ arr: [baseOrm] }), 'arr')
 
-const routes = [
-  {
-    path: '/',
-    element: <Page>
-      <Authors />
-      <br />
-      <FavoriteBooks />
-    </Page>,
-    preload: () => {
-      preloadAuthors()
-      preloadFavoriteBooks()
-    }
-  },
-  {
-    path: 'author/:authorId',
-    element: <Page>
-      <Author />
-    </Page>,
-    preload: preloadAuthor,
-  },
-  {
-    path: 'book/:bookId',
-    element: <Page>
-      <Book />
-    </Page>,
-    preload: preloadBook,
-  }
-]
+baseOrm.put({ id: 1, ok: { id: 1, stork: true, fromOk: true } })
 
-const App = () => 
-  <Suspense fallback={<SplashScreen />}>
-    {useRoutes(routes)}
-  </Suspense>
+arrOrm.put({ id: 1, arr: [{ id: 1, bla: 'bla' }, { id: 1, bla: 'bla' }] })
 
-export default () => {
-  return (
-    <BrowserRouter timeoutMs={8000}>
-      <App />
-    </BrowserRouter>
-  )
-}
+baseOrm.put({ id: 1, bla: 'bla bla bla' })
+
+console.log(baseOrm.get(1), arrOrm.get(1))

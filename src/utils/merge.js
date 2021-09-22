@@ -14,9 +14,8 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
   const nextItem = g.nextItems[normId] || (g.nextItems[normId] = {})
 
-  if (hasRelation(g.currentGraph, normId, parentNormId, g.stack)) {
+  if (hasRelation(g.currentGraph, normId, parentNormId, g.stack))
     return nextItem
-  }
 
   if (parentNormId) {
     addRelation(g.currentGraph, normId, parentNormId, g.stack)
@@ -28,24 +27,27 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
 
     if (g.isUpdateParents) {
       if (item === nextItem) return nextItem 
-      if (item === diff) {
-        // 1. parent update
-        // 2. update child wich contains him, place don't changed
-        // 3. diff same and we still should update parent
+      // 1. parent update
+      // 2. update child wich contains him, place don't changed
+      // 3. diff same and we still should update parent
+      if (item === diff)
         if (!(g.childs[normId] || {}).hasOwnProperty(parentNormId))
           return item
-      }
     }
   }
   g.itemsMap.delete(item)
   g.itemsMap.set(nextItem, true)
 
-  if (g.stack.includes(normId)) return nextItem
+  if (g.stack.includes(normId)) {
+    for (let key in diff)
+      if (!nextItem.hasOwnProperty(key)) nextItem[key] = diff[key]
+    return nextItem
+  }
   g.iterationUpdates[normId] = true
   g.ormsByNormId[normId] = orm
 
   g.stack.push(normId)
-  g.items[normId] = merge(g.descFuncs[orm.name](item, diff), item, diff, nextItem, normId)
+  g.items[normId] = merge(g.descFuncs[orm.name](), item, diff, nextItem, normId)
   g.stack.pop()
 
   return nextItem
@@ -66,6 +68,22 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
     return mergeItem(desc, normId, diff, parentNormId)
   }
 
+  if (typeof desc === 'function') {
+    const orm = desc(diff)
+    const id = extractId(diff)
+    const normId = normalizeId(orm, id)
+    const prevOrm = inst && desc(inst)
+    const prevId = extractId(inst)
+    const prevNormId = prevOrm && normalizeId(prevOrm, prevId)
+
+    if (prevNormId && normId !== prevNormId) {
+      if (prevNormId && prevNormId && parentNormId)
+        removeRelation(g.graph, prevNormId, g.stack, diff)
+      if (!diff) return diff
+    }
+    return mergeItem(orm, normId, diff, parentNormId)
+  }
+
   if (isPlainObject(diff)) {
     for (let key in diff) {
       const keyDesc = desc && desc[key]
@@ -79,7 +97,6 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
       for (let key in inst)
         if (!nextInst.hasOwnProperty(key))
           nextInst[key] = inst[key]
-
     return nextInst
   }
 
@@ -120,7 +137,6 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
 
     return nextInst
   }
-
   return nextInst
 }
 

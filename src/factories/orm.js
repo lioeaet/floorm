@@ -43,24 +43,4 @@ const ormFactory = (desc, name) => {
   return orm
 }
 
-ormFactory.oneOf = (desc, name) => {
-  if (!name) throw 'orm name is required'
-  if (g.descFuncs[name]) throw `duplicate orm name ${name}`
-
-  const orm = {
-    name,
-    get: () => {},
-    put: diff => {
-      const parentOrm = desc(item, diff)
-      put(orm, normId, diff)
-      return parentOrm.put(diff)
-    }
-  }
-
-  g.descFuncs[name] = (item, diff) => {
-    const parentOrm = desc(item, diff)
-    parentOrm.listenItem(id, () => setToParent(item))
-  }
-}
-
 export default ormFactory
