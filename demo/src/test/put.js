@@ -60,6 +60,7 @@ const base2_2 = baseOrm.get(2)
 const base3_2 = baseOrm.get(3)
 console.log(
   base1_2 !== base1_1,
+  base1_2.fromBaseChild === 'x',
   base1_2.la === 'ok',
   base1_2.basePropInner === 'z',
   base1_2.baseBaseArr[0] === base2_2,
@@ -108,6 +109,7 @@ console.log(
   base1_3 !== base1_1,
   base1_2 !== base1_1,
   base1_3.la === 'ok',
+  base1_3.fromBaseChild === 'x',
   base1_3.basePropInner === 'changed z',
   base1_3.baseBaseArr[0] === base2_3,
   base1_3.baseBaseArr[1] === base1_3,
