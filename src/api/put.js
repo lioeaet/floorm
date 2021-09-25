@@ -6,12 +6,13 @@ import { mergeItem } from '*/utils/merge'
 export const put = (orm, normId, diff) => {
   mergeItem(orm, normId, diff)
   updateParents()
-  notify(g.nextItems, g.currentGraph, g.iterationUpdates)
+  notify(g.nextItems)
 
   g.isUpdateParents = false
   g.nextItems = {}
   g.currentGraph = {}
   g.iterationUpdates = {}
+  g.prevItems = {}
 
   return g.items[normId]
 }

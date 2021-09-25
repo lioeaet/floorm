@@ -40,7 +40,15 @@ const ormFactory = (desc, name) => {
     }
   }
 
-  return orm
+  const enhancedOrm = enhancers.reduce(
+    (prevOrm, enhancer) => enhancer(prevOrm),
+    orm
+  )
+
+  return enhancedOrm
 }
+
+const enhancers = []
+ormFactory.enhance = enhancer => enhancers.push(enhancer)
 
 export default ormFactory

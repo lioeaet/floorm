@@ -14,10 +14,12 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
   const nextItem = g.nextItems[normId] || (g.nextItems[normId] = {})
 
-  if (hasRelation(g.currentGraph, normId, parentNormId, g.stack))
-    return nextItem
+  if (!g.prevItems.hasOwnProperty(normId)) g.prevItems[normId] = item
 
   if (parentNormId) {
+    if (hasRelation(g.currentGraph, normId, parentNormId, g.stack))
+      return nextItem
+
     addRelation(g.currentGraph, normId, parentNormId, g.stack)
     addRelation(g.graph, normId, parentNormId, g.stack)
     waySet(g.childs, parentNormId, normId)(true)
@@ -26,10 +28,7 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
       return nextItem
 
     if (g.isUpdateParents) {
-      if (item === nextItem) return nextItem 
-      // 1. parent update
-      // 2. update child wich contains him, place don't changed
-      // 3. diff same and we still should update parent
+      if (item === nextItem) return nextItem
       if (item === diff)
         if (!(g.childs[normId] || {}).hasOwnProperty(parentNormId))
           return item

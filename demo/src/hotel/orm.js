@@ -1,4 +1,5 @@
 import { orm } from '*'
+import './logger'
 
 // pass func for await const bookOrm = ... execution
 export const userOrm = orm(() => ({

@@ -10,7 +10,8 @@ const g = {
   descFuncs: {},       // { ormName: descFunc }
   currentGraph: {},    // { normId: { parentNormId: ...waysToChild: true } }
   ormsByNormId: {},    // { normId: orm }
-  iterationUpdates: {} // { normId: true }
+  iterationUpdates: {}, // { normId: true }
+  prevItems: {}
 }
 console.log(g)
 window.g = g

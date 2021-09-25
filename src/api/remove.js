@@ -1,5 +1,5 @@
 import g from '*/global'
-import { mergeItem, updateParents, clearGlobalAfterRemoving, theEnd } from '*/utils'
+import { mergeItem, updateParents, clearGlobalAfterRemoving, notify, theEnd } from '*/utils'
 
 export const remove = normId => {
   const parents = g.graph[normId]
@@ -19,6 +19,7 @@ export const remove = normId => {
   g.nextItems = {}
   g.currentGraph = {}
   g.iterationUpdates = {}
+  g.prevItems = {}
 
   return g.items[normId]
 }

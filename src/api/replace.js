@@ -1,5 +1,5 @@
 import g from '*/global'
-import { mergeItem, updateParents, clearGlobalAfterRemoving, clone, theEnd } from '*/utils'
+import { mergeItem, updateParents, clearGlobalAfterRemoving, clone, notify, theEnd } from '*/utils'
 
 export const replace = (normId, nextNormId, nextId) => {
   const parents = g.graph[normId]
@@ -25,6 +25,7 @@ export const replace = (normId, nextNormId, nextId) => {
   g.nextItems = {}
   g.currentGraph = {}
   g.iterationUpdates = {}
+  g.prevItems = {}
 
   return g.items[nextNormId]
 }

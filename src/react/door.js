@@ -5,20 +5,23 @@ export const door = orm => {
   const door = {
     put: (id, diff) => {
       diff = typeof diff === 'function' ? diff(orm.get(id)) : diff
-
       return isPromise(diff)
         ? putPromise(orm, normalizeId(orm, id), diff)
         : orm.put({ id, ...diff })
     },
-    get: id => orm.get(id),
-
-    replace: (id, nextId) => orm.replace(id, nextId),
-
-    remove: id => orm.remove(id),
-
-    isLoading: id => hasPromise(normalizeId(orm, id)),
-
-    orm
+    get: id => {
+      return orm.get(id)
+    },
+    replace: (id, nextId) => {
+      return orm.replace(id, nextId)
+    },
+    remove: id => {
+      return orm.remove(id)
+    },
+    isLoading: id => {
+      return hasPromise(normalizeId(orm, id))
+    },
+    name: orm.name
   }
   return door
 }
