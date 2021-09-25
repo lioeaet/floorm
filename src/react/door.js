@@ -21,7 +21,16 @@ export const door = orm => {
     isLoading: id => {
       return hasPromise(normalizeId(orm, id))
     },
+    orm,
     name: orm.name
   }
-  return door
+
+  const enhancedDoor = enhancers.reduce(
+    (prevDoor, enhancer) => enhancer(prevDoor),
+    door
+  )
+  return enhancedDoor
 }
+
+const enhancers = []
+door.enhance = enhancer => enhancers.push(enhancer)

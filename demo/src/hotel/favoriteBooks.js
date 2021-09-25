@@ -7,7 +7,7 @@ export default () => loadFavoriteBooks()
 
 const favoriteBooksStone = stone(
   [bookOrm],
-  'favoriteBooksStone'
+  'favoriteBooks'
 )
 
 export const useFavoriteBooks = () => {

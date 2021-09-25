@@ -19,6 +19,8 @@ const ormFactory = (desc, name) => {
     },
     put: diff => {
       const id = extractId(diff)
+      diff = typeof diff === 'function' ? diff(orm.get(id)) : diff
+
       const normId = normalizeId(orm, id)
       return put(orm, normId, diff)
     },

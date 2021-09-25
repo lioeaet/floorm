@@ -9,7 +9,7 @@ export default () => {
 
 const authorsStone = stone(
   [authorOrm],
-  'authorsStone'
+  'authors'
 )
 
 export const useAuthors = () => {

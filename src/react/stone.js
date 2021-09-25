@@ -13,7 +13,7 @@ export const stone = (desc, name) => {
   desc = genStoneInst(desc)
   const orm = ormFactory(() => desc, name)
   const normId = normalizeId(orm, STONE_ID)
-  put(orm, normId, genStoneInst())
+  orm.put(genStoneInst())
 
   const stone = {
     put: diff => {
@@ -23,7 +23,7 @@ export const stone = (desc, name) => {
       }
       return isPromise(diff)
         ? putPromise(orm, normId, diff, true)
-        : put(orm, normId, genStoneInst(diff))
+        : orm.put(genStoneInst(diff))
     },
     get: () => {
       const inst = orm.get(STONE_ID)
@@ -31,7 +31,16 @@ export const stone = (desc, name) => {
     },
     isLoading: () => hasPromise(normId),
     orm,
+    name,
     normId
   }
-  return stone
+
+  const enhancedStone = enhancers.reduce(
+    (prevStone, enhancer) => enhancer(prevStone),
+    stone
+  )
+  return enhancedStone
 }
+
+const enhancers = []
+stone.enhance = enhancer => enhancers.push(enhancer)
