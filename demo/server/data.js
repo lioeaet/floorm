@@ -90,10 +90,10 @@ const AUTHORS = {
         name: 'The Gay Science',
         description: 'its so good',
       },
-      /* { id: 4,
+      { id: 4,
         name: 'Thus Spoke Zarathustra',
         description: 'its so good',
-      }, */
+      },
     ],
     country: 'Prussia'
   },

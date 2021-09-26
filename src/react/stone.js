@@ -13,12 +13,11 @@ export const stone = (desc, name) => {
   desc = genStoneInst(desc)
   const orm = ormFactory(() => desc, name)
   const normId = normalizeId(orm, STONE_ID)
-  orm.put(genStoneInst())
 
   const stone = {
     put: diff => {
       if (typeof diff === 'function') {
-        const item = orm.get(STONE_ID)
+        const item = orm.get(STONE_ID) || {}
         diff = diff(item.state)
       }
       return isPromise(diff)

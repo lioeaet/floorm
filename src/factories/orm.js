@@ -3,7 +3,6 @@ import { extractId, normalizeId } from '*/utils'
 import { listenOrm, listenItem } from '*/utils/notifier'
 import { put } from '*/api/put'
 import { remove } from '*/api/remove'
-import { replace } from '*/api/replace'
 
 const ormFactory = (desc, name) => {
   if (!name) throw 'orm name is required'
@@ -27,11 +26,6 @@ const ormFactory = (desc, name) => {
     remove: id => {
       const normId = normalizeId(orm, id)
       return remove(normId)
-    },
-    replace: (id, nextId) => {
-      const normId = normalizeId(orm, id)
-      const nextNormId = normalizeId(orm, nextId)
-      return replace(normId, nextNormId, nextId)
     },
     listen: listener => {
       return listenOrm(orm, listener)

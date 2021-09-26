@@ -32,5 +32,5 @@ export const notifyItem = normId => {
   const ormListenersArr = ormListeners[orm.name] || []
 
   for (let listener of itemListenersArr) listener(item, prevItem)
-  for (let listener of ormListenersArr) listener(item, prevItem)
+  for (let listener of ormListenersArr) listener(item, prevItem, normId)
 }

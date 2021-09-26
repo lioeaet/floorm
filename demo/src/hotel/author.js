@@ -1,6 +1,6 @@
 import { door, useDoor } from '*'
 import api from '../api'
-import { authorOrm } from '../hotel/orm'
+import { authorOrm, bookOrm } from '../hotel/orm'
 
 export default params => {
   const authorId = Number(params.authorId)
@@ -16,7 +16,8 @@ export const useAuthor = authorId => {
   authorId = Number(authorId)
 
   return {
-    author: useDoor(authorDoor, authorId)
+    author: useDoor(authorDoor, authorId),
+    removeBook: bookOrm.remove
   }
 }
 

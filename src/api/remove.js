@@ -4,6 +4,8 @@ import { mergeItem, updateParents, clearGlobalAfterRemoving, notify, theEnd } fr
 export const remove = normId => {
   const parents = g.graph[normId]
 
+  g.isUpdateParents = true
+
   for (let parentNormId in parents) {
     if (normId === parentNormId) continue
     const parent = g.items[parentNormId]
@@ -13,6 +15,15 @@ export const remove = normId => {
     mergeItem(parentOrm, parentNormId, parentDiff)
   }
   updateParents()
+
+  const item = g.items[normId]
+
+  g.itemsMap.delete(item)
+  g.prevItems[normId] = item
+  g.items[normId] = null
+  g.nextItems[normId] = null
+  notify(g.nextItems)
+
   clearGlobalAfterRemoving(normId)
 
   g.isUpdateParents = false
@@ -21,7 +32,7 @@ export const remove = normId => {
   g.iterationUpdates = {}
   g.prevItems = {}
 
-  return g.items[normId]
+  return item.id
 }
 
 const genParentDiff = (graphLevel, level, childNormId, id) => {

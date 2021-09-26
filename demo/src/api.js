@@ -1,7 +1,7 @@
 const fetchData = (url, body, method = 'GET') =>
   fetch(`http://localhost:7337/${url}`, { body, method, headers: { 'Content-Type': method === 'GET' ? 'text/plain' : 'application/json', } })
     // .then(a => console.log(a) || a)
-    .then(res => delay(() => res.json()))
+    .then(res => res.json())
 
 const api = {
   author: {
@@ -28,10 +28,10 @@ const api = {
 
 export default api
 
-const delay = (func, ms = 999) =>
-  new Promise(resolve =>
-    setTimeout(
-      () => resolve(func()), 
-      ms
-    )
-  )
+// const delay = (func, ms = 999) =>
+//   new Promise(resolve =>
+//     setTimeout(
+//       () => resolve(func()), 
+//       ms
+//     )
+//   )

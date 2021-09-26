@@ -2,8 +2,9 @@ import g from '*/global'
 import { isPlainObject } from '*/utils'
 
 export const clearGlobalAfterRemoving = normId => {
-  for (let childNormId in g.childs) delete g.graph[childNormId][normId]
-  for (let parentNormId in g.parents) delete g.childs[parentNormId][normId]
+  for (let childNormId in (g.childs[normId] || {})) delete g.graph[childNormId][normId]
+  for (let parentNormId in (g.graph[normId] || {})) delete g.childs[parentNormId][normId]
+
   delete g.ormsByNormId[normId]
   delete g.childs[normId]
   delete g.graph[normId]

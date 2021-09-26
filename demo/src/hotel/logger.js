@@ -1,5 +1,5 @@
 import { stone, door, orm } from '*'
-import { isPromise } from '*/utils'
+// import { isPromise } from '*/utils'
 
 let ormName, itemId, parents
 const stones = {}
@@ -24,8 +24,9 @@ orm.enhance(orm => {
     return nextItem
   }
 
-  orm.listen((item, prevItem) => {
-    if (name === ormName && item.id === itemId) return
+  orm.listen((item, prevItem, normId) => {
+    const id = item ? item.id : prevItem.id
+    if (name === ormName && id === itemId) return
     const isStone = stones.hasOwnProperty(name)
 
     if (isStone) {
@@ -37,7 +38,7 @@ orm.enhance(orm => {
     if (isStone) {
       parents[name] = { prev: prevItem, next: item } 
     }
-    else parents[name][item.id] = { prev: prevItem, next: item }
+    else parents[name][id] = { prev: prevItem, next: item }
   })
   return orm
 })
@@ -48,17 +49,17 @@ stone.enhance(stone => {
   stones[name] = stone
 
   stone.put = (diff) => {
-    if (isPromise(diff)) console.log(`${name} put promise`)
+    // if (isPromise(diff)) console.log(`${name} put promise`)
     return put(diff)
   }
   return stone
 })
 
 door.enhance(door => {
-  const { name, put } = door
+  const { /* name, */ put } = door
 
   door.put = (id, diff) => {
-    if (isPromise(diff)) console.log(`${name} put promise ${id}`)
+    // if (isPromise(diff)) console.log(`${name} put promise ${id}`)
     return put(id, diff)
   }
   return door

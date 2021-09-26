@@ -8,7 +8,7 @@ import Flag from './Flag'
 
 const Author = () => {
   const { authorId } = useParams()
-  const { author } = useAuthor(authorId)
+  const { author, removeBook } = useAuthor(authorId)
   const [colors, setColors] = useState(author.booksPreview.map(
     () => randomColor()
   ))
@@ -38,19 +38,27 @@ const Author = () => {
           books:
         </h3>
         {author.booksPreview.map((book, i) => (
-          <Link
-            to={`/book/${book.id}`}
-            style={{
-              color: colors[i],
-              border: `${colors[i]} solid 1px`
-            }}
-            className={s.link}
-            onMouseOver={() => rColor(i)}
-            onMouseMove={() => rColor(i)}
-            onMouseOut={() => rColor(i)}
-          >
-            {book.name}
-          </Link>
+          <div key={book.id}>
+            <Link
+              to={`/book/${book.id}`}
+              style={{
+                color: colors[i],
+                border: `${colors[i]} solid 1px`
+              }}
+              className={s.link}
+              onMouseOver={() => rColor(i)}
+              onMouseMove={() => rColor(i)}
+              onMouseOut={() => rColor(i)}
+            >
+              {book.name}
+            </Link>
+            <div
+              onClick={() => removeBook(book.id)}
+              className={s.remove}
+            >
+              remove
+            </div>
+          </div>
         ))}
       </div>
     </>
@@ -64,6 +72,10 @@ const s = css`
     text-decoration: none;
     padding: 10px;
     border-radius: 3px;
+    margin-bottom: 5px;
+  }
+  .remove {
+    cursor: pointer;
     margin-bottom: 10px;
   }
 `

@@ -25,7 +25,9 @@ export const useBook = bookId => {
 
     toggleFavorite: () =>
       toggleFavoriteBook(bookId)
-        .catch(console.error)
+        .catch(console.error),
+
+    removeBook: () => bookOrm.remove(bookId)
   }
 }
 

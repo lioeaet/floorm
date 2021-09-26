@@ -30,8 +30,10 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
     if (g.isUpdateParents) {
       if (item === nextItem) return nextItem
       if (item === diff)
-        if (!(g.childs[normId] || {}).hasOwnProperty(parentNormId))
+        if (!(g.childs[normId] || {}).hasOwnProperty(parentNormId)) {
+          delete g.nextItems[normId]
           return item
+        }
     }
   }
   g.itemsMap.delete(item)
