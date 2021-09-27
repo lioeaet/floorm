@@ -1,9 +1,9 @@
-import ormFactory from '*/factories/orm'
-import { put } from '*/api/put'
-import { normalizeId, isPromise } from '*/utils'
-import { putPromise, hasPromise } from './promises'
+import g from '*/global'
+import { normalizeId, isPromise, enhance } from '*/utils'
+import { orm as ormFactory } from '*/factories/orm'
+import { putPromise, hasPromise } from '*/cellar/promises'
 
-const STONE_ID = 'stone'
+export const STONE_ID = 'stone'
 export const genStoneInst = item => ({
   state: item,
   id: STONE_ID
@@ -14,7 +14,10 @@ export const stone = (desc, name) => {
   const orm = ormFactory(() => desc, name)
   const normId = normalizeId(orm, STONE_ID)
 
+  g.orms[name] = orm
+
   const stone = {
+    name,
     put: diff => {
       if (typeof diff === 'function') {
         const item = orm.get(STONE_ID) || {}
@@ -29,16 +32,9 @@ export const stone = (desc, name) => {
       return inst && inst.state
     },
     isLoading: () => hasPromise(normId),
-    orm,
-    name,
-    normId
   }
 
-  const enhancedStone = enhancers.reduce(
-    (prevStone, enhancer) => enhancer(prevStone),
-    stone
-  )
-  return enhancedStone
+  return enhance(enhancers, stone)
 }
 
 const enhancers = []

@@ -5,7 +5,7 @@ export const clearGlobalAfterRemoving = normId => {
   for (let childNormId in (g.childs[normId] || {})) delete g.graph[childNormId][normId]
   for (let parentNormId in (g.graph[normId] || {})) delete g.childs[parentNormId][normId]
 
-  delete g.ormsByNormId[normId]
+  delete g.orms[normId]
   delete g.childs[normId]
   delete g.graph[normId]
 

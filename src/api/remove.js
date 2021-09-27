@@ -1,5 +1,9 @@
 import g from '*/global'
-import { mergeItem, updateParents, clearGlobalAfterRemoving, notify, theEnd } from '*/utils'
+import { notify } from '*/utils'
+import { mergeItem } from '*/cellar/merge'
+import { updateParents } from '*/cellar/parents'
+import { clearGlobalAfterRemoving } from '*/cellar/clearGlobalAfterRemoving'
+import { theEnd } from '*/cellar/relations'
 
 export const remove = normId => {
   const parents = g.graph[normId]
@@ -9,7 +13,7 @@ export const remove = normId => {
   for (let parentNormId in parents) {
     if (normId === parentNormId) continue
     const parent = g.items[parentNormId]
-    const parentOrm = g.ormsByNormId[parentNormId]
+    const parentOrm = g.orms[parentNormId]
     const parentDiff = genParentDiff(parents[parentNormId], parent, normId, parent.id)
 
     mergeItem(parentOrm, parentNormId, parentDiff)

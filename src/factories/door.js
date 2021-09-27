@@ -1,8 +1,9 @@
-import { putPromise, hasPromise } from '*/react/promises'
-import { normalizeId, isPromise } from '*/utils'
+import { normalizeId, isPromise, enhance } from '*/utils'
+import { putPromise, hasPromise } from '*/cellar/promises'
 
 export const door = orm => {
   const door = {
+    name: orm.name,
     put: (id, diff) => {
       diff = typeof diff === 'function' ? diff(orm.get(id)) : diff
       return isPromise(diff)
@@ -20,16 +21,9 @@ export const door = orm => {
     },
     isLoading: id => {
       return hasPromise(normalizeId(orm, id))
-    },
-    orm,
-    name: orm.name
+    }
   }
-
-  const enhancedDoor = enhancers.reduce(
-    (prevDoor, enhancer) => enhancer(prevDoor),
-    door
-  )
-  return enhancedDoor
+  return enhance(enhancers, door)
 }
 
 const enhancers = []

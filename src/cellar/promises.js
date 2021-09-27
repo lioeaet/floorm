@@ -1,5 +1,5 @@
+import { genStoneInst } from '*/factories/stone'
 import { listenItem } from '*/utils'
-import { genStoneInst } from './stone'
 
 export const promises = {}
 const promiseListeners = {}

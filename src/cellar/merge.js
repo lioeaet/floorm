@@ -1,14 +1,16 @@
 import g from '*/global'
 import {
-  removeRelation,
-  hasRelation,
-  addRelation,
   waySet,
   isOrm,
   extractId,
   normalizeId,
   isPlainObject
 } from '*/utils'
+import {
+  removeRelation,
+  hasRelation,
+  addRelation,
+} from '*/cellar/relations'
 
 export const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
@@ -45,7 +47,7 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
     return nextItem
   }
   g.iterationUpdates[normId] = true
-  g.ormsByNormId[normId] = orm
+  g.orms[normId] = orm
 
   g.stack.push(normId)
   g.items[normId] = merge(g.descFuncs[orm.name](), item, diff, nextItem, normId)

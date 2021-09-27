@@ -22,7 +22,7 @@ export const notify = nextItems => {
 
 export const notifyItem = normId => {
   const item = g.items[normId]
-  const orm = g.ormsByNormId[normId]
+  const orm = g.orms[normId]
   const prevItem = g.prevItems[normId]
 
   // item just removed from parent with graph changes

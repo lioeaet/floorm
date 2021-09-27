@@ -1,9 +1,5 @@
 import g from '*/global'
-export * from './clearGlobalAfterRemoving'
-export * from './relations'
-export * from './parents'
 export * from './way'
-export * from './merge'
 export * from './notifier'
 
 export const normalizeId = (orm, id) => `${orm.name}-${id}-floormNormId`
@@ -34,6 +30,12 @@ export const clone = (inst, clones = new Map) => {
   }
   return inst
 }
+
+export const enhance = (enhancers, inst) =>
+  enhancers.reduce(
+    (prevInst, enhancer) => enhancer(prevInst),
+    inst
+  )
 
 const z = console.log
 window.z = true

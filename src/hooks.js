@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react'
 import g from '*/global'
+import { useState, useEffect } from 'react'
+import { STONE_ID } from '*/factories/stone'
 import { normalizeId, isPromise } from '*/utils'
-import { getPromise, listenItemWithPromise } from '*/react/promises'
+import { getPromise, listenItemWithPromise } from '*/cellar/promises'
 
 export const useStone = stone => {
-  const [state, setState] = useState(getState(stone.normId))
+  const normId = normalizeId(g.orms[stone.name], STONE_ID)
+  const [state, setState] = useState(getState(normId))
 
   useListener(stone.normId, setState)
   if (isPromise(state)) throw state
@@ -12,7 +14,7 @@ export const useStone = stone => {
 }
 
 export const useDoor = (door, id) => {
-  const normId = normalizeId(door.orm, id)
+  const normId = normalizeId(g.orms[door.name], id)
   const [state, setState] = useState(getState(normId))
 
   useListener(normId, setState)

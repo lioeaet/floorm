@@ -1,6 +1,6 @@
 import g from '*/global'
-import { mergeItem } from '*/utils/merge'
-import { hasAllRelations, theEnd } from '*/utils'
+import { mergeItem } from '*/cellar/merge'
+import { hasAllRelations, theEnd } from '*/cellar/relations'
 
 export const updateParents = () => {
   g.isUpdateParents = true
@@ -12,7 +12,7 @@ export const updateParents = () => {
     for (let parentNormId in parents) {
       if (!g.currentGraph[normId] || !hasAllRelations(g.currentGraph[normId][parentNormId], g.graph[normId][parentNormId])) {
         const parent = g.items[parentNormId]
-        const parentOrm = g.ormsByNormId[parentNormId]
+        const parentOrm = g.orms[parentNormId]
         const parentDiff = genParentDiff(g.graph[normId][parentNormId], parent, normId, parent.id)
         g.iterationUpdates = {}
         mergeItem(parentOrm, parentNormId, parentDiff)

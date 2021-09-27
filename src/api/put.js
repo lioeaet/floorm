@@ -1,7 +1,7 @@
 import g from '*/global'
 import { notify } from '*/utils'
-import { updateParents } from '*/utils/parents'
-import { mergeItem } from '*/utils/merge'
+import { updateParents } from '*/cellar/parents'
+import { mergeItem } from '*/cellar/merge'
 
 export const put = (orm, normId, diff) => {
   mergeItem(orm, normId, diff)
