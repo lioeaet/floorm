@@ -1,5 +1,5 @@
 import g from '*/global'
-import { isPlainObject, extractId } from '*/utils'
+import { isPlainObject } from '*/utils'
 
 export const clearGlobalAfterRemoving = (id, normId) => {
   for (let childNormId in (g.childs[normId] || {})) delete g.graph[childNormId][normId]
