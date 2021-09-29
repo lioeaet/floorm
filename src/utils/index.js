@@ -7,7 +7,7 @@ export const normalizeId = (orm, id) => {
   const ids = wayGet(g.ids, orm.name) || waySet(g.ids, orm.name)({})
   if (id && !ids.hasOwnProperty(id))
     waySet(ids, id)(
-      Symbol(`${orm.name}-${id}`)
+      /* Symbol( */`${orm.name}-${id}`/* ) */
     )
   return ids[id]
 }

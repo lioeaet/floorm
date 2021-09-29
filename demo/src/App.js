@@ -1,4 +1,5 @@
 import { orm } from '*'
+import './hotel/logger'
 export default () => <div />
 
 const baseOrm = orm(() => ({

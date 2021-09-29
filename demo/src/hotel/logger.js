@@ -13,15 +13,15 @@ orm.enhance(orm => {
     parents = {}
 
     const isStone = stones.hasOwnProperty(diff)
-    const prevItem = isStone ? orm.get(itemId).state : orm.get(itemId)
-    const itemDiff = isStone ? diff.state : diff
-    const nextItem = isStone ? put(diff).state : put(diff)
+    const prev = isStone ? orm.get(itemId).state : orm.get(itemId)
+    const item = isStone ? put(diff).state : put(diff)
+    diff = isStone ? diff.state : diff
 
     console.log(
       `${name} put`,
-      { prevItem, diff: itemDiff, nextItem, parents }
+      { prev, diff, item, parents }
     )
-    return nextItem
+    return item
   }
 
   orm.remove = id => {
@@ -31,26 +31,26 @@ orm.enhance(orm => {
 
     remove(id)
 
-    console.log(`${name} remove ${id}`, {  })
+    console.log(`${name} remove ${id}`, parents)
 
     return id
   }
 
-  orm.listen((item, prevItem, normId) => {
-    const id = item ? item.id : prevItem.id
+  orm.listen((item, prev, normId) => {
+    const id = item ? item.id : prev.id
     if (name === ormName && id === itemId) return
     const isStone = stones.hasOwnProperty(name)
 
     if (isStone) {
       item = item.state
-      prevItem = prevItem.state
+      prev = prev.state
     }
     if (!parents[name]) parents[name] = {}
 
     if (isStone) {
-      parents[name] = { prev: prevItem, next: item } 
+      parents[name] = { prev, item } 
     }
-    else parents[name][id] = { prev: prevItem, next: item }
+    else parents[name][id] = { prev, item }
   })
   return orm
 })
