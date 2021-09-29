@@ -1,7 +1,8 @@
 # floorm
 
-* enhance
-* replace/remove notify
+! love my girl
+
+* remove notify
 * normId -> [orm, id]
 * flat(id)
 * docs

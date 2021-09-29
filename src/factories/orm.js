@@ -3,6 +3,8 @@ import { extractId, normalizeId, enhance } from '*/utils'
 import { listenOrm, listenItem } from '*/utils/notifier'
 import { put } from '*/api/put'
 import { remove } from '*/api/remove'
+import { find } from '*/api/find'
+import { map } from '*/api/map'
 
 export const orm = (desc, name) => {
   if (!name) throw 'orm name is required'
@@ -11,7 +13,6 @@ export const orm = (desc, name) => {
   g.descFuncs[name] = desc
 
   const ormInst = {
-    name,
     get: id => {
       const normId = normalizeId(ormInst, id)
       return g.items[normId]
@@ -27,18 +28,24 @@ export const orm = (desc, name) => {
       const normId = normalizeId(ormInst, id)
       return remove(normId)
     },
+    find: cb => {
+      return find(ormInst, cb)
+    },
+    map: cb => {
+      return map(ormInst, cb)
+    },
     listen: listener => {
       return listenOrm(ormInst, listener)
     },
     listenItem: (id, listener) => {
       const normId = normalizeId(ormInst, id)
       return listenItem(normId, listener)
-    }
+    },
+    name
   }
 
   const enhancedOrmInst = enhance(enhancers, ormInst)
   g.orms[name] = enhancedOrmInst
-
   return enhancedOrmInst
 }
 

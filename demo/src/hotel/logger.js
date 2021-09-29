@@ -5,7 +5,7 @@ let ormName, itemId, parents
 const stones = {}
 
 orm.enhance(orm => {
-  const { name, put/* , replace, remove */ } = orm
+  const { name, put, remove } = orm
 
   orm.put = diff => {
     ormName = name
@@ -22,6 +22,18 @@ orm.enhance(orm => {
       { prevItem, diff: itemDiff, nextItem, parents }
     )
     return nextItem
+  }
+
+  orm.remove = id => {
+    ormName = name
+    itemId = id
+    parents = {}
+
+    remove(id)
+
+    console.log(`${name} remove ${id}`, {  })
+
+    return id
   }
 
   orm.listen((item, prevItem, normId) => {

@@ -2,8 +2,7 @@ import { normalizeId, isPromise, enhance } from '*/utils'
 import { putPromise, hasPromise } from '*/cellar/promises'
 
 export const door = orm => {
-  const door = {
-    name: orm.name,
+  return enhance(enhancers, {
     put: (id, diff) => {
       diff = typeof diff === 'function' ? diff(orm.get(id)) : diff
       return isPromise(diff)
@@ -13,17 +12,14 @@ export const door = orm => {
     get: id => {
       return orm.get(id)
     },
-    replace: (id, nextId) => {
-      return orm.replace(id, nextId)
-    },
     remove: id => {
       return orm.remove(id)
     },
     isLoading: id => {
       return hasPromise(normalizeId(orm, id))
-    }
-  }
-  return enhance(enhancers, door)
+    },
+    name: orm.name
+  })
 }
 
 const enhancers = []

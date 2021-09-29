@@ -13,11 +13,9 @@ export const stone = (desc, name) => {
   desc = genStoneInst(desc)
   const orm = ormFactory(() => desc, name)
   const normId = normalizeId(orm, STONE_ID)
-
   g.orms[name] = orm
 
-  const stone = {
-    name,
+  return enhance(enhancers, {
     put: diff => {
       if (typeof diff === 'function') {
         const item = orm.get(STONE_ID) || {}
@@ -32,9 +30,8 @@ export const stone = (desc, name) => {
       return inst && inst.state
     },
     isLoading: () => hasPromise(normId),
-  }
-
-  return enhance(enhancers, stone)
+    name
+  })
 }
 
 const enhancers = []

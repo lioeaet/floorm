@@ -11,6 +11,7 @@ const g = {
   currentGraph: {},     // { normId: { parentNormId: ...waysToChild: true } }
   orms: {},             // { (normId | ormName): orm }
   iterationUpdates: {}, // { normId: true }
+  ids: {},              // { ormName: { id: true } }
   prevItems: {}
 }
 console.log(g)
