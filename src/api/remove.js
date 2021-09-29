@@ -1,8 +1,7 @@
 import g from '*/global'
-import { notify, extractId } from '*/utils'
+import { isPlainObject, notify, extractId } from '*/utils'
 import { mergeItem } from '*/cellar/merge'
 import { updateParents } from '*/cellar/parents'
-import { clearGlobalAfterRemoving } from '*/cellar/clearGlobalAfterRemoving'
 import { theEnd } from '*/cellar/relations'
 
 export const remove = normId => {
@@ -21,21 +20,28 @@ export const remove = normId => {
   updateParents()
 
   const item = g.items[normId]
-
   g.itemsMap.delete(item)
   g.prevItems[normId] = item
   g.items[normId] = null
   g.nextItems[normId] = null
   notify(g.nextItems)
-
-  clearGlobalAfterRemoving(extractId(item), normId)
-
   g.isUpdateParents = false
   g.nextItems = {}
   g.currentGraph = {}
   g.iterationUpdates = {}
   g.prevItems = {}
+  for (let childNormId in (g.childs[normId] || {})) delete g.graph[childNormId][normId]
+  for (let parentNormId in (g.graph[normId] || {})) delete g.childs[parentNormId][normId]
 
+  const orm = g.orms[normId]
+  delete g.ids[orm.name][extractId(item)]
+  delete g.orms[normId]
+  delete g.childs[normId]
+  delete g.graph[normId]
+
+  clearArrChilds(item)
+  g.itemsMap.delete(item)
+  delete g.items[normId]
   return item.id
 }
 
@@ -52,4 +58,15 @@ const genParentDiff = (graphLevel, level, childNormId, id) => {
       : genParentDiff(graphLevel[key], level[key], childNormId)
 
   return diff
+}
+
+const clearArrChilds = level => {
+  for (let key in level) {
+    const nextLevel = level[key]
+
+    if (Array.isArray(nextLevel)) g.arrChilds.delete(nextLevel)
+
+    else if (isPlainObject(nextLevel) && !g.itemsMap.has(nextLevel))
+      clearArrChilds(nextLevel)
+  }
 }
