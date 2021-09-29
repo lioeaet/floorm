@@ -9,15 +9,9 @@ export const door = orm => {
         ? putPromise(orm, normalizeId(orm, id), diff)
         : orm.put({ id, ...diff })
     },
-    get: id => {
-      return orm.get(id)
-    },
-    remove: id => {
-      return orm.remove(id)
-    },
-    isLoading: id => {
-      return hasPromise(normalizeId(orm, id))
-    },
+    get: id => orm.get(id),
+    remove: id => orm.remove(id),
+    isLoading: id => hasPromise(normalizeId(orm, id)),
     name: orm.name
   })
 }

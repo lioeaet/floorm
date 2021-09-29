@@ -13,8 +13,8 @@ export const stone = (desc, name) => {
   desc = genStoneInst(desc)
   const orm = ormFactory(() => desc, name)
   const normId = normalizeId(orm, STONE_ID)
-  g.orms[name] = orm
 
+  g.orms[name] = orm
   return enhance(enhancers, {
     put: diff => {
       if (typeof diff === 'function') {
@@ -33,6 +33,5 @@ export const stone = (desc, name) => {
     name
   })
 }
-
 const enhancers = []
 stone.enhance = enhancer => enhancers.push(enhancer)

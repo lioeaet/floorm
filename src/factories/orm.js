@@ -11,7 +11,6 @@ export const orm = (desc, name) => {
   if (g.descFuncs[name]) throw `duplicate orm name ${name}`
 
   g.descFuncs[name] = desc
-
   const ormInst = {
     get: id => {
       const normId = normalizeId(ormInst, id)
@@ -28,26 +27,18 @@ export const orm = (desc, name) => {
       const normId = normalizeId(ormInst, id)
       return remove(normId)
     },
-    find: cb => {
-      return find(ormInst, cb)
-    },
-    map: cb => {
-      return map(ormInst, cb)
-    },
-    listen: listener => {
-      return listenOrm(ormInst, listener)
-    },
+    find: cb => find(ormInst, cb),
+    map: cb => map(ormInst, cb),
+    listen: listener => listenOrm(ormInst, listener),
     listenItem: (id, listener) => {
       const normId = normalizeId(ormInst, id)
       return listenItem(normId, listener)
     },
     name
   }
-
   const enhancedOrmInst = enhance(enhancers, ormInst)
   g.orms[name] = enhancedOrmInst
   return enhancedOrmInst
 }
-
 const enhancers = []
 orm.enhance = enhancer => enhancers.push(enhancer)

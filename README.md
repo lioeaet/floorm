@@ -1,7 +1,5 @@
 # floorm
 
-! love my girl
-
 * remove notify
 * normId -> [orm, id]
 * flat(id)
@@ -10,3 +8,5 @@
 * jest
 * optimize
 * the doors
+
+love my girl

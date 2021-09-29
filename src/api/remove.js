@@ -1,5 +1,5 @@
 import g from '*/global'
-import { notify } from '*/utils'
+import { notify, extractId } from '*/utils'
 import { mergeItem } from '*/cellar/merge'
 import { updateParents } from '*/cellar/parents'
 import { clearGlobalAfterRemoving } from '*/cellar/clearGlobalAfterRemoving'
@@ -28,7 +28,7 @@ export const remove = normId => {
   g.nextItems[normId] = null
   notify(g.nextItems)
 
-  clearGlobalAfterRemoving(normId)
+  clearGlobalAfterRemoving(extractId(item), normId)
 
   g.isUpdateParents = false
   g.nextItems = {}
