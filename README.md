@@ -4,7 +4,7 @@
 * article
 * jest
 * optimize
-* the doors
+* the stones
 
 love my girl
 
@@ -28,19 +28,35 @@ const book = orm({
 
 create stones and doors of orms for render in hooks
 
+```js
+import 
+
+```
+
+
 3. hooks
 
 create hooks for rerender of your stones and orm instances at all
+
+```js
+import 
+
+```
 
 4. update
 
 update your instances with orm.put, door.put or stone.put and receive autoupdate in parent useDoor and useStone and all listners of changed orm instances
 
+```js
+import 
+
+```
+
 update your inistances with git-diff like diff sekeleton and receive reqourcive merged instance
 
 5. middleware
 
-enhance your instaces with (orm | door | stone).enhance
+enhance your instaces with (`orm` | `door` | `stone`).`enhance`
 
 ```js
 import 

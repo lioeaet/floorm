@@ -45,9 +45,9 @@ export const enhance = (enhancers, inst) =>
     inst
   )
 
-// const z = console.log
-// window.z = true
-// console.log = (...args) => {
-//   z(...args)
-//   window.z = window.z && !args.some(t=>!t)
-// }
+const z = console.log
+window.z = true
+console.log = (...args) => {
+  z(...args)
+  window.z = window.z && !args.some(t=>!t)
+}
