@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { bookOrm } from '../hotel/orm'
 import { useFavoriteBooks } from '../hotel/favoriteBooks'
 import { randomColor } from '../utils'
 
