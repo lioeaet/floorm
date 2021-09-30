@@ -1,4 +1,4 @@
-const fetchData = (url, body, method = 'GET') =>
+const fetchData = (url, method = 'GET', body) =>
   fetch(`http://localhost:7337/${url}`, { body, method, headers: { 'Content-Type': method === 'GET' ? 'text/plain' : 'application/json', } })
     // .then(a => console.log(a) || a)
     .then(res => res.json())
@@ -14,12 +14,13 @@ const api = {
     get: bookId => fetchData(`book/${bookId}`),
     put: (bookId, diff) => fetchData(
       `book/${bookId}`,
+      'PUT',
       JSON.stringify(
         { diff }, 
         (key, val) => key === 'author' ? void 7 : val
-      ),
-      'PUT'
-    )
+      )
+    ),
+    remove: bookId => fetchData(`book/${bookId}`, 'DELETE')
   },
   favoriteBooks: {
     get: () => fetchData('favoriteBooks'),

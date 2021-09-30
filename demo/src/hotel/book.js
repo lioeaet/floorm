@@ -27,7 +27,8 @@ export const useBook = bookId => {
       toggleFavoriteBook(bookId)
         .catch(console.error),
 
-    removeBook: () => bookOrm.remove(bookId)
+    removeBook: () =>
+      removeBook(bookId)
   }
 }
 
@@ -51,3 +52,8 @@ const changeBook = (bookId, diff) => {
       throw e
     })
 }
+
+export const removeBook = bookId =>
+  api.book.remove(bookId).then(() =>
+    bookOrm.remove(bookId)
+  ).catch(console.error)

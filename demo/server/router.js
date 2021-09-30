@@ -13,7 +13,20 @@ const api = {
   'book/:id': {
     get: params => ({ ...BOOKS[params.id] }),
 
-    put: (params, body) => putBook(params.id, body.diff)
+    put: (params, body) => putBook(params.id, body.diff),
+
+    delete: ({ id }) => {
+      const target = book => Number(book.id) === Number(id)
+      delete BOOKS[id]
+
+      const author = Object.values(AUTHORS).find(a => a.booksPreview.some(target))
+      const aI = author.booksPreview.findIndex(target)
+      author.booksPreview.splice(aI, 1)
+
+      const fI = FAVORITE_BOOKS.findIndex(target)
+      if (fI !== -1) FAVORITE_BOOKS.splice(fI, 1)
+      return id
+    }
   },
   favoriteBooks: {
     get: () => [...FAVORITE_BOOKS],

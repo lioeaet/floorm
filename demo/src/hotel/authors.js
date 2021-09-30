@@ -1,26 +1,25 @@
-import { stone } from '*'
-import { useDoors } from '*'
+import { stone, useStone } from '*'
 import api from '../api'
 import { authorOrm } from '../hotel/orm'
 
 export default () => {
-  if (authorsStone.isLoading()) return
+  if (authorsSt.isLoading()) return
   loadAuthors()
 }
 
-const authorsStone = stone(
-  authorOrm,
+const authorsSt = stone(
+  [authorOrm],
   'authors'
 )
 
 export const useAuthors = () => {
   return {
-    authors: useDoors(authorsStone)
+    authors: useStone(authorsSt)
   }
 }
 
 const loadAuthors = () =>
-  authorsStone.put(
+  authorsSt.put(
     api.authors.get()
   )
   .catch(() => {})
