@@ -3,7 +3,6 @@ import { extractId, normalizeId, enhance } from '*/utils'
 import { listenOrm, listenItem } from '*/utils/notifier'
 import { put } from '*/api/put'
 import { remove } from '*/api/remove'
-import { find } from '*/api/find'
 import { map } from '*/api/map'
 
 export const orm = (desc, name) => {
@@ -27,7 +26,6 @@ export const orm = (desc, name) => {
       const normId = normalizeId(ormInst, id)
       return remove(normId)
     },
-    find: cb => find(ormInst, cb),
     map: cb => map(ormInst, cb),
     listen: listener => listenOrm(ormInst, listener),
     listenItem: (id, listener) => {

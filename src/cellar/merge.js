@@ -17,7 +17,6 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
   const nextItem = g.nextItems[normId] || (g.nextItems[normId] = {})
 
   if (!g.prevItems.hasOwnProperty(normId)) g.prevItems[normId] = item
-
   if (parentNormId) {
     if (hasRelation(g.currentGraph, normId, parentNormId, g.stack))
       return nextItem
@@ -48,11 +47,9 @@ export const mergeItem = (orm, normId, diff, parentNormId) => {
   }
   g.iterationUpdates[normId] = true
   g.orms[normId] = orm
-
   g.stack.push(normId)
   g.items[normId] = merge(g.descFuncs[orm.name](), item, diff, nextItem, normId)
   g.stack.pop()
-
   return nextItem
 }
 

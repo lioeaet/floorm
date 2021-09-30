@@ -6,7 +6,6 @@ export const addRelation = (graph, normId, parentNormId, stack) => {
   if (!graph[normId]) graph[normId] = {}
   if (!parentNormId) return
   let way = graph[normId]
-
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     const key = stack[i]
     if (i === stack.length - 1) way[key] = theEnd
@@ -16,11 +15,9 @@ export const addRelation = (graph, normId, parentNormId, stack) => {
 
 export const removeRelation = (graph, normId, parentNormId, stack) => {
   if (!parentNormId) return
-
   let current = graph[normId]
   let graphLevel = current
   let key = parentNormId
-
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     current = current[stack[i]]
     if (!current) break
@@ -37,7 +34,6 @@ export const removeRelation = (graph, normId, parentNormId, stack) => {
 export const hasRelation = (graph, normId, parentNormId, stack) => {
   if (!parentNormId || !graph[normId]) return false
   let way = graph[normId]
-
   for (let i = stack.indexOf(parentNormId); i < stack.length; i++) {
     way = way[stack[i]]
     if (!way) break
@@ -48,7 +44,6 @@ export const hasRelation = (graph, normId, parentNormId, stack) => {
 export const hasAllRelations = (graph, fullGraph) => {
   if (fullGraph === theEnd) return graph === theEnd
   if (!graph) return false
-
   for (let key in fullGraph)
     if (!hasAllRelations(graph[key], fullGraph[key]))
       return false

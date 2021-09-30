@@ -1,18 +1,18 @@
 const g = {
   isUpdateParents: false,
-  arrChilds: new Map,   // { array: { normId: true } }
-  itemsMap: new Map,    // { item: true }
-  stack: [],            // [...normId]
-  items: {},            // { normId: item }
-  graph: {},            // { normId: { parentNormId: { ...waysToChild: true } } }
-  childs: {},           // { normId: { childNormId: true } }
-  nextItems: {},        // { normId: item }
-  descFuncs: {},        // { ormName: descFunc }
-  currentGraph: {},     // { normId: { parentNormId: ...waysToChild: true } }
-  orms: {},             // { (normId | ormName): orm }
   iterationUpdates: {}, // { normId: true }
+  itemsMap: new Map,    // { item: true }
+  descFuncs: {},        // { ormName: descFunc }
+  stack: [],            // [...normId]
+  orms: {},             // { (normId | ormName): orm }
   ids: {},              // { ormName: { id: true } }
-  prevItems: {}
+  graph: {},            // { normId: { parentNormId: { ...waysToChild: true } } }
+  items: {},            // { normId: item }
+  childs: {},           // { normId: { childNormId: true } }
+  prevItems: {},        // { normId: prev }
+  nextItems: {},        // { normId: item }
+  currentGraph: {},     // { normId: { parentNormId: ...waysToChild: true } }
+  arrChilds: new Map,   // { array: { normId: true } }
 }
 console.log(g)
 window.g = g

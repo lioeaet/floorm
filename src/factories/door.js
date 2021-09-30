@@ -15,6 +15,5 @@ export const door = orm => {
     name: orm.name
   })
 }
-
 const enhancers = []
 door.enhance = enhancer => enhancers.push(enhancer)
