@@ -1,16 +1,6 @@
 import g from '*/global'
-import {
-  waySet,
-  isOrm,
-  extractId,
-  normalizeId,
-  isPlainObject
-} from '*/utils'
-import {
-  removeRelation,
-  hasRelation,
-  addRelation,
-} from '*/cellar/relations'
+import { waySet, isOrm, extractId, normalizeId, isPlainObject } from '*/utils'
+import { removeRelation, hasRelation, addRelation } from '*/cellar/relations'
 
 export const mergeItem = (orm, normId, diff, parentNormId) => {
   const item = g.items[normId]
