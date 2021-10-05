@@ -4,7 +4,7 @@ import { stone, door, orm } from '*'
 let ormName, itemId, parents
 const stones = {}
 
-orm.enhance(orm => {
+orm.wrap(orm => {
   const { name, put, remove } = orm
 
   orm.put = diff => {
@@ -36,7 +36,7 @@ orm.enhance(orm => {
     return id
   }
 
-  orm.listen((item, prev, normId) => {
+  orm.watch((item, prev, normId) => {
     const id = item ? item.id : prev.id
     if (name === ormName && id === itemId) return
     const isStone = stones.hasOwnProperty(name)
@@ -55,7 +55,7 @@ orm.enhance(orm => {
   return orm
 })
 
-stone.enhance(stone => {
+stone.wrap(stone => {
   const { name, put } = stone
 
   stones[name] = stone
@@ -67,7 +67,7 @@ stone.enhance(stone => {
   return stone
 })
 
-door.enhance(door => {
+door.wrap(door => {
   const { /* name, */ put } = door
 
   door.put = (id, diff) => {

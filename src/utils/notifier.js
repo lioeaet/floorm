@@ -1,18 +1,18 @@
 import g from '*/global'
 
-const itemListeners = {}
-const ormListeners = {}
+const itemWatchers = {}
+const ormWatchers = {}
 
-export const listenOrm = (orm, listener) => {
-  const listeners = ormListeners[orm.name] || (ormListeners[orm.name] = [])
-  listeners.push(listener)
-  return () => listeners.splice(listeners.indexOf(listener), 1)
+export const watchOrm = (orm, watcher) => {
+  const watchers = ormWatchers[orm.name] || (ormWatchers[orm.name] = [])
+  watchers.push(watcher)
+  return () => watchers.splice(watchers.indexOf(watcher), 1)
 }
 
-export const listenItem = (normId, listener) => {
-  const listeners = itemListeners[normId] || (itemListeners[normId] = [])
-  listeners.push(listener)
-  return () => listeners.splice(listeners.indexOf(listener), 1)
+export const watchItem = (normId, watcher) => {
+  const watchers = itemWatchers[normId] || (itemWatchers[normId] = [])
+  watchers.push(watcher)
+  return () => watchers.splice(watchers.indexOf(watcher), 1)
 }
 
 export const notify = nextItems => {
@@ -28,9 +28,9 @@ export const notifyItem = normId => {
   // item just removed from parent with graph changes
   if (item === prevItem) return
 
-  const itemListenersArr = itemListeners[normId] || []
-  const ormListenersArr = ormListeners[orm.name] || []
+  const itemWatchersArr = itemWatchers[normId] || []
+  const ormWatchersArr = ormWatchers[orm.name] || []
 
-  for (let listener of itemListenersArr) listener(item, prevItem)
-  for (let listener of ormListenersArr) listener(item, prevItem, normId)
+  for (let watcher of itemWatchersArr) watcher(item, prevItem)
+  for (let watcher of ormWatchersArr) watcher(item, prevItem, normId)
 }

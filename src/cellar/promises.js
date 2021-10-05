@@ -1,8 +1,8 @@
 import { genStoneInst } from '*/factories/stone'
-import { listenItem } from '*/utils'
+import { watchItem } from '*/utils'
 
 export const promises = {}
-const promiseListeners = {}
+const promiseWatchers = {}
 
 export const putPromise = (orm, normId, promise, isStone) => {
   const result = promise.then(
@@ -31,19 +31,19 @@ export const getPromise = normId => promises[normId]
 export const hasPromise = normId => promises.hasOwnProperty(normId)
 
 const notifyPromise = normId => {
-  const pListeners = promiseListeners[normId] || []
-  for (let listener of pListeners) listener(promises[normId])
+  const pWatchers = promiseWatchers[normId] || []
+  for (let watcher of pWatchers) watcher(promises[normId])
 }
 
-export const listenItemWithPromise = (normId, listener) => {
-  const pListeners = promiseListeners[normId] || (promiseListeners[normId] = [])
-  pListeners.push(listener)
+export const watchItemWithPromise = (normId, watcher) => {
+  const pWatchers = promiseWatchers[normId] || (promiseWatchers[normId] = [])
+  pWatchers.push(watcher)
 
-  const unlistenItem = listenItem(normId, listener)
+  const unwatchItem = watchItem(normId, watcher)
 
-  const unlistenItemWithPromise = () => {
-    unlistenItem()
-    pListeners.splice(pListeners.indexOf(listener), 1)
+  const unwatchItemWithPromise = () => {
+    unwatchItem()
+    pWatchers.splice(pWatchers.indexOf(watcher), 1)
   }
-  return unlistenItemWithPromise
+  return unwatchItemWithPromise
 }

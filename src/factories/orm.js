@@ -1,6 +1,6 @@
 import g from '*/global'
 import { extractId, normalizeId, enhance } from '*/utils'
-import { listenOrm, listenItem } from '*/utils/notifier'
+import { watchOrm, watchItem } from '*/utils/notifier'
 import { put } from '*/api/put'
 import { remove } from '*/api/remove'
 import { map } from '*/api/map'
@@ -27,10 +27,10 @@ export const orm = (desc, name) => {
       return remove(normId)
     },
     map: cb => map(ormInst, cb),
-    listen: listener => listenOrm(ormInst, listener),
-    listenItem: (id, listener) => {
+    watch: watcher => watchOrm(ormInst, watcher),
+    watchItem: (id, watcher) => {
       const normId = normalizeId(ormInst, id)
-      return listenItem(normId, listener)
+      return watchItem(normId, watcher)
     },
     name
   }

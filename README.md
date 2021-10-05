@@ -1,126 +1,137 @@
 # floorm
 
+floorm is tiny declarative state manager for react apps with intuitive orm schemas providing automatic updates of parent instances
+
+inspirited by such libraries as redux, normalizr and effector
+
+## docs
+
+[orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)
+
+[door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)
+
+[stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)
+
+[useDoor](https://github.com/lioeaet/floorm/tree/master/docs/useDoor.md)
+
+[useStone](https://github.com/lioeaet/floorm/tree/master/docs/useStone.md)
+
+## usage
+
+1. create orm of your project instances
+
+```js
+// hotel/orm.js
+import { orm } from 'floorm'
+
+// book instance have author instance in key "author"
+const bookOrm = orm(() => ({
+  author: authorOrm
+}), 'book')
+
+// author instance have array of book instances in key "books"
+const authorOrm = orm(() => ({
+  books: [bookOrm]
+}), 'author')
+```
+
+2. create doors to orm instances or single-instance stones for use their state through hooks
+
+```js
+// hotel/book.js
+import { door, useDoor } from 'floorm'
+import { bookOrm } from 'hotel/orm'
+
+const bookDoor = door(bookOrm)
+
+export const useBook = id => {
+  useEffect(() => {
+    loadBook(id)
+  }, [id])
+
+  return {
+    book: useDoor(authorDoor, id),
+    // with floorm change
+    changeName: name => bookDoor.put(id, { name })
+  }
+}
+
+const loadBook = id => bookDoor.put(id, api.book.get(id))
+
+const changeBookName = (id, name) => bookDoor.put(id, { name })
+```
+```js
+// hotel/author.js
+import { door, useDoor } from 'floorm'
+import { authorOrm } from 'hotel/orm'
+import { api } from 'api'
+
+const authorDoor = useDoor(authorOrm)
+
+export const useAuthor = id => {
+  useEffect(() => {
+    loadAuthor(id)
+  }, [id])
+
+  return {
+    author: useDoor(authorDoor, id),
+    changeName: name => authorDoor.put(id, { name })
+  }
+}
+
+const loadAuthor = id => authorDoor.put(api.authors.get(id))
+```
+
+3. use hooks of your instances in components
+
+```js
+// ui/Book.jsx
+import { useBook } from 'hotel/book'
+
+export const Book = ({ id }) => {
+  const { book, changeName } = useBook(id)
+
+  return (
+    <div>
+      <input
+        // every change of book will change author instance after and target Author component will rerendered
+        onChange={e => changeName(e.target.value)}
+        value={book.name}
+      />
+      <div>
+        <div>author:</div>
+        {author.name}
+      </div>
+    </div>
+  )
+}
+```
+```js
+// ui/Author.jsx
+import { useBook } from 'hotel/book'
+
+const Author = ({ id }) => {
+  const { author, changeName } = useAuthor(id)
+
+  return (
+    <div>
+      <input
+        // on change author it will changed 
+        onChange={e => changeName(e.target.value)}
+        value={author.name}
+      />
+      {books.map(book => {
+        <div key={book.id}>{book.name}</div>
+      })}
+    </div>
+  )
+}
+```
+
+see [demo](https://github.com/lioeaet/floorm/tree/master/demo) for more info
+
 * docs
 * article
 * jest
 * optimize
 * the stones
-
-introduce react app architecture suggestion with defining orms of frontend instances for updates in parent instances automatization
-
-docs: orm | stone | door | useStone | useDoor | demo
-
-1. create orm of project instances
-
-```js
-/* hotel/orm.js */
-import { orm } from 'floorm'
-
-export const author = orm(() => ({
-  books: [book]
-}), 'author')
-
-const book = orm(() => ({
-  author: author
-}), 'book')
-```
-
-2. stones and doors of hotel
-
-create single stones & doors to orms for render it data through hooks (supports suspense)
-
-```js
-/* hotel/book.js */
-import { door, useDoor } from 'floorm'
-import { book as bookOrm } from 'hotel/orm'
-
-const book = door(bookOrm)
-
-// put promise to book id wich will throws in useDoor
-const load = id =>
-  book.put(id, api.book.get(id))
-
-// update your inistances with git-diff like sekeleton
-// and receive reqourcive merge result from existed instance
-// and updated parent orm instances
-// book can trigger update author (from author.books)
-// ...wich can trigger update for favoriteAuthors if this author is favorite
-// all these orm instances wich will changed automatically on book.put
-const change = (id, diffSkeleton) =>
-  book.put(id, diffSkeleton)
-
-/* hotel/favoriteAuthors.js */
-import { stone, useStone } from 'floorm'
-import { author as authorOrm } from 'hotel/orm'
-import { api } from 'api'
-
-// favoriteAuthors is single array for app with author instances
-const favoriteAuthors = stone(
-  [author],
-  'favoriteAuthors' // name of stone is needed for logger
-)
-
-const load = () =>
-  favoriteAuthors.put(api.favoriteAuthors.get())
-```
-
-3. hooks
-
-create hooks for rerender of your stones and orm instances at all bounded instances changes
-
-```js
-/* hotel/book.js */
-import { useEffect } from 'react'
-import { door, useDoor } from 'floorm'
-import { book as bookOrm } from 'hotel/orm'
-
-export const useBook = id => {
-  useEffect(() => { load(id) }, [id])
-  return {
-    book: useDoor(book, id),
-    change: diff => change(id, diff)
-  }
-}
-
-const book = door(bookOrm)
-
-const load = id =>
-  book.put(id, api.book.get(id)) // put promise to book id wich will throws in useDoor(book, id)
-
-const change = (id, diffSkeleton) =>
-  book.put(id, diffSkeleton)
-
-/* hotel/favoriteAuthors.js */
-import { useEffect } from 'react'
-import { stone, useStone } from 'floorm'
-import { author as authorOrm } from 'hotel/orm'
-import { api } from 'api'
-
-export const useAuthors = () => {
-  useEffect(() => { load() }, [])
-  return {
-    favoriteAuthors: useStone(favoriteAuthors) // authors is stone and have no id
-  }
-}
-
-const favoriteAuthors = stone(
-  [author], // favoriteAuthors is single array for app with author instances
-  'favoriteAuthors'
-)
-
-const load = () =>
-  favoriteAuthors.put(api.favoriteAuthors.get())
-```
-
-5. middleware
-
-enhance your instaces with (`orm` | `door` | `stone`).`enhance`
-
-use default logger for logging
-
-```js
-// all actions with changes graph will logged now
-import 'floorm/logger'
-```
-
-see more in docs

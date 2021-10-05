@@ -2,13 +2,13 @@ import g from '*/global'
 import { useState, useEffect } from 'react'
 import { STONE_ID } from '*/factories/stone'
 import { normalizeId, isPromise } from '*/utils'
-import { getPromise, listenItemWithPromise } from '*/cellar/promises'
+import { getPromise, watchItemWithPromise } from '*/cellar/promises'
 
 export const useStone = stone => {
   const normId = normalizeId(g.orms[stone.name], STONE_ID)
   const [state, setState] = useState(getState(normId))
 
-  useListener(stone.normId, setState)
+  useWatcher(stone.normId, setState)
   if (isPromise(state)) throw state.then(diff => diff)
   return state && state.state
 }
@@ -17,19 +17,19 @@ export const useDoor = (door, id) => {
   const normId = normalizeId(g.orms[door.name], id)
   const [state, setState] = useState(getState(normId))
 
-  useListener(normId, setState)
+  useWatcher(normId, setState)
   if (isPromise(state)) throw state
   return state
 }
 
-const useListener = (normId, setState) => {
+const useWatcher = (normId, setState) => {
   const renderState = getState(normId)
   useEffect(
     () => {
-      const listener = () => setState(getState(normId))
+      const watcher = () => setState(getState(normId))
 
-      if (renderState !== getState(normId)) listener()
-      return listenItemWithPromise(normId, listener)
+      if (renderState !== getState(normId)) watcher()
+      return watchItemWithPromise(normId, watcher)
     },
     [normId, renderState, setState]
   )
