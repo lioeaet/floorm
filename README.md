@@ -4,17 +4,21 @@ floorm is tiny declarative state manager for react apps with intuitive orm schem
 
 inspirited by such libraries as redux, normalizr and effector
 
+## core concepts
+
+1. **pithiness** every line of code should have maximum payload with readability in project context saving
+
+2. **non-recurring** same things should be implemented with same familiar approaches
+
+3. **regeneration** key which applied to data instance once can be changed and never deleted from it
+
 ## docs
 
-[orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)
-
-[door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)
-
-[stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)
-
-[useDoor](https://github.com/lioeaet/floorm/tree/master/docs/useDoor.md)
-
-[useStone](https://github.com/lioeaet/floorm/tree/master/docs/useStone.md)
+* [orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)
+* [door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)
+* [stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)
+* [useDoor](https://github.com/lioeaet/floorm/tree/master/docs/useDoor.md)
+* [useStone](https://github.com/lioeaet/floorm/tree/master/docs/useStone.md)
 
 ## usage
 
