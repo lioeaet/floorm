@@ -1,16 +1,16 @@
 # floorm
 
-floorm is tiny declarative state manager for react apps with intuitive orm schemas providing automatic updates of parent instances
+floorm is tiny declarative and predictable state manager for react apps with intuitive orm schemas providing automatic updates of parent instances
 
-inspirited by such libraries as redux, normalizr and effector
+conceived as union of approaches used by such libraries as redux, normalizr, react, effector and mobx
 
 ## core concepts
 
-1. **pithiness** every line of code should have maximum payload with readability in project context saving
-
-2. **non-recurring** same things should be implemented with same familiar approaches
-
-3. **regeneration** key which applied to data instance once can be changed and never deleted from it
+1. **pithiness** every sign of code should have maximum payload with saving readability in project context
+2. **consistency** same things should be implemented with same approaches
+3. **simple data structures** store data in plain objects and arrays for comfortable debugging and interaction with code at all
+4. **immutability** it's so good for comparing states of your app during the session
+5. **relations are important** when you update your instances, it should be 
 
 ## docs
 
@@ -55,7 +55,10 @@ export const useBook = id => {
 
   return {
     book: useDoor(authorDoor, id),
-    // with floorm change
+    // with floorm you should not fall into spread-hell with copy all keys like in redux reducers
+    // put method receives diff like this.setState of react class components with nesting support
+    // so you can pass object with updated keys of instances only
+    // missed keys will substituted to next instance from the box
     changeName: name => bookDoor.put(id, { name })
   }
 }
@@ -63,8 +66,8 @@ export const useBook = id => {
 const loadBook = id => bookDoor.put(id, api.book.get(id))
 
 const changeBookName = (id, name) => bookDoor.put(id, { name })
-```
-```js
+
+
 // hotel/author.js
 import { door, useDoor } from 'floorm'
 import { authorOrm } from 'hotel/orm'
@@ -98,19 +101,19 @@ export const Book = ({ id }) => {
   return (
     <div>
       <input
-        // every change of book will change author instance after and target Author component will rerendered
+        // every change of book will changed author instance too
+        // Author component which includes changed author will rerendered for display updated books list
         onChange={e => changeName(e.target.value)}
         value={book.name}
       />
       <div>
-        <div>author:</div>
-        {author.name}
+        author: {author.name}
       </div>
     </div>
   )
 }
-```
-```js
+
+
 // ui/Author.jsx
 import { useBook } from 'hotel/book'
 
@@ -120,7 +123,8 @@ const Author = ({ id }) => {
   return (
     <div>
       <input
-        // on change author it will changed 
+        // every change of author will changed his books instances too
+        // Book components which includes changed author will rerendered for display updated author.name
         onChange={e => changeName(e.target.value)}
         value={author.name}
       />
@@ -132,10 +136,11 @@ const Author = ({ id }) => {
 }
 ```
 
-see [demo](https://github.com/lioeaet/floorm/tree/master/demo) for more info
+see [demo](https://github.com/lioeaet/floorm/tree/master/demo) or read [docs](https://github.com/lioeaet/floorm/tree/master/docs/orm.md) for more info
 
-* docs
 * article
+* flat
+* errors
+* cancel actions
 * jest
 * optimize
-* the stones
