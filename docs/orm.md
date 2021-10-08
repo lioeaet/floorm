@@ -7,16 +7,17 @@ it receives description and schema and returns the object with methods for acces
 all instances of orm should include "id" on their first level
 
 **args**
-1. `descriptionFunc` (*function*): function that returns relations description of its kind of instance. description of orm is always plain object.
-2. `name` (*string*): name of instance kind
+
+1. `name` (*string*): name of instance kind
+2. `descriptionFunc` (*function*): function that returns relations description of its kind of instance. description of orm is always plain object.
 
 orm methods
 
-## get(id: string) => object
+## orm.get(id: string) => object
 
 returns orm instance with passed id
 
-## put(diff: object) => object
+## orm.put(diff: object) => object
 
 put is only way to add or change your data in floorm except removing
 
@@ -29,13 +30,13 @@ changes will apllied to instance itself and all its known parents
 it's so hard to talk about this method but it's very intuitive in practice
 
 ```js
-const authorOrm = orm(() => {
+const authorOrm = orm('authorOrm', () => {
   author: [bookOrm]
-}, 'authorOrm')
+})
 
-const bookOrm = orm(() => {
+const bookOrm = orm('bookOrm', () => {
   author: authorOrm
-}, 'authorOrm')
+})
 
 authorOrm.put({
   id: 1,
@@ -69,7 +70,7 @@ console.log(authorOrm.get(1).books[0]) // { id: 1, name: 'The Doors of Perceptio
 console.log(authorOrm.get(1).books[0] === bookOrm.get(1)) // true
 ```
 
-## remove(id)
+## orm.remove(id)
 
 removing is the diamond of floorm
 
@@ -80,15 +81,12 @@ but in floorm, since you have relations mapping, you can realize it with one fun
 instance will replaced with null in all parent objects and filtered in arrays
 
 ```js
-const authorOrm = orm(() => {
+const authorOrm = orm('authorOrm', () => {
   books: [bookOrm],
   favoriteBook: bookOrm
-}, 'authorOrm')
+})
 
-const bookOrm = orm(
-  () => ({}),
-  'bookOrm'
-)
+const bookOrm = orm('bookOrm')
 
 authorOrm.put({
   id: 1,
@@ -107,8 +105,15 @@ console.log(bookOrm.get(1)) // undefined
 console.log(authorOrm.get(1)) // { id: 1, books: [], favoriteBook: null }
 ```
 
-`map()`
+## all() => object[]
 
-`watch()`
+returns array with all instances of target orm
 
-`watchItem()`
+```js
+const authorOrm = orm('authorOrm')
+
+authorOrm.put({ id: 1 })
+authorOrm.put({ id: 2 })
+
+console.log(authorOrm.all()) // [{ id: 1 }, { id: 2 }]
+```

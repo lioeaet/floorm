@@ -1,12 +1,12 @@
 import { orm } from '*'
 export default () => <div />
 
-const baseOrm = orm(() => ({
+const baseOrm = orm('base', () => ({
   baseChild: childOrm,
   baseBaseArr: [baseOrm]
-}), 'base')
+}))
 
-const childOrm = orm(() => ({
+const childOrm = orm('child', () => ({
   childBase: baseOrm,
   childBaseArr: [baseOrm],
   childInner: {
@@ -14,7 +14,7 @@ const childOrm = orm(() => ({
       childBaseInner: baseOrm
     }
   }
-}), 'child')
+}))
 
 const base1_1 = baseOrm.put({
   id: 1,

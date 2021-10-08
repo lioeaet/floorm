@@ -1,15 +1,14 @@
 import { orm } from '*'
 import './logger'
 
-// pass func for await const bookOrm = ... execution
-export const userOrm = orm(() => ({
+export const userOrm = orm('user', () => ({
   favoriteBooks: [bookOrm]
-}), 'user')
+}))
 
-export const bookOrm = orm(() => ({
+export const bookOrm = orm('book', () => ({
   author: authorOrm
-}), 'book')
+}))
 
-export const authorOrm = orm(() => ({
+export const authorOrm = orm('author', () => ({
   booksPreview: [bookOrm]
-}), 'author')
+}))

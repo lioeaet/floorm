@@ -1,5 +1,5 @@
 import { genStoneInst } from '*/factories/stone'
-import { watchItem } from '*/utils'
+import { normalizeId, watchItem } from '*/utils'
 
 export const promises = {}
 const promiseWatchers = {}
@@ -35,11 +35,12 @@ const notifyPromise = normId => {
   for (let watcher of pWatchers) watcher(promises[normId])
 }
 
-export const watchItemWithPromise = (normId, watcher) => {
+export const watchItemWithPromise = (orm, id, watcher) => {
+  const normId = normalizeId(orm, id)
   const pWatchers = promiseWatchers[normId] || (promiseWatchers[normId] = [])
   pWatchers.push(watcher)
 
-  const unwatchItem = watchItem(normId, watcher)
+  const unwatchItem = watchItem(orm, id, watcher)
 
   const unwatchItemWithPromise = () => {
     unwatchItem()

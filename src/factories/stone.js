@@ -10,9 +10,9 @@ export const genStoneInst = item => ({
   id: STONE_ID
 })
 
-export const stone = (desc, name) => {
+export const stone = (name, desc = {}) => {
   desc = genStoneInst(desc)
-  const orm = ormFactory(() => desc, name)
+  const orm = ormFactory(name, () => desc)
   const normId = normalizeId(orm, STONE_ID)
   g.orms[name] = orm
   return enhance(enhancers, {

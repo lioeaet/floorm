@@ -1,11 +1,10 @@
 import g from '*/global'
 import { extractId, normalizeId, enhance } from '*/utils'
-import { watchOrm, watchItem } from '*/utils/notifier'
 import { put } from '*/api/put'
 import { remove } from '*/api/remove'
-import { map } from '*/api/map'
+import { all } from '*/api/all'
 
-export const orm = (desc, name) => {
+export const orm = (name, desc = () => ({})) => {
   if (!name) throw 'orm name is required'
   if (g.descFuncs[name]) throw `duplicate orm name ${name}`
 
@@ -26,12 +25,7 @@ export const orm = (desc, name) => {
       const normId = normalizeId(ormInst, id)
       return remove(normId)
     },
-    map: cb => map(ormInst, cb),
-    watch: watcher => watchOrm(ormInst, watcher),
-    watchItem: (id, watcher) => {
-      const normId = normalizeId(ormInst, id)
-      return watchItem(normId, watcher)
-    },
+    all: cb => all(ormInst),
     name
   }
   const enhancedOrmInst = enhance(enhancers, ormInst)

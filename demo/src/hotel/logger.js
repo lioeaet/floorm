@@ -1,4 +1,4 @@
-import { stone, door, orm } from '*'
+import { stone, door, orm, watch } from '*'
 // import { isPromise } from '*/utils'
 
 let ormName, itemId, parents
@@ -36,7 +36,7 @@ orm.enhance(orm => {
     return id
   }
 
-  orm.listen((item, prev, normId) => {
+  watch(orm, (item, prev) => {
     const id = item ? item.id : prev.id
     if (name === ormName && id === itemId) return
     const isStone = stones.hasOwnProperty(name)

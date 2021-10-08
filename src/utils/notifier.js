@@ -1,15 +1,17 @@
 import g from '*/global'
+import { normalizeId } from '*/utils'
 
 const itemWatchers = {}
 const ormWatchers = {}
 
-export const watchOrm = (orm, watcher) => {
+export const watch = (orm, watcher) => {
   const watchers = ormWatchers[orm.name] || (ormWatchers[orm.name] = [])
   watchers.push(watcher)
   return () => watchers.splice(watchers.indexOf(watcher), 1)
 }
 
-export const watchItem = (normId, watcher) => {
+export const watchItem = (orm, id, watcher) => {
+  const normId = normalizeId(orm, id)
   const watchers = itemWatchers[normId] || (itemWatchers[normId] = [])
   watchers.push(watcher)
   return () => watchers.splice(watchers.indexOf(watcher), 1)

@@ -6,8 +6,8 @@ import { bookDoor } from '../hotel/book'
 export default () => loadFavoriteBooks()
 
 const favoriteBooksStone = stone(
-  [bookOrm],
-  'favoriteBooks'
+  'favoriteBooks',
+  [bookOrm]
 )
 
 export const useFavoriteBooks = () => {

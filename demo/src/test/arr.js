@@ -1,9 +1,9 @@
 import { orm } from '*'
 export default () => <div />
 
-const baseOrm = orm(() => ({
+const baseOrm = orm('base', () => ({
   ok: diff => diff.hasOwnProperty('stork') ? baseOrm : arrOrm
-}), 'base')
+}))
 
 const arrOrm = orm(() => ({ arr: [baseOrm] }), 'arr')
 

@@ -29,14 +29,14 @@ conceived as union of approaches used by such libraries as redux, normalizr, rea
 import { orm } from 'floorm'
 
 // book instance have author instance in key "author"
-const bookOrm = orm(() => ({
+const bookOrm = orm('book', () => ({
   author: authorOrm
-}), 'book')
+}))
 
 // author instance have array of book instances in key "books"
-const authorOrm = orm(() => ({
+const authorOrm = orm('author', () => ({
   books: [bookOrm]
-}), 'author')
+}))
 ```
 
 2. create doors to orm instances or single-instance stones for use their state through hooks
@@ -144,3 +144,4 @@ see [demo](https://github.com/lioeaet/floorm/tree/master/demo) or read [docs](ht
 * cancel actions
 * jest
 * optimize
+- normId->nesting

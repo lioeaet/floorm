@@ -3,23 +3,23 @@ import api from '../api'
 import { authorOrm } from '../hotel/orm'
 
 export default () => {
-  if (authorsSt.isLoading()) return
+  if (authorsStone.isLoading()) return
   loadAuthors()
 }
 
-const authorsSt = stone(
-  [authorOrm],
-  'authors'
+const authorsStone = stone(
+  'authors',
+  [authorOrm]
 )
 
 export const useAuthors = () => {
   return {
-    authors: useStone(authorsSt)
+    authors: useStone(authorsStone)
   }
 }
 
 const loadAuthors = () =>
-  authorsSt.put(
+  authorsStone.put(
     api.authors.get()
   )
   .catch(() => {})
