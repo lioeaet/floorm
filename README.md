@@ -1,26 +1,26 @@
 # floorm
 
-floorm is tiny declarative and predictable state manager for react apps with intuitive orm schemas providing automatic updates of parent instances
+**[orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)**  **[door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)**  **[stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)**  **[descriptions]()**  **[logger](https://github.com/lioeaet/floorm/tree/master/logger.md)**  **[sandbox]()**
 
-conceived as union of approaches used by such libraries as redux, normalizr, react, effector and mobx
+declarative state manager for react with orm
 
-## core concepts
+conceived as union of approaches used by such libraries as redux, normalizr, react, effector & mobx
+
+## installation
+
+```
+npm i -S floorm
+```
+
+## mental model
 
 1. **pithiness** every sign of code should have maximum payload with saving readability in project context
 2. **consistency** same things should be implemented with same approaches
-3. **simple data structures** store data in plain objects and arrays for comfortable debugging and interaction with code at all
+3. **simple data structures** save data in plain objects and arrays format for comfortable interaction
 4. **immutability** it's so good for comparing states of your app during the session
-5. **relations are important** when you update your instances, it should be 
+5. **relations are important** when you update your instances, it should rerender all components wich uses them or their parents
 
-## docs
-
-* [orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)
-* [door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)
-* [stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)
-* [useDoor](https://github.com/lioeaet/floorm/tree/master/docs/useDoor.md)
-* [useStone](https://github.com/lioeaet/floorm/tree/master/docs/useStone.md)
-
-## usage
+## guide
 
 1. create orm of your project instances
 
@@ -86,7 +86,7 @@ export const useAuthor = id => {
   }
 }
 
-const loadAuthor = id => authorDoor.put(api.authors.get(id))
+const loadAuthor = id => authorDoor.put(id, api.authors.get(id))
 ```
 
 3. use hooks of your instances in components
@@ -136,7 +136,9 @@ const Author = ({ id }) => {
 }
 ```
 
-see [demo](https://github.com/lioeaet/floorm/tree/master/demo) or read [docs](https://github.com/lioeaet/floorm/tree/master/docs/orm.md) for more info
+see [demo](https://github.com/lioeaet/floorm/tree/master/demo) for more examples
+
+or read [docs](https://github.com/lioeaet/floorm/tree/master/docs/orm.md) for more info
 
 * article
 * flat
@@ -144,4 +146,4 @@ see [demo](https://github.com/lioeaet/floorm/tree/master/demo) or read [docs](ht
 * cancel actions
 * jest
 * optimize
-- normId->nesting
+* normId->nesting
