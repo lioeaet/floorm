@@ -1,12 +1,12 @@
 # floorm
 
-**[orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)**  **[door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)**  **[stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)**  **[descriptions]()**  **[logger](https://github.com/lioeaet/floorm/tree/master/logger.md)**  **[sandbox]()**
+**[base]()**  **[orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)**  **[door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)**  **[stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)**  **[logger](https://github.com/lioeaet/floorm/tree/master/logger.md)**  **[playground]()**
 
 declarative state manager for react with orm
 
 conceived as union of approaches used by such libraries as redux, normalizr, react, effector & mobx
 
-## installation
+## install
 
 ```
 npm i -S floorm
@@ -14,11 +14,11 @@ npm i -S floorm
 
 ## mental model
 
-1. **pithiness** every sign of code should have maximum payload with saving readability in project context
-2. **consistency** same things should be implemented with same approaches
-3. **simple data structures** save data in plain objects and arrays format for comfortable interaction
-4. **immutability** it's so good for comparing states of your app during the session
-5. **relations are important** when you update your instances, it should rerender all components wich uses them or their parents
+- **id** instances of project have id for access and manipulation
+- **pithiness** every sign of code should have maximum payload with saving readability in project context
+- **relations** updates of instances should rerender all components wich uses them or their parents
+- **consistency** same things should be implemented with same approaches
+- **simple data structures** store data in plain objects and arrays format for comfortable interaction
 
 ## guide
 
