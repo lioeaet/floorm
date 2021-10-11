@@ -84,8 +84,8 @@ console.log(authorOrm.get(1).books[0] === bookOrm.get(1)) // true
 
 removing is the diamond of floorm
 when you should to add removing functionallity for your instance you should find all its parents by your hands to clear them too
-but in floorm, since you have relations mapping, you can realize it with one function call
-instance will replaced with null in all parent objects and filtered in arrays
+but with floorm, since you have relations mapping, you can realize it by one function call
+instance will replaced with `null` in all parent objects and filtered in arrays
 
 ```js
 const authorOrm = orm('authorOrm', () => ({
@@ -107,7 +107,6 @@ console.log(bookOrm.get(1)) // { id: 1, name: 'The Doors of Perception' }
 console.log(authorOrm.get(1)) // { id: 1, books: [{ id: 1... }], favoriteBook: { id: 1... } }
 
 bookOrm.remove(1)
-  // in plans: .catch(onBack) with autoset on parent instances after error on removing
 
 console.log(bookOrm.get(1)) // undefined
 console.log(authorOrm.get(1)) // { id: 1, books: [], favoriteBook: null }

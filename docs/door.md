@@ -1,3 +1,7 @@
 # door
 
-door is async layer for chaining orm instances with react functionality
+`door` is layer for async changes of orm instances and usage them in react hooks
+
+```js
+
+```
