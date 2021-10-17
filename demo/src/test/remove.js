@@ -1,4 +1,4 @@
-import { orm } from '*'
+import { orm, door } from '*'
 export default () => <div />
 
 const baseOrm = orm('base', () => ({
@@ -16,7 +16,10 @@ const childOrm = orm('child', () => ({
   }
 }))
 
-baseOrm.put({
+const baseDoor = door(baseOrm)
+const childDoor = door(childOrm)
+
+baseDoor.put({
   id: 1,
   baseChild: {
     id: 1
@@ -24,7 +27,7 @@ baseOrm.put({
   baseBaseArr: [{ id: 1 }]
 })
 
-childOrm.put({
+childDoor.put({
   id: 1,
   childBase: { id: 1 },
   childBaseArr: [{ id: 1 }, { id: 1 }],
@@ -37,6 +40,6 @@ childOrm.put({
   }
 })
 
-baseOrm.remove(1)
+baseDoor.remove(1)
 
 console.log('oki')

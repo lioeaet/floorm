@@ -1,5 +1,5 @@
 import { orm } from '*'
-import './logger'
+// import './logger'
 
 export const userOrm = orm('user', () => ({
   favoriteBooks: [bookOrm]

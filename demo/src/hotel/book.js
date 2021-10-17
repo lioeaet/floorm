@@ -55,5 +55,5 @@ const changeBook = (bookId, diff) => {
 
 export const removeBook = bookId =>
   api.book.remove(bookId).then(() =>
-    bookOrm.remove(bookId)
+    bookDoor.remove(bookId)
   ).catch(console.error)

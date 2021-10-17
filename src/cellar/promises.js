@@ -1,3 +1,4 @@
+import { put } from '*/api/put'
 import { genStoneInst } from '*/factories/stone'
 import { normalizeId, watchItem } from '*/utils'
 
@@ -12,7 +13,7 @@ export const putPromise = (orm, normId, promise, isStone) => {
 
       item = isStone ? genStoneInst(item) : item
 
-      return orm.put(item)
+      return put(orm, normId, item)
     },
     error => {
       if (promises[normId] !== result) throw 'canceled'

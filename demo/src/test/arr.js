@@ -1,4 +1,4 @@
-import { orm } from '*'
+import { orm, door } from '*'
 export default () => <div />
 
 const baseOrm = orm('base', () => ({
@@ -7,10 +7,13 @@ const baseOrm = orm('base', () => ({
 
 const arrOrm = orm(() => ({ arr: [baseOrm] }), 'arr')
 
-baseOrm.put({ id: 1, ok: { id: 1, stork: true, fromOk: true } })
+const arrDoor = door(arrOrm)
+const baseDoor = door(baseOrm)
 
-arrOrm.put({ id: 1, arr: [{ id: 1, bla: 'bla' }, { id: 1, bla: 'bla' }] })
+baseDoor.put({ id: 1, ok: { id: 1, stork: true, fromOk: true } })
 
-baseOrm.put({ id: 1, bla: 'bla bla bla' })
+arrDoor.put({ id: 1, arr: [{ id: 1, bla: 'bla' }, { id: 1, bla: 'bla' }] })
 
-console.log(baseOrm.get(1), arrOrm.get(1))
+baseDoor.put({ id: 1, bla: 'bla bla bla' })
+
+console.log(baseDoor.get(1), arrDoor.get(1))

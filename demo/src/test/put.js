@@ -1,4 +1,4 @@
-import { orm } from '*'
+import { orm, door } from '*'
 export default () => <div />
 
 const baseOrm = orm('base', () => ({
@@ -16,7 +16,10 @@ const childOrm = orm('child', () => ({
   }
 }))
 
-const base1_1 = baseOrm.put({
+const baseDoor = door(baseOrm)
+const childDoor = door(childOrm)
+
+const base1_1 = baseDoor.put(1, {
   id: 1,
   baseChild: {
     id: 1,
@@ -24,10 +27,11 @@ const base1_1 = baseOrm.put({
   },
   baseBaseArr: [{ id: 2, la: 'la', a: 'a' }, { id: 1 }]
 })
-const child1_1 = childOrm.get(1)
-const base2_1 = baseOrm.get(2)
+const child1_1 = childDoor.get(1)
+const base2_1 = baseDoor.get(2)
+
 console.log(
-  base1_1 === baseOrm.get(1),
+  base1_1 === baseDoor.get(1),
   base1_1.fromBaseChild === 'x',
   base1_1.baseBaseArr[0] === base2_1,
   base1_1.baseBaseArr[1] === base1_1,
@@ -43,7 +47,7 @@ console.log(
   Object.keys(child1_1).length === 2
 )
 
-const child1_2 = childOrm.put({
+const child1_2 = childDoor.put(1, {
   id: 1,
   childBaseArr: [{ id: 2, la: 'ok' }, { id: 1, la: 'ok' }, {id: 3, la: 'eo'}],
   childInner: {
@@ -55,9 +59,9 @@ const child1_2 = childOrm.put({
     }
   }
 })
-const base1_2 = baseOrm.get(1)
-const base2_2 = baseOrm.get(2)
-const base3_2 = baseOrm.get(3)
+const base1_2 = baseDoor.get(1)
+const base2_2 = baseDoor.get(2)
+const base3_2 = baseDoor.get(3)
 console.log(
   base1_2 !== base1_1,
   base1_2.fromBaseChild === 'x',
@@ -89,7 +93,7 @@ console.log(
   Object.keys(child1_2).length === 4
 )
 
-const child1_3 = childOrm.put({
+const child1_3 = childDoor.put(1, {
   id: 1,
   childBase: null,
   childBaseArr: [{ id: 1 }, { id: 1 }],
@@ -102,9 +106,9 @@ const child1_3 = childOrm.put({
     }
   }
 })
-const base1_3 = baseOrm.get(1)
-const base2_3 = baseOrm.get(2)
-const base3_3 = baseOrm.get(3)
+const base1_3 = baseDoor.get(1)
+const base2_3 = baseDoor.get(2)
+const base3_3 = baseDoor.get(3)
 console.log(
   base1_3 !== base1_1,
   base1_2 !== base1_1,

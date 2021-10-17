@@ -25,7 +25,7 @@ const loadFavoriteBooks = () =>
 export const toggleFavoriteBook = bookId => {
   const nextBook = bookDoor.put(
     bookId,
-    { favorite: !bookOrm.get(bookId).favorite }
+    { favorite: !bookDoor.get(bookId).favorite }
   )
   if (nextBook.favorite) addToFavorite(nextBook)
   else removeFromFavorite(nextBook)
