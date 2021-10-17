@@ -2,9 +2,15 @@
 
 ## description
 
-floorm focused of relations of instances which declares by `descriptions` passed to orm function as second argument
+Orm description is object with relations mapping.
 
-it's easy to see description as instance without any keys excluding part of way to orm
+It's deep plain object without any keys excluding way to child orm.
+
+Description consists from:
+
+1. Plain objects
+2. Arrays with orm instance
+3. Orms
 
 ```js
 import { orm } from 'floorm'
@@ -12,34 +18,30 @@ import { orm } from 'floorm'
 // create orm for author instance
 const authorOrm = orm('author')
 
+// create orm for book instance
 const bookOrm = orm('book', () => ({
-  // book instance can have author in key "author" among the rest props
-  author: authorOrm
+  author: authorOrm, // declares that book instance can have author in key "author"
 }))
 
 // now we can put some book with author to bookOrm
+// and author will be inserted to authorOrm automatically
 bookOrm.put({
   id: 1,
   name: 'In Our Time',
   author: {
     id: 1,
     name: 'Ernest Hemingway'
-  }
+  },
 })
 
 console.log(bookOrm.get(1)) // { id: 1, name: 'In Our Time', author: ... }
 
-// author will inserted to authorOrm
 console.log(authorOrm.get(1)) // { id: 1, name: 'Ernest Hemingway' }
 
 console.log(authorOrm.get(1) === bookOrm.get(1).author) // true
 ```
 
-description consists from:
-
-1. plain objects
-2. arrays with orm instance
-3. orms
+Deep description example:
 
 ```js
 import { orm } from 'floorm'
@@ -55,4 +57,6 @@ const yOrm = orm('y', () => ({
 }))
 ```
 
+## diff
 
+`diff` is structure for make changes of your orm instances.

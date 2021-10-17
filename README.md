@@ -1,28 +1,28 @@
 # floorm
 
-**[base]()**  **[orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)**  **[door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)**  **[stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)**  **[logger](https://github.com/lioeaet/floorm/tree/master/logger.md)**  **[playground]()**
+**[base](https://github.com/lioeaet/floorm/tree/master/docs/base.md)** |  **[orm](https://github.com/lioeaet/floorm/tree/master/docs/orm.md)** | **[door](https://github.com/lioeaet/floorm/tree/master/docs/door.md)** |  **[stone](https://github.com/lioeaet/floorm/tree/master/docs/stone.md)** |  **[logger](https://github.com/lioeaet/floorm/tree/master/logger.md)**
 
-declarative state manager for react with orm
+Declarative state manager for react with orm
 
-conceived as union of approaches used by such libraries as redux, normalizr, react, effector & mobx
+Conceived as union of approaches used by such libraries as redux, normalizr, react, effector & mobx
 
-## install
+## Install
 
 ```
 npm i -S floorm
 ```
 
-## mental model
+## Concept
 
-- **id** instances of project have id for access and manipulation
-- **pithiness** every sign of code should have maximum payload with saving readability in project context
-- **relations** updates of instances should rerender all components wich uses them or their parents
-- **consistency** same things should be implemented with same approaches
-- **simple data structures** store data in plain objects and arrays format for comfortable interaction
+- **ID.** Instances of project should have id for access and manipulation
+- **Pithiness.** Every sign of code should have maximum payload with saving readability in project context
+- **Relations.** Immutable updates of instances creates new instances of their parents
+- **Consistency.** Same things should be implemented with same approaches.
+- **Simple data structures.** Data stores in plain objects and simple arrays for comfortable interaction
 
-## guide
+## Guide
 
-1. create orm of your project instances
+1. Create orm of your project instances.
 
 ```js
 // hotel/orm.js
@@ -39,7 +39,7 @@ const authorOrm = orm('author', () => ({
 }))
 ```
 
-2. create doors to orm instances or single-instance stones for use their state through hooks
+2. Create doors to orm instances or single-instance stones for use their state through hooks.
 
 ```js
 // hotel/book.js
@@ -89,7 +89,7 @@ export const useAuthor = id => {
 const loadAuthor = id => authorDoor.put(id, api.authors.get(id))
 ```
 
-3. use hooks of your instances in components
+3. Use hooks of your instances in components.
 
 ```js
 // ui/Book.jsx
@@ -136,14 +136,6 @@ const Author = ({ id }) => {
 }
 ```
 
-see [demo](https://github.com/lioeaet/floorm/tree/master/demo) for more examples
+See [demo](https://github.com/lioeaet/floorm/tree/master/demo) for more examples.
 
-or read [docs](https://github.com/lioeaet/floorm/tree/master/docs/orm.md) for more info
-
-* article
-* flat
-* errors
-* cancel actions
-* jest
-* optimize
-* normId->nesting
+Or read [docs WIP](https://github.com/lioeaet/floorm/tree/master/docs/base.md) for learn floorm deeply.
