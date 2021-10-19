@@ -4,15 +4,11 @@ import { theEnd } from '*/cellar/relations'
 const flat = (orm, normId) => {
   const parents = g.graph[normId]
 
-  const graph = {}
-  applyChilds(graph, parents)
-
-
-  let flatter = {}
+  let result = {}
   for (let key in childs) {
     const childNormId = childs[key]
     const graph = g.graph[normId][childNormId]
-    deleteChilds(graph, flatter)
+    deleteChilds(graph, result)
   }
 }
 
@@ -32,7 +28,3 @@ const deleteChilds = (gLevel, level) => {
     if (isOrm(gLevel[0])) 
   }
 }
-
-// элементы имеют 2 уровня вложенности
-// если элемент повторяется в стеке, то ставим ему копию до конца стека, где нет свойства с этим элементом
-// в остальном строим граф, где такие элементы заканчиваются на true, а у других ставятся childs до конца
