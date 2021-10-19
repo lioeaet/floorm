@@ -12,7 +12,7 @@ export const normalizeId = (orm, id) => {
   return ids[id]
 }
 export const extractId = inst => isPlainObject(inst) && inst.id
-export const isOrm = inst => inst && g.descFuncs[inst.name]
+export const isOrm = inst => Boolean(inst && g.descFuncs[inst.name])
 export const isPlainObject = inst => inst && Object.getPrototypeOf(inst) === Object.prototype
 export const isPromise = inst => inst && typeof inst.then === 'function'
 

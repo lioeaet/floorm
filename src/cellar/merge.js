@@ -58,22 +58,6 @@ const merge = (desc, inst, diff, nextInst, parentNormId) => {
     return mergeItem(desc, normId, diff, parentNormId)
   }
 
-  if (typeof desc === 'function') {
-    const orm = desc(diff)
-    const id = extractId(diff)
-    const normId = normalizeId(orm, id)
-    const prevOrm = inst && desc(inst)
-    const prevId = extractId(inst)
-    const prevNormId = prevOrm && normalizeId(prevOrm, prevId)
-
-    if (prevNormId && normId !== prevNormId) {
-      if (prevNormId && prevNormId && parentNormId)
-        removeRelation(g.graph, prevNormId, parentNormId, g.stack)
-      if (!diff) return diff
-    }
-    return mergeItem(orm, normId, diff, parentNormId)
-  }
-
   if (isPlainObject(diff)) {
     for (let key in diff) {
       const keyDesc = desc && desc[key]
