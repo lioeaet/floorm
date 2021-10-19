@@ -5,7 +5,7 @@ import { removeBook } from './book'
 
 export default params => {
   const authorId = Number(params.authorId)
-  if (authorDoor.isLoading(authorId)) return
+  if (authorDoor.loading(authorId)) return
   loadAuthor(authorId)
 }
 

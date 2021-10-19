@@ -5,7 +5,7 @@ import { toggleFavoriteBook } from '../hotel/favoriteBooks'
 
 export default params => {
   const bookId = Number(params.bookId)
-  if (bookDoor.isLoading(bookId)) return
+  if (bookDoor.loading(bookId)) return
   loadBook(bookId)
 }
 

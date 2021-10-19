@@ -3,7 +3,7 @@ import api from '../api'
 import { authorOrm } from '../hotel/orm'
 
 export default () => {
-  if (authorsStone.isLoading()) return
+  if (authorsStone.loading()) return
   loadAuthors()
 }
 

@@ -17,11 +17,11 @@ export const door = orm => {
 
     get: id => get(normalizeId(orm, id)),
 
-    remove: id => remove(orm, normalizeId(orm, id)),
+    remove: id => remove(normalizeId(orm, id)),
 
     all: () => all(orm),
 
-    isLoading: id => hasPromise(normalizeId(orm, id)),
+    loading: id => hasPromise(normalizeId(orm, id)),
 
     name: orm.name
   })

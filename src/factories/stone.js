@@ -36,7 +36,7 @@ export const stone = (name, desc = {}) => {
       return inst && inst.state
     },
 
-    isLoading: () => hasPromise(normId),
+    loading: () => hasPromise(normId),
 
     name
   })
