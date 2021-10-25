@@ -2,7 +2,7 @@ import g from '*/global'
 import { useState, useEffect } from 'react'
 import { STONE_ID } from '*/factories/stone'
 import { normalizeId, isPromise } from '*/utils'
-import { getPromise, watchItemWithPromise } from '*/cellar/promises'
+import { getPromise, watchIdWithPromise } from '*/cellar/promises'
 
 export const useStone = stone => {
   const orm = g.orms[stone.name]
@@ -32,7 +32,7 @@ const useWatcher = (orm, id, setState) => {
       const watcher = () => setState(getState(normId))
 
       if (renderState !== getState(normId)) watcher()
-      return watchItemWithPromise(orm, id, watcher)
+      return watchIdWithPromise(orm, id, watcher)
     },
     [orm, id, normId, renderState, setState]
   )

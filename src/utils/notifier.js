@@ -10,7 +10,7 @@ export const watch = (orm, watcher) => {
   return () => watchers.splice(watchers.indexOf(watcher), 1)
 }
 
-export const watchItem = (orm, id, watcher) => {
+export const watchId = (orm, id, watcher) => {
   const normId = normalizeId(orm, id)
   const watchers = itemWatchers[normId] || (itemWatchers[normId] = [])
   watchers.push(watcher)

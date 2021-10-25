@@ -1,6 +1,6 @@
 import { put } from '*/api/put'
 import { genStoneInst } from '*/factories/stone'
-import { normalizeId, watchItem } from '*/utils'
+import { normalizeId, watchId } from '*/utils'
 
 export const promises = {}
 const promiseWatchers = {}
@@ -36,16 +36,16 @@ const notifyPromise = normId => {
   for (let watcher of pWatchers) watcher(promises[normId])
 }
 
-export const watchItemWithPromise = (orm, id, watcher) => {
+export const watchIdWithPromise = (orm, id, watcher) => {
   const normId = normalizeId(orm, id)
   const pWatchers = promiseWatchers[normId] || (promiseWatchers[normId] = [])
   pWatchers.push(watcher)
 
-  const unwatchItem = watchItem(orm, id, watcher)
+  const unwatchId = watchId(orm, id, watcher)
 
-  const unwatchItemWithPromise = () => {
-    unwatchItem()
+  const unwatchIdWithPromise = () => {
+    unwatchId()
     pWatchers.splice(pWatchers.indexOf(watcher), 1)
   }
-  return unwatchItemWithPromise
+  return unwatchIdWithPromise
 }
