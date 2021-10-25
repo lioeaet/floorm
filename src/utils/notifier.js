@@ -19,10 +19,10 @@ export const watchId = (orm, id, watcher) => {
 
 export const notify = nextItems => {
   for (let normId in nextItems)
-    notifyItem(normId)
+    notifyNormId(normId)
 }
 
-export const notifyItem = normId => {
+const notifyNormId = normId => {
   const item = g.items[normId]
   const orm = g.orms[normId]
   const prevItem = g.prevItems[normId]
