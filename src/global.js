@@ -1,5 +1,5 @@
 const g = {
-  iterationUpdates: {}, // { normId: true }
+  isUpdateParents: false,
   arrChilds: new Map,   // { array: { normId: true } }
   itemsMap: new Map,    // { item: true }
   descFuncs: {},        // { ormName: descFunc }
@@ -12,8 +12,7 @@ const g = {
   prevItems: {},        // { normId: prev }
   nextItems: {},        // { normId: item }
   currentGraph: {},     // { normId: { parentNormId: ...waysToChild: true } }
-  isUpdateParents: false,
+  iterationUpdates: {}, // { normId: true }
 }
-console.log(g)
-window.g = g
+console.log('floorm global', g)
 export default g

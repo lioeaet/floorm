@@ -1,35 +1,35 @@
 const express = require('express')
-const { AUTHORS, BOOKS, FAVORITE_BOOKS } = require('./data')
+const { author, book, favoriteBooks } = require('./data')
 
 const router = express.Router()
 
 const api = {
   'author/:id': {
-    get: params => ({ ...AUTHORS[params.id] })
+    get: params => ({ ...author[params.id] })
   },
   authors: {
-    get: () => Object.values(AUTHORS)
+    get: () => Object.values(author)
   },
   'book/:id': {
-    get: params => ({ ...BOOKS[params.id] }),
+    get: params => ({ ...book[params.id] }),
 
     put: (params, body) => putBook(params.id, body.diff),
 
     delete: ({ id }) => {
       const target = book => Number(book.id) === Number(id)
-      delete BOOKS[id]
+      delete book[id]
 
-      const author = Object.values(AUTHORS).find(a => a.booksPreview.some(target))
-      const aI = author.booksPreview.findIndex(target)
-      author.booksPreview.splice(aI, 1)
+      const a = Object.values(author).find(a => a.booksPreview.some(target))
+      const aI = a.booksPreview.findIndex(target)
+      a.booksPreview.splice(aI, 1)
 
-      const fI = FAVORITE_BOOKS.findIndex(target)
-      if (fI !== -1) FAVORITE_BOOKS.splice(fI, 1)
+      const fI = favoriteBooks.findIndex(target)
+      if (fI !== -1) favoriteBooks.splice(fI, 1)
       return id
     }
   },
   favoriteBooks: {
-    get: () => [...FAVORITE_BOOKS],
+    get: () => [...favoriteBooks],
   }
 }
 
@@ -45,35 +45,35 @@ for (let name in api) {
 
 const putBook = (bookId, diff) => {
   bookId = Number(bookId)
-  const book = { ...BOOKS[bookId] }
-  BOOKS[bookId] = book
+  const b = { ...book[bookId] }
+  book[bookId] = b
   if (diff.hasOwnProperty('favorite')) {
-    if (book.favorite !== diff.favorite)
-      toggleFavoriteBook(bookId, book)
+    if (b.favorite !== diff.favorite)
+      toggleFavoriteBook(bookId, b)
   }
-  const favIdx = FAVORITE_BOOKS
+  const favIdx = favoriteBooks
     .findIndex(fb => fb.id === bookId)
-  if (favIdx !== -1) FAVORITE_BOOKS[favIdx] = book
-  putAuthorPreviewBook(bookId, book)
-  for (let key in diff) book[key] = diff[key]
-  return book
+  if (favIdx !== -1) favoriteBooks[favIdx] = b
+  putAuthorPreviewBook(bookId, b)
+  for (let key in diff) b[key] = diff[key]
+  return b
 }
 
 const toggleFavoriteBook = (bookId, book) => {
   bookId = Number(bookId)
-  const index = FAVORITE_BOOKS
+  const index = favoriteBooks
     .findIndex(fb => fb.id === bookId)
-  if (index === -1) FAVORITE_BOOKS.unshift(book)
-  else FAVORITE_BOOKS.splice(index, 1)
-  return FAVORITE_BOOKS
+  if (index === -1) favoriteBooks.unshift(book)
+  else favoriteBooks.splice(index, 1)
+  return favoriteBooks
 }
 
 const putAuthorPreviewBook = (bookId, book) => {
   bookId = Number(bookId)
   const authorId = book.author.id
-  AUTHORS[authorId] = {
-    ...AUTHORS[authorId],
-    booksPreview: AUTHORS[authorId].booksPreview
+  author[authorId] = {
+    ...author[authorId],
+    booksPreview: author[authorId].booksPreview
       .map(b => b.id === bookId ? book : b)
   }
 }

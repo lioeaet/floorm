@@ -43,7 +43,7 @@ const Book = () => {
       <input
         value={description}
         onChange={e => setDescription(e.target.value)}
-        onBlur={e => changeBook({ ...book, description })}
+        onBlur={e => changeBook({ description })}
         onKeyDown={e => {
           if (e.keyCode !== 13) return
           e.target.blur()

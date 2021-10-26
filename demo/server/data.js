@@ -1,4 +1,4 @@
-const FAVORITE_BOOKS = [
+const favoriteBooks = [
 {
   id: 1,
   name: 'The Birth of Tragedy from the Spirit of Music',
@@ -71,7 +71,7 @@ const FAVORITE_BOOKS = [
 }
 ]
 
-const AUTHORS = {
+const author = {
   1: {
     id: 1,
     name: 'Friedrich Nietzsche',
@@ -135,7 +135,7 @@ const AUTHORS = {
   }
 }
 
-const BOOKS = {
+const book = {
   1: {
     id: 1,
     name: 'The Birth of Tragedy from the Spirit of Music',
@@ -227,7 +227,7 @@ const BOOKS = {
 }
 
 module.exports = {
-  FAVORITE_BOOKS,
-  AUTHORS,
-  BOOKS
+  favoriteBooks,
+  author,
+  book
 }

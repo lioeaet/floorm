@@ -13,7 +13,7 @@ export const putPromise = (orm, normId, promise, isStone) => {
 
       item = isStone ? genStoneInst(item) : item
 
-      return put(orm, normId, item)
+      return put(orm, normId, item).state
     },
     error => {
       if (promises[normId] !== result) throw 'canceled'

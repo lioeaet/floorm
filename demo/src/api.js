@@ -17,7 +17,7 @@ const api = {
       'PUT',
       JSON.stringify(
         { diff }, 
-        (key, val) => key === 'author' ? diff.author.id : val
+        (key, val) => key === 'author' ? void 0 : val
       )
     ),
     remove: bookId => fetchData(`book/${bookId}`, 'DELETE')

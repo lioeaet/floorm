@@ -28,7 +28,7 @@ export const stone = (name, desc = {}) => {
 
       return isPromise(diff)
         ? putPromise(orm, normId, diff, true)
-        : put(orm, normId, genStoneInst(diff))
+        : put(orm, normId, genStoneInst(diff)).state
     },
 
     get: () => {

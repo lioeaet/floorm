@@ -1,4 +1,5 @@
 import g from '*/global'
+import { enhance } from '*/utils'
 
 export const orm = (name, desc = () => ({})) => {
   if (!name) throw 'orm name is required'
@@ -6,5 +7,7 @@ export const orm = (name, desc = () => ({})) => {
 
   g.descFuncs[name] = desc
 
-  return g.orms[name] = { name }
+  return g.orms[name] = enhance(enhancers, { name })
 }
+const enhancers = []
+orm.enhance = enhancer => enhancers.push(enhancer)

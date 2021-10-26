@@ -19,7 +19,7 @@ const childOrm = orm('child', () => ({
 const baseDoor = door(baseOrm)
 const childDoor = door(childOrm)
 
-baseDoor.put({
+baseDoor.put(1, {
   id: 1,
   baseChild: {
     id: 1
@@ -27,7 +27,7 @@ baseDoor.put({
   baseBaseArr: [{ id: 1 }]
 })
 
-childDoor.put({
+childDoor.put(1, {
   id: 1,
   childBase: { id: 1 },
   childBaseArr: [{ id: 1 }, { id: 1 }],

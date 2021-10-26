@@ -1,9 +1,7 @@
 import { orm } from '*'
-// import './logger'
+import logger from '../logger'
 
-export const userOrm = orm('user', () => ({
-  favoriteBooks: [bookOrm]
-}))
+logger()
 
 export const bookOrm = orm('book', () => ({
   author: authorOrm

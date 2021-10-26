@@ -1,12 +1,14 @@
+import path from 'path'
 import babel from 'rollup-plugin-babel';
 import { terser } from 'rollup-plugin-terser'
+import alias from 'rollup-plugin-alias'
 
 export default {
   input: 'src/index.js',
   output: {
-    file: 'react-norm.min.js',
+    file: 'floorm.min.js',
     format: 'cjs',
-    name: 'react-norm',
+    name: 'floorm',
     globals: {
       react: 'React'
     }
@@ -20,6 +22,12 @@ export default {
         unsafe_comps: true,
         warnings: false,
       },
+    }),
+    alias({
+      resolve: ['.js'],
+      entries: {
+        '*': path.resolve(__dirname, 'src')
+      }
     }),
   ],
   external: ['react']

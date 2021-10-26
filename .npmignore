@@ -1,3 +1,4 @@
-/example
+/demo
 /src
 rollup.config.js
+.gitignore

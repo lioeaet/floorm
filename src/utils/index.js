@@ -1,15 +1,11 @@
 import g from '*/global'
-import { waySet, wayGet } from './way'
+import { waySet } from './way'
 export * from './way'
 export * from './notifier'
 
 export const normalizeId = (orm, id) => {
-  const ids = wayGet(g.ids, orm.name) || waySet(g.ids, orm.name)({})
-  if (id && !ids.hasOwnProperty(id))
-    waySet(ids, id)(
-      /* Symbol( */`${orm.name}-${id}`/* ) */
-    )
-  return ids[id]
+  waySet(g.ids, orm.name)(id)
+  return `${orm.name}-${id}`
 }
 export const extractId = inst => isPlainObject(inst) && inst.id
 export const isOrm = inst => Boolean(inst && g.descFuncs[inst.name])
