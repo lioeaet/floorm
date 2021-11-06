@@ -22,7 +22,7 @@ export const stone = (name, desc = {}) => {
   return enhance(enhancers, {
     put: diff => {
       if (typeof diff === 'function') {
-        const item = get(orm, normId) || {}
+        const item = get(normId) || {}
         diff = diff(item.state)
       }
 
@@ -32,7 +32,7 @@ export const stone = (name, desc = {}) => {
     },
 
     get: () => {
-      const inst = get(orm, normId)
+      const inst = get(normId)
       return inst && inst.state
     },
 

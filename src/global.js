@@ -14,5 +14,5 @@ const g = {
   currentGraph: {},     // { normId: { parentNormId: ...waysToChild: true } }
   iterationUpdates: {}, // { normId: true }
 }
-console.log('floorm global', g)
+
 export default g

@@ -1,6 +1,6 @@
 {
   "name": "floorm",
-  "version": "0.0.0-beta",
+  "version": "0.0.1-beta",
   "description": "candy code for react state with orm",
   "main": "floorm.min.js",
   "scripts": {
