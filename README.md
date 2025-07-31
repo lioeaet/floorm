@@ -16,8 +16,8 @@ npm i -S floorm
 
 - **ID.** Instances of project should have id for access and manipulation
 - **Pithiness.** Every sign of code should have maximum payload with saving readability in project context
-- **Relations.** Immutable updates of instances creates new instances of their parents
 - **Consistency.** Same things should be implemented with same approaches.
+- **Relations.** Immutable updates of instances creates new instances of their parents
 - **Simple data structures.** Data stores in plain objects and simple arrays for comfortable interaction
 
 ## Guide
